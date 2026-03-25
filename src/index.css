@@ -48,11 +48,14 @@ h2 { font-size: 22px; }
 .inline-error { border-radius: 18px; background: rgba(239,68,68,0.18); border: 1px solid rgba(239,68,68,0.35); color: #fecaca; padding: 12px 14px; }
 .footer-actions { display: flex; }
 .bottom-nav { position: fixed; left: 50%; transform: translateX(-50%); bottom: 14px; width: min(520px, calc(100% - 24px)); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: rgba(9,14,28,0.9); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 20px; backdrop-filter: blur(10px); }
+.bottom-nav-four { grid-template-columns: repeat(4, 1fr); }
 .bottom-nav a { padding: 12px; text-align: center; border-radius: 14px; color: #90a0ba; }
 .bottom-nav a.active { background: rgba(25,231,240,0.16); color: #f6f8fc; }
 .settings-card, .history-list { display: grid; gap: 14px; }
 .settings-card label { display: grid; gap: 8px; }
 .settings-card input, .settings-card select { background: rgba(255,255,255,0.06); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 14px; }
+.admin-section { display: grid; gap: 12px; padding: 14px; border-radius: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+.admin-note { color: #b7c4da; line-height: 1.5; }
 .checkbox-row { grid-template-columns: auto 1fr; align-items: center; }
 .save-hint { color: #86efac; }
 .history-list { margin-top: 18px; }

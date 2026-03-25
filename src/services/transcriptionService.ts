@@ -1,3 +1,4 @@
+import { loadAdminRuntimeConfig } from '@/services/adminConfigRepository';
 import { TranscriptResult } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
@@ -7,11 +8,15 @@ export async function transcribeRoundAudio(audioBlob: Blob, options: { role: 'ca
     throw new Error('VITE_API_BASE_URL is not configured. Point it to your Firebase HTTPS functions base URL.');
   }
 
+  const config = loadAdminRuntimeConfig();
+  const selectedModel = options.role === 'captain' ? config.captainDeepgramModel : config.crewDeepgramModel;
   const arrayBuffer = await audioBlob.arrayBuffer();
   const response = await fetch(`${API_BASE_URL}/transcribeRoundAudio?role=${options.role}&language=${options.language}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/octet-stream',
+      'x-deepgram-api-key': config.deepgramApiKey,
+      'x-deepgram-model': selectedModel,
     },
     body: arrayBuffer,
   });

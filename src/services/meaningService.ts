@@ -1,3 +1,4 @@
+import { loadAdminRuntimeConfig } from '@/services/adminConfigRepository';
 import { MeaningEvaluation } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
@@ -11,12 +12,19 @@ export async function evaluateCaptionCrewMeaning(payload: {
     throw new Error('VITE_API_BASE_URL is not configured. Point it to your Firebase HTTPS functions base URL.');
   }
 
+  const config = loadAdminRuntimeConfig();
   const response = await fetch(`${API_BASE_URL}/evaluateCaptionCrewMeaning`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      ...payload,
+      routerApiKey: config.router9ApiKey,
+      routerBaseUrl: config.router9BaseUrl,
+      model: config.router9Model,
+      fallbackModel: config.router9FallbackModel,
+    }),
   });
 
   const data = await response.json().catch(() => ({}));

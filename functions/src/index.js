@@ -5,12 +5,12 @@ exports.transcribeRoundAudio = onRequest({ cors: true }, async (req, res) => {
   try {
     if (req.method === 'OPTIONS') return res.status(204).send('');
 
-    const apiKey = process.env.DEEPGRAM_API_KEY;
+    const apiKey = req.headers['x-deepgram-api-key'] || process.env.DEEPGRAM_API_KEY;
     if (!apiKey) throw new Error('DEEPGRAM_API_KEY not configured');
 
     const role = String(req.query.role || 'captain');
     const language = String(req.query.language || (role === 'captain' ? 'vi' : 'en'));
-    const model = role === 'captain' ? 'nova-2' : 'nova-2';
+    const model = String(req.headers['x-deepgram-model'] || (role === 'captain' ? 'nova-2' : 'nova-2'));
 
     const deepgramUrl = `https://api.deepgram.com/v1/listen?model=${model}&smart_format=true&punctuate=true&detect_language=false&language=${language}`;
     const response = await fetch(deepgramUrl, {
@@ -46,10 +46,10 @@ exports.evaluateCaptionCrewMeaning = onRequest({ cors: true }, async (req, res) 
   try {
     if (req.method === 'OPTIONS') return res.status(204).send('');
 
-    const apiKey = process.env.ROUTER9_API_KEY;
-    const baseUrl = process.env.ROUTER9_BASE_URL || 'https://rqlaeq5.9router.com/v1';
-    const model = process.env.ROUTER9_MODEL || req.body.model;
-    const fallbackModel = process.env.ROUTER9_FALLBACK_MODEL || req.body.fallbackModel;
+    const apiKey = req.body.routerApiKey || process.env.ROUTER9_API_KEY;
+    const baseUrl = req.body.routerBaseUrl || process.env.ROUTER9_BASE_URL || 'https://rqlaeq5.9router.com/v1';
+    const model = req.body.model || process.env.ROUTER9_MODEL;
+    const fallbackModel = req.body.fallbackModel || process.env.ROUTER9_FALLBACK_MODEL;
 
     if (!apiKey) throw new Error('ROUTER9_API_KEY not configured');
     if (!model && !fallbackModel) throw new Error('No Router9 model configured');
