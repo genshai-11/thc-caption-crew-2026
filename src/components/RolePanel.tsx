@@ -3,7 +3,7 @@ import { Loader2, Mic, Square } from 'lucide-react';
 interface RolePanelProps {
   role: 'captain' | 'crew';
   title: string;
-  color: 'green' | 'red';
+  color: 'blue' | 'red';
   transcript?: string;
   recording: boolean;
   disabled: boolean;
@@ -27,7 +27,7 @@ export function RolePanel({
   onStart,
   onStop,
 }: RolePanelProps) {
-  const classes = color === 'green' ? 'role-panel role-panel-green' : 'role-panel role-panel-red';
+  const classes = color === 'blue' ? 'role-panel role-panel-blue' : 'role-panel role-panel-red';
 
   return (
     <section className={classes}>

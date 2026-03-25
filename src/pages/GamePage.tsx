@@ -37,12 +37,12 @@ export default function GamePage() {
         <RolePanel
           role="captain"
           title="Captain"
-          color="green"
+          color="blue"
           transcript={round.captainTranscript?.transcript}
           recording={round.captainRecorder.isRecording}
           disabled={!round.canStartCaptain}
           processing={round.state === 'captain-processing'}
-          actionLabel="Start green"
+          actionLabel="Start blue"
           onStart={() => void round.startCaptain()}
           onStop={() => void round.stopCaptain()}
         />
