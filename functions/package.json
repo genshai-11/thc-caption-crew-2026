@@ -1,7 +1,7 @@
 {
   "name": "caption-crew-functions",
   "private": true,
-  "main": "src/index.js",
+  "main": "index.js",
   "engines": {
     "node": "20"
   },
