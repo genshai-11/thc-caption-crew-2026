@@ -92,11 +92,20 @@ export default function AdminPage() {
     setAnalysisState({ status: 'loading', message: 'Analyzing transcript with AI…' });
     try {
       const result = await analyzeTranscript(normalizedTranscript, {
+        provider: config.ohmAnalysisProvider,
         googleApiKey: config.googleApiKey,
         googleModel: config.googleTranscriptModel,
+        thirdPartyOhmUrl: config.thirdPartyOhmUrl,
+        thirdPartyOhmApiKey: config.thirdPartyOhmApiKey,
+        thirdPartyOhmModel: config.thirdPartyOhmModel,
+        thirdPartyOhmAuthScheme: config.thirdPartyOhmAuthScheme,
+        thirdPartyOhmWebhookUrl: config.thirdPartyOhmWebhookUrl,
       });
       setAnalysisResult(result);
-      setAnalysisState({ status: 'success', message: `Analysis complete • model ${result.modelUsed || config.googleTranscriptModel || 'gemini-1.5-flash'}` });
+      setAnalysisState({
+        status: 'success',
+        message:           `Analysis complete • provider ${config.ohmAnalysisProvider === 'thirdparty' ? 'third-party' : 'google'} • model ${result.modelUsed || config.thirdPartyOhmModel || config.googleTranscriptModel || 'default'}`,
+      });
     } catch (error: any) {
       setAnalysisResult(null);
       setAnalysisState({ status: 'error', message: error?.message || 'Transcript analysis failed.' });
@@ -248,7 +257,9 @@ export default function AdminPage() {
 
   const transcriptReady = config.transcriptProvider === 'google'
     ? !!config.googleApiKey && captainTestState.status === 'success' && crewTestState.status === 'success'
-    : !!config.deepgramApiKey && captainTestState.status === 'success' && crewTestState.status === 'success';
+    : config.transcriptProvider === 'thirdparty'
+      ? !!config.thirdPartyTranscriptUrl && captainTestState.status === 'success' && crewTestState.status === 'success'
+      : !!config.deepgramApiKey && captainTestState.status === 'success' && crewTestState.status === 'success';
   const routerReady = !!config.router9ApiKey && !!config.router9Model && routerTestState.status === 'success';
   const systemReady = transcriptReady && routerReady;
 
@@ -280,11 +291,11 @@ export default function AdminPage() {
 
       <section className="admin-grid two-up">
         <article className="soft-card compact">
-          <span className="soft-label">Transcript ({config.transcriptProvider === 'google' ? 'Google' : 'Deepgram'})</span>
+          <span className="soft-label">Transcript ({config.transcriptProvider === 'google' ? 'Google' : config.transcriptProvider === 'thirdparty' ? 'Third-party API' : 'Deepgram'})</span>
           <div className="action-row">
             <StatusBadge label={transcriptReady ? 'ready' : 'not ready'} status={transcriptReady ? 'ready' : 'not-ready'} />
             <StatusBadge
-              label={config.transcriptProvider === 'deepgram' ? 'streaming available' : 'batch only'}
+              label={config.transcriptProvider === 'deepgram' ? 'streaming available' : 'batch only / api-driven'}
               status={config.transcriptProvider === 'deepgram' ? 'success' : 'idle'}
             />
           </div>
@@ -324,6 +335,7 @@ export default function AdminPage() {
           <select value={config.transcriptProvider} onChange={(e) => patchConfig('transcriptProvider', e.target.value as AdminRuntimeConfig['transcriptProvider'])}>
             <option value="deepgram">Deepgram (streaming + batch)</option>
             <option value="google">Google Gemini (batch transcript)</option>
+            <option value="thirdparty">Third-party transcript API (batch)</option>
           </select>
         </label>
 
@@ -339,108 +351,44 @@ export default function AdminPage() {
             </label>
             <p className="admin-message">Live partial transcript uses Deepgram only. With Google provider, app will transcribe after recording stops.</p>
           </>
+        ) : config.transcriptProvider === 'thirdparty' ? (
+          <>
+            <label className="field-stack">
+              <span>Third-party transcript endpoint URL</span>
+              <input value={config.thirdPartyTranscriptUrl} onChange={(e) => patchConfig('thirdPartyTranscriptUrl', e.target.value)} placeholder="https://api.example.com/transcribe" />
+            </label>
+            <label className="field-stack">
+              <span>Third-party transcript API key</span>
+              <input type="password" value={config.thirdPartyTranscriptApiKey} onChange={(e) => patchConfig('thirdPartyTranscriptApiKey', e.target.value)} />
+            </label>
+            <div className="admin-grid two-up">
+              <label className="field-stack">
+                <span>Third-party transcript model (optional)</span>
+                <input value={config.thirdPartyTranscriptModel} onChange={(e) => patchConfig('thirdPartyTranscriptModel', e.target.value)} placeholder="whisper-large-v3" />
+              </label>
+              <label className="field-stack">
+                <span>Auth scheme</span>
+                <select value={config.thirdPartyTranscriptAuthScheme} onChange={(e) => patchConfig('thirdPartyTranscriptAuthScheme', e.target.value as AdminRuntimeConfig['thirdPartyTranscriptAuthScheme'])}>
+                  <option value="bearer">Bearer</option>
+                  <option value="x-api-key">x-api-key</option>
+                  <option value="none">None</option>
+                </select>
+              </label>
+            </div>
+            <p className="admin-message">Expected API contract: POST transcript + settings.ohmBaseValues (Green=5, Blue=7, Red=9, Pink=3) + optional webhookUrl to /api/analyze-ohm; return transcriptRaw, transcriptNormalized, chunks, formula, totalOhm, modelUsed.</p>
+          </>
         ) : (
           <>
             <label className="field-stack">
-              <span>Deepgram API key</span>
-              <input type="password" value={config.deepgramApiKey} onChange={(e) => patchConfig('deepgramApiKey', e.target.value)} />
+              <span>Google API key for Ohm analysis</span>
+              <input type="password" value={config.googleApiKey} onChange={(e) => patchConfig('googleApiKey', e.target.value)} />
             </label>
-
-            <div className="admin-grid two-up">
-              <label className="field-stack">
-                <span>Captain model</span>
-                <input value={config.captainDeepgramModel} onChange={(e) => patchConfig('captainDeepgramModel', e.target.value)} />
-              </label>
-              <label className="field-stack">
-                <span>Crew model</span>
-                <input value={config.crewDeepgramModel} onChange={(e) => patchConfig('crewDeepgramModel', e.target.value)} />
-              </label>
-            </div>
+            <label className="field-stack">
+              <span>Google model for Ohm analysis</span>
+              <input value={config.googleTranscriptModel} onChange={(e) => patchConfig('googleTranscriptModel', e.target.value)} />
+            </label>
           </>
         )}
-      </section>
-
-      <section className="soft-card admin-section-minimal">
-        <div className="section-title-row">
-          <h2 className="section-title">Validation</h2>
-        </div>
-        {config.transcriptProvider === 'google' && (
-          <p className="admin-message">Google provider uses batch transcription only. Live streaming is available with Deepgram provider.</p>
-        )}
-
-        <div className="admin-test-row">
-          <div>
-            <p className="soft-label">Captain Vietnamese</p>
-            <p className="muted-copy">Record, stop, then test STT.</p>
-          </div>
-          <StatusBadge label={captainTestState.status === 'success' ? 'pass' : captainTestState.status === 'error' ? 'fail' : 'pending'} status={captainTestState.status === 'success' ? 'success' : captainTestState.status === 'error' ? 'error' : 'idle'} />
-        </div>
-        <div className="action-row">
-          {!captainRecorder.isRecording ? (
-            <button className="ghost-pill-button" onClick={() => void captainRecorder.start()}>Record Vietnamese</button>
-          ) : (
-            <button className="ghost-pill-button" onClick={() => void captainRecorder.stop()}>Stop</button>
-          )}
-          <button className="primary-pill-button" onClick={() => void handleCaptainTranscriptionTest()} disabled={captainTestState.status === 'loading'}>
-            {captainTestState.status === 'loading' ? 'Testing…' : 'Test Vietnamese STT'}
-          </button>
-        </div>
-        <p className="admin-message">{captainTestState.message}</p>
-        {captainTestState.transcript && <p className="admin-transcript-preview">{captainTestState.transcript}</p>}
-
-        <div className="admin-divider" />
-
-        <div className="admin-test-row">
-          <div>
-            <p className="soft-label">Crew English</p>
-            <p className="muted-copy">Record, stop, then test STT.</p>
-          </div>
-          <StatusBadge label={crewTestState.status === 'success' ? 'pass' : crewTestState.status === 'error' ? 'fail' : 'pending'} status={crewTestState.status === 'success' ? 'success' : crewTestState.status === 'error' ? 'error' : 'idle'} />
-        </div>
-        <div className="action-row">
-          {!crewRecorder.isRecording ? (
-            <button className="ghost-pill-button" onClick={() => void crewRecorder.start()}>Record English</button>
-          ) : (
-            <button className="ghost-pill-button" onClick={() => void crewRecorder.stop()}>Stop</button>
-          )}
-          <button className="primary-pill-button" onClick={() => void handleCrewTranscriptionTest()} disabled={crewTestState.status === 'loading'}>
-            {crewTestState.status === 'loading' ? 'Testing…' : 'Test English STT'}
-          </button>
-        </div>
-        <p className="admin-message">{crewTestState.message}</p>
-        {crewTestState.transcript && <p className="admin-transcript-preview">{crewTestState.transcript}</p>}
-
-        <div className="admin-divider" />
-
-        <div className="admin-test-row">
-          <div>
-            <p className="soft-label">Forced Google STT test</p>
-            <p className="muted-copy">Always calls Google provider, regardless of selected provider above.</p>
-          </div>
-          <StatusBadge
-            label={googleCaptainTestState.status === 'success' && googleCrewTestState.status === 'success' ? 'pass' : 'pending'}
-            status={googleCaptainTestState.status === 'success' && googleCrewTestState.status === 'success' ? 'success' : 'idle'}
-          />
-        </div>
-        <div className="action-row">
-          <button className="ghost-pill-button" onClick={() => void handleGoogleCaptainTranscriptionTest()} disabled={googleCaptainTestState.status === 'loading'}>
-            {googleCaptainTestState.status === 'loading' ? 'Testing…' : 'Test Google STT (VI)'}
-          </button>
-          <button className="ghost-pill-button" onClick={() => void handleGoogleCrewTranscriptionTest()} disabled={googleCrewTestState.status === 'loading'}>
-            {googleCrewTestState.status === 'loading' ? 'Testing…' : 'Test Google STT (EN)'}
-          </button>
-        </div>
-        <p className="admin-message">{googleCaptainTestState.message}</p>
-        {googleCaptainTestState.transcript && <p className="admin-transcript-preview">{googleCaptainTestState.transcript}</p>}
-        <p className="admin-message">{googleCrewTestState.message}</p>
-        {googleCrewTestState.transcript && <p className="admin-transcript-preview">{googleCrewTestState.transcript}</p>}
-      </section>
-
-      <section className="soft-card admin-section-minimal">
-        <div className="section-title-row">
-          <h2 className="section-title">Transcript → Ohm analysis preview</h2>
-        </div>
-        <p className="admin-message">Admin flow: transcribe → analyzeTranscript(AI JSON) → render full chunks/reason/confidence/formula/total.</p>
         <p className="admin-message">{analysisState.message}</p>
         {analysisTranscript ? (
           <>

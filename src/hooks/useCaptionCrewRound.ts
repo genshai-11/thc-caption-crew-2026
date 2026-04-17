@@ -4,6 +4,7 @@ import { uploadRoundAudio } from '@/services/roundAudioStorage';
 import { defaultGameSettings, loadSettings, saveRound } from '@/services/roundRepository';
 import { createDeepgramStreamingSession, DeepgramStreamingSession } from '@/services/deepgramStreamingService';
 import { transcribeRoundAudio } from '@/services/transcriptionService';
+import { analyzeTranscript } from '@/services/aiService';
 import { calculateSemanticOhm, detectSemanticChunksFromCaptain, getDifficultyLabel } from '@/lib/ohmCalculator';
 import { GameSettings, MeaningEvaluation, OhmResult, RoundRecord, RoundState, TranscriptResult } from '@/types';
 import { loadAdminRuntimeConfig } from '@/services/adminConfigRepository';
@@ -15,6 +16,11 @@ function createRoundId() {
 
 function isUsableTranscript(result: TranscriptResult | null | undefined) {
   return !!result?.transcript?.trim();
+}
+
+function toOhmScore(voltage: number) {
+  if (voltage <= 0) return 0;
+  return Math.max(0, Math.min(100, Math.round((voltage / 120) * 100)));
 }
 
 export function useCaptionCrewRound() {
@@ -314,22 +320,61 @@ export function useCaptionCrewRound() {
       setCrewTranscript(crewResult);
 
       const runtimeConfig = loadAdminRuntimeConfig();
-      const semanticChunks = detectSemanticChunksFromCaptain(
-        captainResult.transcript,
-        runtimeConfig.semanticRuleOverrides,
-      );
       const ohmCurrent = runtimeConfig.semanticOhmCurrent > 0 ? runtimeConfig.semanticOhmCurrent : 1.0;
-      const rawOhm = calculateSemanticOhm(semanticChunks, ohmCurrent);
-      const nextOhmResult: OhmResult = {
-        ...rawOhm,
-        difficulty: getDifficultyLabel(rawOhm.voltage),
-        chunkCount: semanticChunks.length,
-        chunks: semanticChunks.map((chunk) => ({
-          text: chunk.text,
-          label: chunk.label,
-          ohm: chunk.ohm || 0,
-        })),
-      };
+
+      let nextOhmResult: OhmResult;
+      try {
+        const aiAnalysis = await analyzeTranscript(captainResult.transcript, {
+          provider: runtimeConfig.ohmAnalysisProvider,
+          googleApiKey: runtimeConfig.googleApiKey,
+          googleModel: runtimeConfig.googleTranscriptModel,
+          thirdPartyOhmUrl: runtimeConfig.thirdPartyOhmUrl,
+          thirdPartyOhmApiKey: runtimeConfig.thirdPartyOhmApiKey,
+          thirdPartyOhmModel: runtimeConfig.thirdPartyOhmModel,
+          thirdPartyOhmAuthScheme: runtimeConfig.thirdPartyOhmAuthScheme,
+          thirdPartyOhmWebhookUrl: runtimeConfig.thirdPartyOhmWebhookUrl,
+        });
+
+        const voltage = aiAnalysis.totalOhm * ohmCurrent;
+        nextOhmResult = {
+          totalOhm: aiAnalysis.totalOhm,
+          formula: aiAnalysis.formula,
+          current: ohmCurrent,
+          voltage,
+          score: toOhmScore(voltage),
+          difficulty: getDifficultyLabel(voltage),
+          chunkCount: aiAnalysis.chunks.length,
+          chunks: aiAnalysis.chunks
+            .map((chunk) => ({
+              ...chunk,
+              label: String(chunk.label || '').toUpperCase(),
+            }))
+            .filter((chunk) => ['GREEN', 'BLUE', 'RED', 'PINK'].includes(chunk.label))
+            .map((chunk) => ({
+              text: chunk.text,
+              label: chunk.label as 'GREEN' | 'BLUE' | 'RED' | 'PINK',
+              ohm: Number(chunk.ohm || 0),
+            })),
+        };
+      } catch (aiError) {
+        console.warn('Ohm AI analysis failed, falling back to local rule-based calculation', aiError);
+        const semanticChunks = detectSemanticChunksFromCaptain(
+          captainResult.transcript,
+          runtimeConfig.semanticRuleOverrides,
+        );
+        const rawOhm = calculateSemanticOhm(semanticChunks, ohmCurrent);
+        nextOhmResult = {
+          ...rawOhm,
+          difficulty: getDifficultyLabel(rawOhm.voltage),
+          chunkCount: semanticChunks.length,
+          chunks: semanticChunks.map((chunk) => ({
+            text: chunk.text,
+            label: chunk.label,
+            ohm: chunk.ohm || 0,
+          })),
+        };
+      }
+
       setOhmResult(nextOhmResult);
 
       setState('evaluating');

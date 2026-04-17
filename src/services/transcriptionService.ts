@@ -9,11 +9,15 @@ export async function transcribeRoundAudio(
   options: {
     role: 'captain' | 'crew';
     language: 'vi' | 'en';
-    providerOverride?: 'deepgram' | 'google';
+    providerOverride?: 'deepgram' | 'google' | 'thirdparty';
     deepgramModelOverride?: string;
     googleModelOverride?: string;
+    thirdPartyTranscriptModelOverride?: string;
     deepgramApiKeyOverride?: string;
     googleApiKeyOverride?: string;
+    thirdPartyTranscriptApiKeyOverride?: string;
+    thirdPartyTranscriptUrlOverride?: string;
+    thirdPartyTranscriptAuthSchemeOverride?: 'none' | 'bearer' | 'x-api-key';
     preferServerConfig?: boolean;
   },
 ) {
@@ -25,7 +29,13 @@ export async function transcribeRoundAudio(
   const transcriptProvider = options.providerOverride || config.transcriptProvider || 'deepgram';
   const selectedDeepgramModel = options.deepgramModelOverride || (options.role === 'captain' ? config.captainDeepgramModel : config.crewDeepgramModel);
   const selectedGoogleModel = options.googleModelOverride || config.googleTranscriptModel || 'gemini-1.5-flash';
-  const selectedModel = transcriptProvider === 'google' ? selectedGoogleModel : selectedDeepgramModel;
+  const selectedThirdPartyModel = options.thirdPartyTranscriptModelOverride || config.thirdPartyTranscriptModel || '';
+  const selectedModel = transcriptProvider === 'google'
+    ? selectedGoogleModel
+    : transcriptProvider === 'thirdparty'
+      ? selectedThirdPartyModel
+      : selectedDeepgramModel;
+
   const mimeType = audioBlob.type || 'audio/webm;codecs=opus';
   const preferServerConfig = options.preferServerConfig === true;
   const headers: Record<string, string> = {
@@ -36,12 +46,17 @@ export async function transcribeRoundAudio(
     options.providerOverride ||
     options.deepgramModelOverride ||
     options.googleModelOverride ||
+    options.thirdPartyTranscriptModelOverride ||
     options.deepgramApiKeyOverride ||
-    options.googleApiKeyOverride
+    options.googleApiKeyOverride ||
+    options.thirdPartyTranscriptApiKeyOverride ||
+    options.thirdPartyTranscriptUrlOverride ||
+    options.thirdPartyTranscriptAuthSchemeOverride
   );
 
   if (!preferServerConfig || hasAnyOverride) {
     headers['x-transcript-provider'] = transcriptProvider;
+
     if (selectedDeepgramModel) {
       headers['x-deepgram-model'] = selectedDeepgramModel;
     }
@@ -49,12 +64,29 @@ export async function transcribeRoundAudio(
     if (deepgramApiKey) {
       headers['x-deepgram-api-key'] = deepgramApiKey;
     }
+
     if (selectedGoogleModel) {
       headers['x-google-model'] = selectedGoogleModel;
     }
     const googleApiKey = options.googleApiKeyOverride || config.googleApiKey;
     if (googleApiKey) {
       headers['x-google-api-key'] = googleApiKey;
+    }
+
+    if (selectedThirdPartyModel) {
+      headers['x-thirdparty-transcript-model'] = selectedThirdPartyModel;
+    }
+    const thirdPartyApiKey = options.thirdPartyTranscriptApiKeyOverride || config.thirdPartyTranscriptApiKey;
+    if (thirdPartyApiKey) {
+      headers['x-thirdparty-transcript-api-key'] = thirdPartyApiKey;
+    }
+    const thirdPartyUrl = options.thirdPartyTranscriptUrlOverride || config.thirdPartyTranscriptUrl;
+    if (thirdPartyUrl) {
+      headers['x-thirdparty-transcript-url'] = thirdPartyUrl;
+    }
+    const thirdPartyAuthScheme = options.thirdPartyTranscriptAuthSchemeOverride || config.thirdPartyTranscriptAuthScheme;
+    if (thirdPartyAuthScheme) {
+      headers['x-thirdparty-transcript-auth-scheme'] = thirdPartyAuthScheme;
     }
   }
 

@@ -101,7 +101,7 @@ export class DeepgramStreamingSession {
   private async connect() {
     try {
       const config = loadAdminRuntimeConfig();
-      if (config.transcriptProvider === 'google') {
+      if (config.transcriptProvider !== 'deepgram') {
         throw new Error('Live streaming is currently available only with Deepgram provider. Falling back to batch transcript.');
       }
       const token = await getDeepgramAccessToken();

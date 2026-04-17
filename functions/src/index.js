@@ -9,7 +9,7 @@ if (!admin.apps.length) {
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Deepgram-Api-Key, X-Deepgram-Model, x-deepgram-api-key, x-deepgram-model, x-transcript-provider, x-google-api-key, x-google-model',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Deepgram-Api-Key, X-Deepgram-Model, x-deepgram-api-key, x-deepgram-model, x-transcript-provider, x-google-api-key, x-google-model, x-thirdparty-transcript-url, x-thirdparty-transcript-api-key, x-thirdparty-transcript-model, x-thirdparty-transcript-auth-scheme, x-ohm-analysis-provider, x-thirdparty-ohm-url, x-thirdparty-ohm-api-key, x-thirdparty-ohm-model, x-thirdparty-ohm-auth-scheme, x-thirdparty-ohm-webhook-url',
   'Access-Control-Max-Age': '3600',
 };
 
@@ -28,10 +28,22 @@ function handleOptions(req, res) {
 
 const defaultSharedConfig = {
   transcriptProvider: 'deepgram',
+  deepgramApiKey: '',
   captainDeepgramModel: 'nova-3',
   crewDeepgramModel: 'nova-3',
   googleApiKey: '',
   googleTranscriptModel: 'gemini-1.5-flash',
+  thirdPartyTranscriptUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/transcribe',
+  thirdPartyTranscriptApiKey: '',
+  thirdPartyTranscriptModel: '',
+  thirdPartyTranscriptAuthScheme: 'bearer',
+  ohmAnalysisProvider: 'google',
+  thirdPartyOhmUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/analyze-ohm',
+  thirdPartyOhmApiKey: '',
+  thirdPartyOhmModel: '',
+  thirdPartyOhmAuthScheme: 'bearer',
+  thirdPartyOhmWebhookUrl: '',
+  router9ApiKey: '',
   router9BaseUrl: 'https://rqlaeq5.9router.com/v1',
   router9Model: '',
   router9FallbackModel: '',
@@ -133,6 +145,80 @@ async function callGeminiTranscribe({ apiKey, model, language, contentType, audi
   };
 }
 
+function createThirdPartyAuthHeaders(authScheme, apiKey) {
+  if (!apiKey || authScheme === 'none') return {};
+  if (String(authScheme || '').toLowerCase() === 'x-api-key') {
+    return { 'x-api-key': String(apiKey) };
+  }
+  return { Authorization: 'Bearer ' + String(apiKey) };
+}
+
+async function callThirdPartyTranscript({ url, apiKey, authScheme, contentType, audioBuffer }) {
+  if (!url) throw new Error('THIRD_PARTY_TRANSCRIPT_URL not configured');
+  const payload = {
+    audioData: Buffer.from(audioBuffer).toString('base64'),
+    mimeType: contentType,
+  };
+
+  const response = await fetch(String(url), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...createThirdPartyAuthHeaders(authScheme, apiKey),
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error('Third-party transcript error (' + response.status + '): ' + body);
+  }
+
+  const result = await response.json();
+  return {
+    transcript: String(result?.transcript || result?.text || '').trim(),
+    confidence: Number(result?.confidence || 0),
+    duration: Number(result?.duration || 0),
+    modelUsed: String(result?.modelUsed || result?.model || ''),
+    requestId: String(result?.requestId || result?.id || ''),
+  };
+}
+
+async function callThirdPartyOhm({ url, apiKey, authScheme, model, transcript, webhookUrl }) {
+  if (!url) throw new Error('THIRD_PARTY_OHM_URL not configured');
+
+  const response = await fetch(String(url), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...createThirdPartyAuthHeaders(authScheme, apiKey),
+    },
+    body: JSON.stringify({
+      transcript,
+      settings: {
+        ohmBaseValues: { Green: 5, Blue: 7, Red: 9, Pink: 3 },
+      },
+      webhookUrl: webhookUrl || undefined,
+      model: model || undefined,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error('Third-party Ohm error (' + response.status + '): ' + body);
+  }
+
+  const result = await response.json();
+  return {
+    transcriptRaw: String(result?.transcriptRaw || transcript),
+    transcriptNormalized: String(result?.transcriptNormalized || ''),
+    chunks: Array.isArray(result?.chunks) ? result.chunks : [],
+    formula: String(result?.formula || '0'),
+    totalOhm: Number(result?.totalOhm || 0),
+    modelUsed: String(result?.modelUsed || result?.model || model || ''),
+  };
+}
+
 function normalizeDeepgramResult(result, meta = {}) {
   const alternative = result?.results?.channels?.[0]?.alternatives?.[0] || {};
   return {
@@ -152,8 +238,8 @@ exports.getDeepgramAccessToken = onRequest({ cors: false, invoker: 'public' }, a
 
     const sharedConfig = await getSharedAdminConfig();
     const transcriptProvider = String(sharedConfig.transcriptProvider || 'deepgram').toLowerCase();
-    if (transcriptProvider === 'google') {
-      throw new Error('Transcript provider is set to Google. Deepgram live token is not available.');
+    if (transcriptProvider !== 'deepgram') {
+      throw new Error('Transcript provider is not Deepgram. Deepgram live token is not available.');
     }
     const apiKey = req.headers['x-deepgram-api-key'] || process.env.DEEPGRAM_API_KEY || sharedConfig.deepgramApiKey;
     if (!apiKey) throw new Error('DEEPGRAM_API_KEY not configured');
@@ -201,6 +287,40 @@ exports.transcribeRoundAudio = onRequest({ cors: false, invoker: 'public' }, asy
 
     if (!audioBuffer || !audioBytes) {
       throw new Error('No audio payload received');
+    }
+
+    if (transcriptProvider === 'thirdparty') {
+      const thirdPartyUrl = String(req.headers['x-thirdparty-transcript-url'] || process.env.THIRD_PARTY_TRANSCRIPT_URL || sharedConfig.thirdPartyTranscriptUrl || '');
+      const thirdPartyApiKey = req.headers['x-thirdparty-transcript-api-key'] || process.env.THIRD_PARTY_TRANSCRIPT_API_KEY || sharedConfig.thirdPartyTranscriptApiKey;
+      const thirdPartyModel = String(req.headers['x-thirdparty-transcript-model'] || process.env.THIRD_PARTY_TRANSCRIPT_MODEL || sharedConfig.thirdPartyTranscriptModel || '');
+      const thirdPartyAuthScheme = String(req.headers['x-thirdparty-transcript-auth-scheme'] || process.env.THIRD_PARTY_TRANSCRIPT_AUTH_SCHEME || sharedConfig.thirdPartyTranscriptAuthScheme || 'bearer').toLowerCase();
+
+      logger.info('STT request received (thirdparty)', { role, language, thirdPartyUrl, thirdPartyModel, contentType, audioBytes });
+
+      const thirdPartyResult = await callThirdPartyTranscript({
+        url: thirdPartyUrl,
+        apiKey: thirdPartyApiKey,
+        authScheme: thirdPartyAuthScheme,
+        contentType,
+        audioBuffer,
+      });
+
+      const transcript = String(thirdPartyResult?.transcript || '').trim();
+      res.json({
+        transcript,
+        words: [],
+        confidence: Number(thirdPartyResult?.confidence || (transcript ? 1 : 0)),
+        duration: Number(thirdPartyResult?.duration || 0),
+        modelRequested: thirdPartyModel,
+        modelUsed: String(thirdPartyResult?.modelUsed || thirdPartyModel || ''),
+        fallbackUsed: false,
+        roleReceived: role,
+        languageReceived: language,
+        contentTypeReceived: contentType,
+        requestId: String(thirdPartyResult?.requestId || ''),
+        transcriptProviderUsed: 'thirdparty',
+      });
+      return;
     }
 
     if (transcriptProvider === 'google') {
@@ -315,8 +435,6 @@ exports.transcribeRoundAudio = onRequest({ cors: false, invoker: 'public' }, asy
   }
 });
 
-
-
 function extractFirstJsonObject(text) {
   const source = String(text || '').trim();
   if (!source) throw new Error('Empty AI response');
@@ -339,6 +457,35 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     if (!transcript) throw new Error('Transcript is required');
 
     const sharedConfig = await getSharedAdminConfig();
+    const provider = String(req.headers['x-ohm-analysis-provider'] || sharedConfig.ohmAnalysisProvider || 'google').toLowerCase();
+
+    if (provider === 'thirdparty') {
+      const thirdPartyOhmUrl = String(req.headers['x-thirdparty-ohm-url'] || process.env.THIRD_PARTY_OHM_URL || sharedConfig.thirdPartyOhmUrl || '');
+      const thirdPartyOhmApiKey = req.headers['x-thirdparty-ohm-api-key'] || process.env.THIRD_PARTY_OHM_API_KEY || sharedConfig.thirdPartyOhmApiKey;
+      const thirdPartyOhmModel = String(req.headers['x-thirdparty-ohm-model'] || process.env.THIRD_PARTY_OHM_MODEL || sharedConfig.thirdPartyOhmModel || '');
+      const thirdPartyOhmAuthScheme = String(req.headers['x-thirdparty-ohm-auth-scheme'] || process.env.THIRD_PARTY_OHM_AUTH_SCHEME || sharedConfig.thirdPartyOhmAuthScheme || 'bearer').toLowerCase();
+      const thirdPartyOhmWebhookUrl = String(req.headers['x-thirdparty-ohm-webhook-url'] || process.env.THIRD_PARTY_OHM_WEBHOOK_URL || sharedConfig.thirdPartyOhmWebhookUrl || '');
+
+      const thirdPartyResult = await callThirdPartyOhm({
+        url: thirdPartyOhmUrl,
+        apiKey: thirdPartyOhmApiKey,
+        authScheme: thirdPartyOhmAuthScheme,
+        model: thirdPartyOhmModel,
+        transcript,
+        webhookUrl: thirdPartyOhmWebhookUrl,
+      });
+
+      res.json({
+        transcriptRaw: thirdPartyResult.transcriptRaw,
+        transcriptNormalized: thirdPartyResult.transcriptNormalized,
+        chunks: thirdPartyResult.chunks,
+        formula: thirdPartyResult.formula,
+        totalOhm: thirdPartyResult.totalOhm,
+        modelUsed: thirdPartyResult.modelUsed,
+      });
+      return;
+    }
+
     const model = String(req.headers['x-google-model'] || sharedConfig.googleTranscriptModel || 'gemini-1.5-flash');
     const googleApiKey = req.headers['x-google-api-key'] || process.env.GOOGLE_API_KEY || sharedConfig.googleApiKey;
     if (!googleApiKey) throw new Error('GOOGLE_API_KEY not configured');
@@ -362,7 +509,7 @@ Ohm rules:
 - Different labels: multiply group sums
 
 Transcript:
-"${transcript.replace(/\"/g, '\\"')}"
+"${transcript.replace(/\"/g, '\\\"')}"
 
 Return STRICT JSON object:
 {
@@ -571,7 +718,7 @@ exports.evaluateCaptionCrewMeaning = onRequest({ cors: false, invoker: 'public' 
       grammarNote: typeof parsed?.grammarNote === 'string' ? parsed.grammarNote : '',
       improvedTranscript: typeof parsed?.improvedTranscript === 'string' ? parsed.improvedTranscript : '',
       grammarSeverity: ['none', 'minor', 'medium', 'major'].includes(parsed?.grammarSeverity) ? parsed.grammarSeverity : 'none',
-      feedbackType: ['off', 'gentle', 'balanced', 'detailed'].includes(parsed?.feedbackType) ? parsed.feedbackType : (feedbackEnabled ? feedbackMode : 'off'),
+      feedbackType: ['off', 'gentle', 'balanced', 'detailed'].includes(parsed?.feedbackType) ? parsed?.feedbackType : (feedbackEnabled ? feedbackMode : 'off'),
     });
   } catch (error) {
     logger.error(error);

@@ -4,12 +4,22 @@ import type { VisualTheme } from '@/types';
 import type { SemanticRuleOverrides } from '@/lib/ohmCalculator';
 
 export interface AdminRuntimeConfig {
-  transcriptProvider: 'deepgram' | 'google';
+  transcriptProvider: 'deepgram' | 'google' | 'thirdparty';
   deepgramApiKey: string;
   captainDeepgramModel: string;
   crewDeepgramModel: string;
   googleApiKey: string;
   googleTranscriptModel: string;
+  thirdPartyTranscriptUrl: string;
+  thirdPartyTranscriptApiKey: string;
+  thirdPartyTranscriptModel: string;
+  thirdPartyTranscriptAuthScheme: 'none' | 'bearer' | 'x-api-key';
+  ohmAnalysisProvider: 'google' | 'thirdparty';
+  thirdPartyOhmUrl: string;
+  thirdPartyOhmApiKey: string;
+  thirdPartyOhmModel: string;
+  thirdPartyOhmAuthScheme: 'none' | 'bearer' | 'x-api-key';
+  thirdPartyOhmWebhookUrl: string;
   router9ApiKey: string;
   router9BaseUrl: string;
   router9Model: string;
@@ -40,6 +50,16 @@ export const defaultAdminRuntimeConfig: AdminRuntimeConfig = {
   crewDeepgramModel: 'nova-3',
   googleApiKey: '',
   googleTranscriptModel: 'gemini-1.5-flash',
+  thirdPartyTranscriptUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/transcribe',
+  thirdPartyTranscriptApiKey: '',
+  thirdPartyTranscriptModel: '',
+  thirdPartyTranscriptAuthScheme: 'bearer',
+  ohmAnalysisProvider: 'google',
+  thirdPartyOhmUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/analyze-ohm',
+  thirdPartyOhmApiKey: '',
+  thirdPartyOhmModel: '',
+  thirdPartyOhmAuthScheme: 'bearer',
+  thirdPartyOhmWebhookUrl: '',
   router9ApiKey: '',
   router9BaseUrl: 'https://rqlaeq5.9router.com/v1',
   router9Model: '',
@@ -77,7 +97,22 @@ function normalizeAdminConfig(raw?: Partial<AdminRuntimeConfig> | null): AdminRu
   return {
     ...defaultAdminRuntimeConfig,
     ...(raw || {}),
-    transcriptProvider: raw?.transcriptProvider === 'google' ? 'google' : 'deepgram',
+    transcriptProvider: raw?.transcriptProvider === 'google'
+      ? 'google'
+      : raw?.transcriptProvider === 'thirdparty'
+        ? 'thirdparty'
+        : 'deepgram',
+    ohmAnalysisProvider: raw?.ohmAnalysisProvider === 'thirdparty' ? 'thirdparty' : 'google',
+    thirdPartyTranscriptAuthScheme: raw?.thirdPartyTranscriptAuthScheme === 'none'
+      ? 'none'
+      : raw?.thirdPartyTranscriptAuthScheme === 'x-api-key'
+        ? 'x-api-key'
+        : 'bearer',
+    thirdPartyOhmAuthScheme: raw?.thirdPartyOhmAuthScheme === 'none'
+      ? 'none'
+      : raw?.thirdPartyOhmAuthScheme === 'x-api-key'
+        ? 'x-api-key'
+        : 'bearer',
     visualTheme: normalizeVisualTheme(raw?.visualTheme || defaultAdminRuntimeConfig.visualTheme),
     semanticOhmCurrent: Number(raw?.semanticOhmCurrent || defaultAdminRuntimeConfig.semanticOhmCurrent),
     semanticRuleOverrides: {

@@ -1,3 +1,5 @@
+import { loadAdminRuntimeConfig } from '@/services/adminConfigRepository';
+
 export interface SemanticChunk {
   text: string;
   label: 'GREEN' | 'BLUE' | 'RED' | 'PINK' | 'NONE';
@@ -21,18 +23,36 @@ const ANALYZE_OHM_URL = import.meta.env.DEV
 
 export async function analyzeTranscript(
   transcript: string,
-  options?: { googleApiKey?: string; googleModel?: string },
+  options?: {
+    provider?: 'google' | 'thirdparty';
+    googleApiKey?: string;
+    googleModel?: string;
+    thirdPartyOhmUrl?: string;
+    thirdPartyOhmApiKey?: string;
+    thirdPartyOhmModel?: string;
+    thirdPartyOhmAuthScheme?: 'none' | 'bearer' | 'x-api-key';
+    thirdPartyOhmWebhookUrl?: string;
+  },
 ): Promise<OhmAnalysisResult> {
   if (!ANALYZE_OHM_URL) {
     throw new Error('VITE_ANALYZE_OHM_URL is not configured.');
   }
 
+  const config = loadAdminRuntimeConfig();
+  const provider = options?.provider || config.ohmAnalysisProvider || 'google';
+
   const response = await fetch(ANALYZE_OHM_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-ohm-analysis-provider': provider,
       ...(options?.googleApiKey ? { 'x-google-api-key': options.googleApiKey } : {}),
       ...(options?.googleModel ? { 'x-google-model': options.googleModel } : {}),
+      ...(options?.thirdPartyOhmUrl ? { 'x-thirdparty-ohm-url': options.thirdPartyOhmUrl } : {}),
+      ...(options?.thirdPartyOhmApiKey ? { 'x-thirdparty-ohm-api-key': options.thirdPartyOhmApiKey } : {}),
+      ...(options?.thirdPartyOhmModel ? { 'x-thirdparty-ohm-model': options.thirdPartyOhmModel } : {}),
+      ...(options?.thirdPartyOhmAuthScheme ? { 'x-thirdparty-ohm-auth-scheme': options.thirdPartyOhmAuthScheme } : {}),
+      ...(options?.thirdPartyOhmWebhookUrl ? { 'x-thirdparty-ohm-webhook-url': options.thirdPartyOhmWebhookUrl } : {}),
     },
     body: JSON.stringify({ transcript }),
   });

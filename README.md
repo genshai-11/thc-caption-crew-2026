@@ -41,3 +41,14 @@ This is a **new project**. It reuses ideas and selected code patterns from Voice
 ## Product Docs
 - [PRD.md](./PRD.md)
 - [PURPOSE.md](./PURPOSE.md)
+
+## Dynamic provider routing (new)
+- Transcript provider can now switch at runtime between:
+  - Deepgram
+  - Google Gemini
+  - Third-party transcript API
+- Ohm analysis can now switch at runtime between:
+  - Google Gemini analyzer
+  - Third-party Ohm API
+- Both switches are controlled from **Admin runtime config** and persisted to `admin-runtime/shared.json`.
+- If external Ohm API fails, gameplay falls back to local rule-based Ohm calculation automatically.
