@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { evaluateCaptionCrewMeaning } from '@/services/meaningService';
+import { uploadRoundAudio } from '@/services/roundAudioStorage';
 import { defaultGameSettings, loadSettings, saveRound } from '@/services/roundRepository';
+import { createDeepgramStreamingSession, DeepgramStreamingSession } from '@/services/deepgramStreamingService';
 import { transcribeRoundAudio } from '@/services/transcriptionService';
-import { GameSettings, MeaningEvaluation, RoundRecord, RoundState, TranscriptResult } from '@/types';
+import { calculateSemanticOhm, detectSemanticChunksFromCaptain, getDifficultyLabel } from '@/lib/ohmCalculator';
+import { GameSettings, MeaningEvaluation, OhmResult, RoundRecord, RoundState, TranscriptResult } from '@/types';
+import { loadAdminRuntimeConfig } from '@/services/adminConfigRepository';
 import { useRoundRecorder } from './useRoundRecorder';
 
 function createRoundId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function isUsableTranscript(result: TranscriptResult | null | undefined) {
+  return !!result?.transcript?.trim();
 }
 
 export function useCaptionCrewRound() {
@@ -17,14 +25,30 @@ export function useCaptionCrewRound() {
   const [settings, setSettings] = useState<GameSettings>(defaultGameSettings);
   const [captainTranscript, setCaptainTranscript] = useState<TranscriptResult | null>(null);
   const [crewTranscript, setCrewTranscript] = useState<TranscriptResult | null>(null);
+  const [captainVerifiedTranscript, setCaptainVerifiedTranscript] = useState<TranscriptResult | null>(null);
+  const [crewVerifiedTranscript, setCrewVerifiedTranscript] = useState<TranscriptResult | null>(null);
+  const [captainAudioBlob, setCaptainAudioBlob] = useState<Blob | null>(null);
+  const [captainAudioUrl, setCaptainAudioUrl] = useState<string | null>(null);
+  const [crewAudioUrl, setCrewAudioUrl] = useState<string | null>(null);
   const [evaluation, setEvaluation] = useState<MeaningEvaluation | null>(null);
+  const [ohmResult, setOhmResult] = useState<OhmResult | null>(null);
   const [reactionDelayMs, setReactionDelayMs] = useState<number | null>(null);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
   const [countdownMs, setCountdownMs] = useState<number | null>(null);
+  const [captainLiveTranscript, setCaptainLiveTranscript] = useState('');
+  const [crewLiveTranscript, setCrewLiveTranscript] = useState('');
+  const [captainStreamingStatus, setCaptainStreamingStatus] = useState('Ready for live Vietnamese transcript');
+  const [crewStreamingStatus, setCrewStreamingStatus] = useState('Ready for live English transcript');
 
+  const captainAudioBlobRef = useRef<Blob | null>(null);
   const captainStoppedAtRef = useRef<number | null>(null);
   const timeoutRef = useRef<number | null>(null);
   const countdownIntervalRef = useRef<number | null>(null);
+  const captainBatchTranscriptPromiseRef = useRef<Promise<TranscriptResult> | null>(null);
+  const captainPrimaryTranscriptPromiseRef = useRef<Promise<TranscriptResult> | null>(null);
+  const captainStreamingSessionRef = useRef<DeepgramStreamingSession | null>(null);
+  const crewStreamingSessionRef = useRef<DeepgramStreamingSession | null>(null);
+  const activeRoundTokenRef = useRef(0);
 
   useEffect(() => {
     loadSettings().then(setSettings).catch(() => undefined);
@@ -38,54 +62,181 @@ export function useCaptionCrewRound() {
     setCountdownMs(null);
   }, []);
 
+  const startCaptainTranscriptionPrefetch = useCallback((blob: Blob) => {
+    const roundToken = activeRoundTokenRef.current;
+    const promise = transcribeRoundAudio(blob, { role: 'captain', language: 'vi', preferServerConfig: true })
+      .then((result) => {
+        if (activeRoundTokenRef.current === roundToken) {
+          setCaptainVerifiedTranscript(result);
+        }
+        return result;
+      });
+
+    captainBatchTranscriptPromiseRef.current = promise;
+    return promise;
+  }, []);
+
+  const beginStreamingSession = useCallback((
+    role: 'captain' | 'crew',
+    language: 'vi' | 'en',
+    setLiveTranscript: (value: string) => void,
+    setStatus: (value: string) => void,
+  ) => {
+    const roundToken = activeRoundTokenRef.current;
+    const session = createDeepgramStreamingSession({
+      role,
+      language,
+      onPartialTranscript: (transcript) => {
+        if (activeRoundTokenRef.current !== roundToken) return;
+        setLiveTranscript(transcript);
+      },
+      onStatusChange: (status) => {
+        if (activeRoundTokenRef.current !== roundToken) return;
+        setStatus(status);
+      },
+      onError: (error) => {
+        console.warn(`${role} streaming error`, error);
+      },
+    });
+
+    return session;
+  }, []);
+
+  const resolvePrimaryTranscript = useCallback(async ({
+    session,
+    fallbackPromise,
+    role,
+    language,
+    setPrimaryTranscript,
+    setVerifiedTranscript,
+    setLiveTranscript,
+    setStatus,
+  }: {
+    session: DeepgramStreamingSession | null;
+    fallbackPromise: Promise<TranscriptResult>;
+    role: 'captain' | 'crew';
+    language: 'vi' | 'en';
+    setPrimaryTranscript: (value: TranscriptResult) => void;
+    setVerifiedTranscript: (value: TranscriptResult) => void;
+    setLiveTranscript: (value: string) => void;
+    setStatus: (value: string) => void;
+  }) => {
+    try {
+      if (!session) throw new Error(`No live ${role} streaming session`);
+      const streamingResult = await session.finalize();
+      if (isUsableTranscript(streamingResult)) {
+        setPrimaryTranscript(streamingResult);
+        setLiveTranscript(streamingResult.transcript);
+        setStatus('Live transcript ready — batch verification continuing in background');
+        void fallbackPromise
+          .then((verified) => {
+            setVerifiedTranscript(verified);
+            if (!isUsableTranscript(verified)) return;
+            if (verified.transcript.trim() !== streamingResult.transcript.trim()) {
+              setStatus('Live transcript ready — verified transcript saved in background');
+            }
+          })
+          .catch(() => undefined);
+        return streamingResult;
+      }
+      throw new Error(`Empty live ${role} transcript`);
+    } catch (streamingError) {
+      console.warn(`${role} streaming finalize failed, falling back to batch`, streamingError);
+      const fallbackResult = await fallbackPromise;
+      const merged: TranscriptResult = {
+        ...fallbackResult,
+        source: 'streaming-fallback-batch',
+      };
+      setPrimaryTranscript(merged);
+      setVerifiedTranscript(fallbackResult);
+      setLiveTranscript(merged.transcript);
+      setStatus(`Live transcript unavailable — using verified ${language === 'vi' ? 'Vietnamese' : 'English'} batch transcript`);
+      return merged;
+    }
+  }, []);
+
   const resetRound = useCallback(() => {
+    activeRoundTokenRef.current += 1;
+    captainStreamingSessionRef.current?.close();
+    crewStreamingSessionRef.current?.close();
+    captainStreamingSessionRef.current = null;
+    crewStreamingSessionRef.current = null;
     captainRecorder.reset();
     crewRecorder.reset();
     setState('captain-ready');
     setCaptainTranscript(null);
     setCrewTranscript(null);
+    setCaptainVerifiedTranscript(null);
+    setCrewVerifiedTranscript(null);
+    setCaptainAudioBlob(null);
+    setCaptainAudioUrl(null);
+    setCrewAudioUrl(null);
     setEvaluation(null);
+    setOhmResult(null);
     setReactionDelayMs(null);
     setFeedbackError(null);
+    setCaptainLiveTranscript('');
+    setCrewLiveTranscript('');
+    setCaptainStreamingStatus('Ready for live Vietnamese transcript');
+    setCrewStreamingStatus('Ready for live English transcript');
+    captainAudioBlobRef.current = null;
     captainStoppedAtRef.current = null;
+    captainBatchTranscriptPromiseRef.current = null;
+    captainPrimaryTranscriptPromiseRef.current = null;
     clearCrewTimers();
   }, [captainRecorder, clearCrewTimers, crewRecorder]);
 
   const startCaptain = useCallback(async () => {
     resetRound();
     setState('captain-recording');
-    await captainRecorder.start();
-  }, [captainRecorder, resetRound]);
+    setCaptainStreamingStatus('Connecting live Vietnamese transcript…');
+    const session = beginStreamingSession('captain', 'vi', setCaptainLiveTranscript, setCaptainStreamingStatus);
+    captainStreamingSessionRef.current = session;
+    await captainRecorder.start({
+      timesliceMs: 250,
+      onChunk: (chunk) => session.sendAudioChunk(chunk),
+    });
+  }, [beginStreamingSession, captainRecorder, resetRound]);
 
   const stopCaptain = useCallback(async () => {
-    setState('captain-processing');
     const blob = await captainRecorder.stop();
     if (!blob) {
       setFeedbackError('No Captain audio captured.');
       setState('captain-ready');
       return;
     }
-    try {
-      const result = await transcribeRoundAudio(blob, { role: 'captain', language: 'vi' });
-      setCaptainTranscript(result);
-      captainStoppedAtRef.current = Date.now();
-      setState('crew-waiting');
-      setCountdownMs(settings.maxCrewStartDelayMs);
-      const waitingStartedAt = Date.now();
-      timeoutRef.current = window.setTimeout(() => {
-        setReactionDelayMs(Date.now() - (captainStoppedAtRef.current || Date.now()));
-        setEvaluation({ matchScore: 0, decision: 'timeout', reason: 'Crew started too late.' });
-        setState('crew-timeout');
-      }, settings.maxCrewStartDelayMs);
-      countdownIntervalRef.current = window.setInterval(() => {
-        const elapsed = Date.now() - waitingStartedAt;
-        setCountdownMs(Math.max(settings.maxCrewStartDelayMs - elapsed, 0));
-      }, 100);
-    } catch (error: any) {
-      setFeedbackError(error.message || 'Captain transcription failed.');
-      setState('captain-ready');
-    }
-  }, [captainRecorder, settings.maxCrewStartDelayMs]);
+
+    captainAudioBlobRef.current = blob;
+    setCaptainAudioBlob(blob);
+    captainStoppedAtRef.current = Date.now();
+    setState('crew-waiting');
+    setCountdownMs(settings.maxCrewStartDelayMs);
+
+    const batchPromise = startCaptainTranscriptionPrefetch(blob);
+    captainPrimaryTranscriptPromiseRef.current = resolvePrimaryTranscript({
+      session: captainStreamingSessionRef.current,
+      fallbackPromise: batchPromise,
+      role: 'captain',
+      language: 'vi',
+      setPrimaryTranscript: setCaptainTranscript,
+      setVerifiedTranscript: setCaptainVerifiedTranscript,
+      setLiveTranscript: setCaptainLiveTranscript,
+      setStatus: setCaptainStreamingStatus,
+    });
+    void captainPrimaryTranscriptPromiseRef.current.catch(() => undefined);
+
+    const waitingStartedAt = Date.now();
+    timeoutRef.current = window.setTimeout(() => {
+      setReactionDelayMs(Date.now() - (captainStoppedAtRef.current || Date.now()));
+      setEvaluation({ matchScore: 0, decision: 'timeout', reason: 'Crew started too late.', feedbackType: 'off' });
+      setState('crew-timeout');
+    }, settings.maxCrewStartDelayMs);
+
+    countdownIntervalRef.current = window.setInterval(() => {
+      const elapsed = Date.now() - waitingStartedAt;
+      setCountdownMs(Math.max(settings.maxCrewStartDelayMs - elapsed, 0));
+    }, 100);
+  }, [captainRecorder, resolvePrimaryTranscript, settings.maxCrewStartDelayMs, startCaptainTranscriptionPrefetch]);
 
   const startCrew = useCallback(async () => {
     if (state !== 'crew-waiting') return;
@@ -93,54 +244,158 @@ export function useCaptionCrewRound() {
     setReactionDelayMs(delay);
     if (delay > settings.maxCrewStartDelayMs) {
       clearCrewTimers();
-      setEvaluation({ matchScore: 0, decision: 'timeout', reason: 'Crew started too late.' });
+      setEvaluation({ matchScore: 0, decision: 'timeout', reason: 'Crew started too late.', feedbackType: 'off' });
       setState('crew-timeout');
       return;
     }
+
     clearCrewTimers();
     setState('crew-recording');
-    await crewRecorder.start();
-  }, [clearCrewTimers, crewRecorder, settings.maxCrewStartDelayMs, state]);
+    setCrewStreamingStatus('Connecting live English transcript…');
+    const session = beginStreamingSession('crew', 'en', setCrewLiveTranscript, setCrewStreamingStatus);
+    crewStreamingSessionRef.current = session;
+    await crewRecorder.start({
+      timesliceMs: 250,
+      onChunk: (chunk) => session.sendAudioChunk(chunk),
+    });
+  }, [beginStreamingSession, clearCrewTimers, crewRecorder, settings.maxCrewStartDelayMs, state]);
 
   const stopCrew = useCallback(async () => {
     setState('crew-processing');
-    const blob = await crewRecorder.stop();
-    if (!blob) {
+    const crewBlob = await crewRecorder.stop();
+    if (!crewBlob) {
       setFeedbackError('No Crew audio captured.');
       setState('crew-waiting');
       return;
     }
+
+    if (!captainAudioBlobRef.current) {
+      setFeedbackError('Captain audio is missing. Please try again.');
+      setState('captain-ready');
+      return;
+    }
+
     try {
-      const transcript = await transcribeRoundAudio(blob, { role: 'crew', language: 'en' });
-      setCrewTranscript(transcript);
+      const roundToken = activeRoundTokenRef.current;
+      const captainBatchPromise = captainBatchTranscriptPromiseRef.current || startCaptainTranscriptionPrefetch(captainAudioBlobRef.current);
+      const crewBatchPromise = transcribeRoundAudio(crewBlob, { role: 'crew', language: 'en' })
+        .then((result) => {
+          if (activeRoundTokenRef.current === roundToken) {
+            setCrewVerifiedTranscript(result);
+          }
+          return result;
+        });
+
+      const captainPromise = captainPrimaryTranscriptPromiseRef.current || resolvePrimaryTranscript({
+        session: captainStreamingSessionRef.current,
+        fallbackPromise: captainBatchPromise,
+        role: 'captain',
+        language: 'vi',
+        setPrimaryTranscript: setCaptainTranscript,
+        setVerifiedTranscript: setCaptainVerifiedTranscript,
+        setLiveTranscript: setCaptainLiveTranscript,
+        setStatus: setCaptainStreamingStatus,
+      });
+
+      const crewPromise = resolvePrimaryTranscript({
+        session: crewStreamingSessionRef.current,
+        fallbackPromise: crewBatchPromise,
+        role: 'crew',
+        language: 'en',
+        setPrimaryTranscript: setCrewTranscript,
+        setVerifiedTranscript: setCrewVerifiedTranscript,
+        setLiveTranscript: setCrewLiveTranscript,
+        setStatus: setCrewStreamingStatus,
+      });
+
+      const [captainResult, crewResult] = await Promise.all([captainPromise, crewPromise]);
+
+      setCaptainTranscript(captainResult);
+      setCrewTranscript(crewResult);
+
+      const runtimeConfig = loadAdminRuntimeConfig();
+      const semanticChunks = detectSemanticChunksFromCaptain(
+        captainResult.transcript,
+        runtimeConfig.semanticRuleOverrides,
+      );
+      const ohmCurrent = runtimeConfig.semanticOhmCurrent > 0 ? runtimeConfig.semanticOhmCurrent : 1.0;
+      const rawOhm = calculateSemanticOhm(semanticChunks, ohmCurrent);
+      const nextOhmResult: OhmResult = {
+        ...rawOhm,
+        difficulty: getDifficultyLabel(rawOhm.voltage),
+        chunkCount: semanticChunks.length,
+        chunks: semanticChunks.map((chunk) => ({
+          text: chunk.text,
+          label: chunk.label,
+          ohm: chunk.ohm || 0,
+        })),
+      };
+      setOhmResult(nextOhmResult);
+
       setState('evaluating');
+
       const result = await evaluateCaptionCrewMeaning({
-        captainTranscript: captainTranscript?.transcript || '',
-        crewTranscript: transcript.transcript,
+        captainTranscript: captainResult.transcript,
+        crewTranscript: crewResult.transcript,
         strictness: settings.strictness,
       });
+
       setEvaluation(result);
       setState('results');
-      const round: RoundRecord = {
-        id: createRoundId(),
-        createdAt: new Date().toISOString(),
-        state: 'results',
-        captainTranscript: captainTranscript || undefined,
-        crewTranscript: transcript,
-        evaluation: result,
-        reactionDelayMs: reactionDelayMs || undefined,
-        timeoutLost: false,
-      };
-      await saveRound(round);
+
+      const roundId = createRoundId();
+      void (async () => {
+        try {
+          const [captainAudio, crewAudio, captainVerified, crewVerified] = await Promise.all([
+            uploadRoundAudio(roundId, 'captain', captainAudioBlobRef.current!),
+            uploadRoundAudio(roundId, 'crew', crewBlob),
+            captainBatchPromise.catch(() => null),
+            crewBatchPromise.catch(() => null),
+          ]);
+
+          if (activeRoundTokenRef.current === roundToken) {
+            setCaptainAudioUrl(captainAudio.url);
+            setCrewAudioUrl(crewAudio.url);
+            if (captainVerified) setCaptainVerifiedTranscript(captainVerified);
+            if (crewVerified) setCrewVerifiedTranscript(crewVerified);
+          }
+
+          const round: RoundRecord = {
+            id: roundId,
+            createdAt: new Date().toISOString(),
+            state: 'results',
+            captainTranscript: captainResult,
+            crewTranscript: crewResult,
+            captainVerifiedTranscript: captainVerified || undefined,
+            crewVerifiedTranscript: crewVerified || undefined,
+            ohmResult: nextOhmResult,
+            evaluation: result,
+            reactionDelayMs: reactionDelayMs || undefined,
+            timeoutLost: false,
+            captainAudioUrl: captainAudio.url,
+            crewAudioUrl: crewAudio.url,
+            captainAudioPath: captainAudio.path,
+            crewAudioPath: crewAudio.path,
+            captainAudioMimeType: captainAudio.mimeType,
+            crewAudioMimeType: crewAudio.mimeType,
+          };
+          await saveRound(round);
+        } catch (backgroundError) {
+          console.warn('Background save failed', backgroundError);
+        }
+      })();
     } catch (error: any) {
-      setFeedbackError(error.message || 'Crew processing failed.');
+      setFeedbackError(error.message || 'Analysis failed.');
       setState('results');
     }
-  }, [captainTranscript, crewRecorder, reactionDelayMs, settings.strictness]);
+  }, [crewRecorder, reactionDelayMs, resolvePrimaryTranscript, settings.strictness, startCaptainTranscriptionPrefetch]);
 
-  useEffect(() => {
-    return () => clearCrewTimers();
-  }, [clearCrewTimers]);
+  useEffect(() => () => clearCrewTimers(), [clearCrewTimers]);
+
+  useEffect(() => () => {
+    captainStreamingSessionRef.current?.close();
+    crewStreamingSessionRef.current?.close();
+  }, []);
 
   return {
     state,
@@ -150,7 +405,18 @@ export function useCaptionCrewRound() {
     crewRecorder,
     captainTranscript,
     crewTranscript,
+    captainVerifiedTranscript,
+    crewVerifiedTranscript,
+    captainLiveTranscript,
+    crewLiveTranscript,
+    captainStreamingStatus,
+    crewStreamingStatus,
+    captainAudioBlob,
+    captainAudioUrl,
+    crewAudioBlob: crewRecorder.audioBlob,
+    crewAudioUrl,
     evaluation,
+    ohmResult,
     feedbackError,
     reactionDelayMs,
     countdownMs,

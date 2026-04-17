@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "admin_runtime_config": {
+      "shared": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "game_settings": {
+      "app_theme": {
+        ".read": true,
+        ".write": "auth != null"
+      }
+    }
+  }
+}

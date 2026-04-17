@@ -1,0 +1,21 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /rounds/{roundId}/{fileName} {
+      allow read, write: if true;
+    }
+
+    match /admin-runtime/shared.json {
+      allow read, write: if request.auth != null;
+    }
+
+    match /public-settings/app-theme.json {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

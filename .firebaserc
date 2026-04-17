@@ -1,5 +1,15 @@
 {
   "projects": {
-    "default": "thc-caption-crew-2026"
-  }
+    "default": "gen-lang-client-0815518176"
+  },
+  "targets": {
+    "gen-lang-client-0815518176": {
+      "hosting": {
+        "cc-faceoff": [
+          "cc-faceoff"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

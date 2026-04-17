@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { GameSettings, RoundRecord } from '@/types';
 
@@ -10,6 +10,54 @@ export const defaultGameSettings: GameSettings = {
   strictness: 'medium',
   showCountdown: true,
 };
+
+function normalizeRound(round: Partial<RoundRecord>): RoundRecord {
+  return {
+    id: String(round.id || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+    createdAt: String(round.createdAt || new Date().toISOString()),
+    state: (round.state || 'results') as RoundRecord['state'],
+    captainTranscript: round.captainTranscript,
+    crewTranscript: round.crewTranscript,
+    captainVerifiedTranscript: round.captainVerifiedTranscript,
+    crewVerifiedTranscript: round.crewVerifiedTranscript,
+    ohmResult: round.ohmResult
+      ? {
+          totalOhm: Number(round.ohmResult.totalOhm || 0),
+          formula: String(round.ohmResult.formula || '0'),
+          voltage: Number(round.ohmResult.voltage || 0),
+          current: Number(round.ohmResult.current || 0),
+          difficulty: String(round.ohmResult.difficulty || 'Beginner'),
+          score: Number(round.ohmResult.score || 0),
+          chunkCount: Number(round.ohmResult.chunkCount || 0),
+          chunks: Array.isArray(round.ohmResult.chunks)
+            ? round.ohmResult.chunks.map((chunk) => {
+                const label = ['GREEN', 'BLUE', 'RED', 'PINK'].includes(String(chunk.label))
+                  ? (String(chunk.label) as 'GREEN' | 'BLUE' | 'RED' | 'PINK')
+                  : 'PINK';
+                return {
+                  text: String(chunk.text || ''),
+                  label,
+                  ohm: Number(chunk.ohm || 0),
+                };
+              })
+            : [],
+        }
+      : undefined,
+    evaluation: round.evaluation,
+    reactionDelayMs: typeof round.reactionDelayMs === 'number' ? round.reactionDelayMs : undefined,
+    timeoutLost: round.timeoutLost === true,
+    captainAudioUrl: typeof round.captainAudioUrl === 'string' ? round.captainAudioUrl : undefined,
+    crewAudioUrl: typeof round.crewAudioUrl === 'string' ? round.crewAudioUrl : undefined,
+    captainAudioPath: typeof round.captainAudioPath === 'string' ? round.captainAudioPath : undefined,
+    crewAudioPath: typeof round.crewAudioPath === 'string' ? round.crewAudioPath : undefined,
+    captainAudioMimeType: typeof round.captainAudioMimeType === 'string' ? round.captainAudioMimeType : undefined,
+    crewAudioMimeType: typeof round.crewAudioMimeType === 'string' ? round.crewAudioMimeType : undefined,
+  };
+}
+
+function saveLocalHistory(rounds: RoundRecord[]) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(rounds.slice(0, 50)));
+}
 
 export async function saveSettings(settings: GameSettings) {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
@@ -37,11 +85,13 @@ export async function loadSettings(): Promise<GameSettings> {
 }
 
 export async function saveRound(round: RoundRecord) {
-  const local = loadLocalHistory();
-  local.unshift(round);
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(local.slice(0, 50)));
+  const normalized = normalizeRound(round);
+  const local = loadLocalHistory().filter((entry) => entry.id !== normalized.id);
+  local.unshift(normalized);
+  saveLocalHistory(local);
+
   if (db) {
-    await addDoc(collection(db, 'rounds'), round);
+    await setDoc(doc(db, 'rounds', normalized.id), normalized, { merge: true });
   }
 }
 
@@ -50,7 +100,9 @@ export async function loadRecentRounds(): Promise<RoundRecord[]> {
     const q = query(collection(db, 'rounds'), orderBy('createdAt', 'desc'), limit(20));
     const snap = await getDocs(q);
     if (!snap.empty) {
-      return snap.docs.map((d) => d.data() as RoundRecord);
+      const rounds = snap.docs.map((d) => normalizeRound(d.data() as RoundRecord));
+      saveLocalHistory(rounds);
+      return rounds;
     }
   }
   return loadLocalHistory();
@@ -58,7 +110,8 @@ export async function loadRecentRounds(): Promise<RoundRecord[]> {
 
 function loadLocalHistory(): RoundRecord[] {
   try {
-    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    const parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed.map((item) => normalizeRound(item as Partial<RoundRecord>)) : [];
   } catch {
     return [];
   }
