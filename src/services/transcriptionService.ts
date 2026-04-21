@@ -12,6 +12,8 @@ export async function transcribeRoundAudio(
     providerOverride?: 'deepgram' | 'google' | 'thirdparty';
     deepgramModelOverride?: string;
     googleModelOverride?: string;
+    googleProjectIdOverride?: string;
+    googleLocationOverride?: string;
     thirdPartyTranscriptModelOverride?: string;
     deepgramApiKeyOverride?: string;
     googleApiKeyOverride?: string;
@@ -28,7 +30,9 @@ export async function transcribeRoundAudio(
   const config = loadAdminRuntimeConfig();
   const transcriptProvider = options.providerOverride || config.transcriptProvider || 'deepgram';
   const selectedDeepgramModel = options.deepgramModelOverride || (options.role === 'captain' ? config.captainDeepgramModel : config.crewDeepgramModel);
-  const selectedGoogleModel = options.googleModelOverride || config.googleTranscriptModel || 'gemini-1.5-flash';
+  const selectedGoogleModel = options.googleModelOverride || config.googleTranscriptModel || 'chirp_3';
+  const selectedGoogleProjectId = options.googleProjectIdOverride || config.googleCloudProjectId || '';
+  const selectedGoogleLocation = options.googleLocationOverride || config.googleTranscriptLocation || 'global';
   const selectedThirdPartyModel = options.thirdPartyTranscriptModelOverride || config.thirdPartyTranscriptModel || '';
   const selectedModel = transcriptProvider === 'google'
     ? selectedGoogleModel
@@ -46,6 +50,8 @@ export async function transcribeRoundAudio(
     options.providerOverride ||
     options.deepgramModelOverride ||
     options.googleModelOverride ||
+    options.googleProjectIdOverride ||
+    options.googleLocationOverride ||
     options.thirdPartyTranscriptModelOverride ||
     options.deepgramApiKeyOverride ||
     options.googleApiKeyOverride ||
@@ -67,6 +73,12 @@ export async function transcribeRoundAudio(
 
     if (selectedGoogleModel) {
       headers['x-google-model'] = selectedGoogleModel;
+    }
+    if (selectedGoogleProjectId) {
+      headers['x-google-project-id'] = selectedGoogleProjectId;
+    }
+    if (selectedGoogleLocation) {
+      headers['x-google-location'] = selectedGoogleLocation;
     }
     const googleApiKey = options.googleApiKeyOverride || config.googleApiKey;
     if (googleApiKey) {

@@ -5,11 +5,15 @@ import type { SemanticRuleOverrides } from '@/lib/ohmCalculator';
 
 export interface AdminRuntimeConfig {
   transcriptProvider: 'deepgram' | 'google' | 'thirdparty';
+  partialTranscriptEnabled: boolean;
   deepgramApiKey: string;
   captainDeepgramModel: string;
   crewDeepgramModel: string;
   googleApiKey: string;
+  googleCloudProjectId: string;
   googleTranscriptModel: string;
+  googleTranscriptLocation: string;
+  googleOhmModel: string;
   thirdPartyTranscriptUrl: string;
   thirdPartyTranscriptApiKey: string;
   thirdPartyTranscriptModel: string;
@@ -45,11 +49,15 @@ const PUBLIC_THEME_PATH = 'public-settings/app-theme.json';
 
 export const defaultAdminRuntimeConfig: AdminRuntimeConfig = {
   transcriptProvider: 'deepgram',
+  partialTranscriptEnabled: false,
   deepgramApiKey: '',
   captainDeepgramModel: 'nova-3',
   crewDeepgramModel: 'nova-3',
   googleApiKey: '',
-  googleTranscriptModel: 'gemini-1.5-flash',
+  googleCloudProjectId: '',
+  googleTranscriptModel: 'chirp_3',
+  googleTranscriptLocation: 'global',
+  googleOhmModel: 'gemini-1.5-flash',
   thirdPartyTranscriptUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/transcribe',
   thirdPartyTranscriptApiKey: '',
   thirdPartyTranscriptModel: '',
@@ -102,6 +110,7 @@ function normalizeAdminConfig(raw?: Partial<AdminRuntimeConfig> | null): AdminRu
       : raw?.transcriptProvider === 'thirdparty'
         ? 'thirdparty'
         : 'deepgram',
+    partialTranscriptEnabled: raw?.partialTranscriptEnabled === true,
     ohmAnalysisProvider: raw?.ohmAnalysisProvider === 'thirdparty' ? 'thirdparty' : 'google',
     thirdPartyTranscriptAuthScheme: raw?.thirdPartyTranscriptAuthScheme === 'none'
       ? 'none'

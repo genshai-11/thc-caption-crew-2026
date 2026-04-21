@@ -101,8 +101,8 @@ export class DeepgramStreamingSession {
   private async connect() {
     try {
       const config = loadAdminRuntimeConfig();
-      if (config.transcriptProvider !== 'deepgram') {
-        throw new Error('Live streaming is currently available only with Deepgram provider. Falling back to batch transcript.');
+      if (config.transcriptProvider !== 'deepgram' || config.partialTranscriptEnabled !== true) {
+        throw new Error('Live streaming is disabled (provider is not Deepgram or partial transcript setting is OFF). Falling back to batch transcript.');
       }
       const token = await getDeepgramAccessToken();
       const url = new URL('wss://api.deepgram.com/v1/listen');

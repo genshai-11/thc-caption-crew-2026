@@ -47,7 +47,7 @@ export async function analyzeTranscript(
       'Content-Type': 'application/json',
       'x-ohm-analysis-provider': provider,
       ...(options?.googleApiKey ? { 'x-google-api-key': options.googleApiKey } : {}),
-      ...(options?.googleModel ? { 'x-google-model': options.googleModel } : {}),
+      ...(options?.googleModel ? { 'x-google-ohm-model': options.googleModel } : {}),
       ...(options?.thirdPartyOhmUrl ? { 'x-thirdparty-ohm-url': options.thirdPartyOhmUrl } : {}),
       ...(options?.thirdPartyOhmApiKey ? { 'x-thirdparty-ohm-api-key': options.thirdPartyOhmApiKey } : {}),
       ...(options?.thirdPartyOhmModel ? { 'x-thirdparty-ohm-model': options.thirdPartyOhmModel } : {}),

@@ -9,7 +9,7 @@ if (!admin.apps.length) {
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Deepgram-Api-Key, X-Deepgram-Model, x-deepgram-api-key, x-deepgram-model, x-transcript-provider, x-google-api-key, x-google-model, x-thirdparty-transcript-url, x-thirdparty-transcript-api-key, x-thirdparty-transcript-model, x-thirdparty-transcript-auth-scheme, x-ohm-analysis-provider, x-thirdparty-ohm-url, x-thirdparty-ohm-api-key, x-thirdparty-ohm-model, x-thirdparty-ohm-auth-scheme, x-thirdparty-ohm-webhook-url',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Deepgram-Api-Key, X-Deepgram-Model, x-deepgram-api-key, x-deepgram-model, x-transcript-provider, x-google-api-key, x-google-model, x-google-project-id, x-google-location, x-google-ohm-model, x-thirdparty-transcript-url, x-thirdparty-transcript-api-key, x-thirdparty-transcript-model, x-thirdparty-transcript-auth-scheme, x-ohm-analysis-provider, x-thirdparty-ohm-url, x-thirdparty-ohm-api-key, x-thirdparty-ohm-model, x-thirdparty-ohm-auth-scheme, x-thirdparty-ohm-webhook-url',
   'Access-Control-Max-Age': '3600',
 };
 
@@ -28,11 +28,15 @@ function handleOptions(req, res) {
 
 const defaultSharedConfig = {
   transcriptProvider: 'deepgram',
+  partialTranscriptEnabled: false,
   deepgramApiKey: '',
   captainDeepgramModel: 'nova-3',
   crewDeepgramModel: 'nova-3',
   googleApiKey: '',
-  googleTranscriptModel: 'gemini-1.5-flash',
+  googleCloudProjectId: '',
+  googleTranscriptModel: 'chirp_3',
+  googleTranscriptLocation: 'global',
+  googleOhmModel: 'gemini-1.5-flash',
   thirdPartyTranscriptUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/transcribe',
   thirdPartyTranscriptApiKey: '',
   thirdPartyTranscriptModel: '',
@@ -93,54 +97,78 @@ async function callDeepgramListen({ apiKey, model, language, contentType, audioB
   return await response.json();
 }
 
-async function callGeminiTranscribe({ apiKey, model, language, contentType, audioBuffer }) {
-  const cleanModel = String(model || 'gemini-1.5-flash').replace(/^models\//, '');
-  const promptLanguage = language === 'vi' ? 'Vietnamese' : language === 'en' ? 'English' : 'the spoken language';
-  const base64Audio = Buffer.from(audioBuffer).toString('base64');
+function parseDurationSeconds(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  const text = String(value || '');
+  const matched = text.match(/^(\d+(?:\.\d+)?)s$/);
+  if (!matched) return 0;
+  return Number(matched[1] || 0);
+}
 
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cleanModel)}:generateContent?key=${encodeURIComponent(apiKey)}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            {
-              text: `Please transcribe this audio accurately. Return ONLY the transcript text in ${promptLanguage}. Do not add explanations or metadata.`,
-            },
-            {
-              inlineData: {
-                mimeType: contentType,
-                data: base64Audio,
-              },
-            },
-          ],
-        },
-      ],
-      generationConfig: {
-        temperature: 0,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Gemini transcript error (${response.status}): ${body}`);
-  }
-
-  const result = await response.json();
-  const transcript = String(
-    result?.candidates?.[0]?.content?.parts?.map((part) => part?.text || '').join(' ').trim()
-    || result?.text
+async function callGoogleSpeechTranscribe({ apiKey, model, language, location, projectId, contentType, audioBuffer }) {
+  const cleanModel = String(model || 'chirp_3').replace(/^models\//, '');
+  const selectedLocation = String(location || 'global');
+  const selectedProjectId = String(
+    projectId
+    || process.env.GCLOUD_PROJECT
+    || process.env.GOOGLE_CLOUD_PROJECT
+    || process.env.PROJECT_ID
     || ''
   );
 
+  if (!selectedProjectId) {
+    throw new Error('Google STT project ID is missing. Set googleCloudProjectId in Admin config or GOOGLE_CLOUD_PROJECT env.');
+  }
+
+  const languageCode = language === 'vi' ? 'vi-VN' : language === 'en' ? 'en-US' : 'en-US';
+  const base64Audio = Buffer.from(audioBuffer).toString('base64');
+
+  const response = await fetch(
+    `https://speech.googleapis.com/v2/projects/${encodeURIComponent(selectedProjectId)}/locations/${encodeURIComponent(selectedLocation)}/recognizers/_:recognize?key=${encodeURIComponent(apiKey)}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        config: {
+          autoDecodingConfig: {},
+          languageCodes: [languageCode],
+          model: cleanModel,
+          features: {
+            enableAutomaticPunctuation: true,
+          },
+        },
+        content: base64Audio,
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Google Speech transcript error (${response.status}): ${body}`);
+  }
+
+  const result = await response.json();
+  const alternatives = result?.results?.flatMap((entry) => entry?.alternatives || []) || [];
+  const transcript = String(alternatives.map((alt) => alt?.transcript || '').join(' ').replace(/\s+/g, ' ').trim());
+  const confidenceValues = alternatives
+    .map((alt) => Number(alt?.confidence || 0))
+    .filter((value) => Number.isFinite(value) && value > 0);
+  const confidence = confidenceValues.length > 0
+    ? confidenceValues.reduce((sum, value) => sum + value, 0) / confidenceValues.length
+    : (transcript ? 1 : 0);
+
   return {
     transcript,
+    confidence,
+    duration: parseDurationSeconds(result?.metadata?.totalBilledDuration),
     metadata: {
       model: cleanModel,
+      requestId: String(result?.metadata?.requestId || result?.metadata?.request_id || ''),
+      projectId: selectedProjectId,
+      location: selectedLocation,
+      mimeType: contentType,
     },
   };
 }
@@ -238,8 +266,9 @@ exports.getDeepgramAccessToken = onRequest({ cors: false, invoker: 'public' }, a
 
     const sharedConfig = await getSharedAdminConfig();
     const transcriptProvider = String(sharedConfig.transcriptProvider || 'deepgram').toLowerCase();
-    if (transcriptProvider !== 'deepgram') {
-      throw new Error('Transcript provider is not Deepgram. Deepgram live token is not available.');
+    const partialEnabled = sharedConfig.partialTranscriptEnabled === true;
+    if (transcriptProvider !== 'deepgram' || !partialEnabled) {
+      throw new Error('Deepgram live token is disabled because provider is not Deepgram or partial transcript setting is OFF.');
     }
     const apiKey = req.headers['x-deepgram-api-key'] || process.env.DEEPGRAM_API_KEY || sharedConfig.deepgramApiKey;
     if (!apiKey) throw new Error('DEEPGRAM_API_KEY not configured');
@@ -324,16 +353,20 @@ exports.transcribeRoundAudio = onRequest({ cors: false, invoker: 'public' }, asy
     }
 
     if (transcriptProvider === 'google') {
-      const googleModel = String(req.headers['x-google-model'] || sharedConfig.googleTranscriptModel || 'gemini-1.5-flash');
+      const googleModel = String(req.headers['x-google-model'] || sharedConfig.googleTranscriptModel || 'chirp_3');
       const googleApiKey = req.headers['x-google-api-key'] || process.env.GOOGLE_API_KEY || sharedConfig.googleApiKey;
+      const googleProjectId = String(req.headers['x-google-project-id'] || sharedConfig.googleCloudProjectId || process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT || '');
+      const googleLocation = String(req.headers['x-google-location'] || sharedConfig.googleTranscriptLocation || 'global');
       if (!googleApiKey) throw new Error('GOOGLE_API_KEY not configured');
 
-      logger.info('STT request received (google)', { role, language, googleModel, contentType, audioBytes });
+      logger.info('STT request received (google)', { role, language, googleModel, googleLocation, googleProjectId, contentType, audioBytes });
 
-      const googleResult = await callGeminiTranscribe({
+      const googleResult = await callGoogleSpeechTranscribe({
         apiKey: googleApiKey,
         model: googleModel,
         language,
+        location: googleLocation,
+        projectId: googleProjectId,
         contentType,
         audioBuffer,
       });
@@ -342,15 +375,15 @@ exports.transcribeRoundAudio = onRequest({ cors: false, invoker: 'public' }, asy
       res.json({
         transcript,
         words: [],
-        confidence: transcript ? 1 : 0,
-        duration: 0,
+        confidence: Number(googleResult?.confidence || (transcript ? 1 : 0)),
+        duration: Number(googleResult?.duration || 0),
         modelRequested: googleModel,
-        modelUsed: googleModel,
+        modelUsed: String(googleResult?.metadata?.model || googleModel),
         fallbackUsed: false,
         roleReceived: role,
         languageReceived: language,
         contentTypeReceived: contentType,
-        requestId: '',
+        requestId: String(googleResult?.metadata?.requestId || ''),
         transcriptProviderUsed: 'google',
       });
       return;
@@ -486,7 +519,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       return;
     }
 
-    const model = String(req.headers['x-google-model'] || sharedConfig.googleTranscriptModel || 'gemini-1.5-flash');
+    const model = String(req.headers['x-google-ohm-model'] || req.headers['x-google-model'] || sharedConfig.googleOhmModel || sharedConfig.googleTranscriptModel || 'gemini-1.5-flash');
     const googleApiKey = req.headers['x-google-api-key'] || process.env.GOOGLE_API_KEY || sharedConfig.googleApiKey;
     if (!googleApiKey) throw new Error('GOOGLE_API_KEY not configured');
 

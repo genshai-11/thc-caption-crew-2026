@@ -94,7 +94,7 @@ export default function AdminPage() {
       const result = await analyzeTranscript(normalizedTranscript, {
         provider: config.ohmAnalysisProvider,
         googleApiKey: config.googleApiKey,
-        googleModel: config.googleTranscriptModel,
+        googleModel: config.googleOhmModel,
         thirdPartyOhmUrl: config.thirdPartyOhmUrl,
         thirdPartyOhmApiKey: config.thirdPartyOhmApiKey,
         thirdPartyOhmModel: config.thirdPartyOhmModel,
@@ -104,7 +104,7 @@ export default function AdminPage() {
       setAnalysisResult(result);
       setAnalysisState({
         status: 'success',
-        message:           `Analysis complete • provider ${config.ohmAnalysisProvider === 'thirdparty' ? 'third-party' : 'google'} • model ${result.modelUsed || config.thirdPartyOhmModel || config.googleTranscriptModel || 'default'}`,
+        message:           `Analysis complete • provider ${config.ohmAnalysisProvider === 'thirdparty' ? 'third-party' : 'google'} • model ${result.modelUsed || config.thirdPartyOhmModel || config.googleOhmModel || 'default'}`,
       });
     } catch (error: any) {
       setAnalysisResult(null);
@@ -210,6 +210,8 @@ export default function AdminPage() {
         providerOverride: 'google',
         googleApiKeyOverride: config.googleApiKey,
         googleModelOverride: config.googleTranscriptModel,
+        googleProjectIdOverride: config.googleCloudProjectId,
+        googleLocationOverride: config.googleTranscriptLocation,
       });
 
       if (result.emptyTranscript) {
@@ -218,7 +220,7 @@ export default function AdminPage() {
 
       setGoogleCaptainTestState({
         status: 'success',
-        message: `Google STT Vietnamese OK • model ${result.modelUsed || config.googleTranscriptModel || 'gemini-1.5-flash'}`,
+        message: `Google STT Vietnamese OK • model ${result.modelUsed || config.googleTranscriptModel || 'chirp_3'}`,
         transcript: result.transcript,
       });
       void updateOhmAnalysisPreview(result.transcript);
@@ -238,6 +240,8 @@ export default function AdminPage() {
         providerOverride: 'google',
         googleApiKeyOverride: config.googleApiKey,
         googleModelOverride: config.googleTranscriptModel,
+        googleProjectIdOverride: config.googleCloudProjectId,
+        googleLocationOverride: config.googleTranscriptLocation,
       });
 
       if (result.emptyTranscript) {
@@ -246,7 +250,7 @@ export default function AdminPage() {
 
       setGoogleCrewTestState({
         status: 'success',
-        message: `Google STT English OK • model ${result.modelUsed || config.googleTranscriptModel || 'gemini-1.5-flash'}`,
+        message: `Google STT English OK • model ${result.modelUsed || config.googleTranscriptModel || 'chirp_3'}`,
         transcript: result.transcript,
       });
       void updateOhmAnalysisPreview(result.transcript);
@@ -295,8 +299,8 @@ export default function AdminPage() {
           <div className="action-row">
             <StatusBadge label={transcriptReady ? 'ready' : 'not ready'} status={transcriptReady ? 'ready' : 'not-ready'} />
             <StatusBadge
-              label={config.transcriptProvider === 'deepgram' ? 'streaming available' : 'batch only / api-driven'}
-              status={config.transcriptProvider === 'deepgram' ? 'success' : 'idle'}
+              label={config.transcriptProvider === 'deepgram' && config.partialTranscriptEnabled ? 'streaming enabled' : 'single transcript mode'}
+              status={config.transcriptProvider === 'deepgram' && config.partialTranscriptEnabled ? 'success' : 'idle'}
             />
           </div>
         </article>
@@ -334,9 +338,18 @@ export default function AdminPage() {
           <span>Transcript provider</span>
           <select value={config.transcriptProvider} onChange={(e) => patchConfig('transcriptProvider', e.target.value as AdminRuntimeConfig['transcriptProvider'])}>
             <option value="deepgram">Deepgram (streaming + batch)</option>
-            <option value="google">Google Gemini (batch transcript)</option>
+            <option value="google">Google Speech-to-Text V2 (batch transcript)</option>
             <option value="thirdparty">Third-party transcript API (batch)</option>
           </select>
+        </label>
+
+        <label className="toggle-row">
+          <input
+            type="checkbox"
+            checked={config.partialTranscriptEnabled}
+            onChange={(e) => patchConfig('partialTranscriptEnabled', e.target.checked)}
+          />
+          Enable live partial transcript (Deepgram only)
         </label>
 
         {config.transcriptProvider === 'google' ? (
@@ -345,11 +358,21 @@ export default function AdminPage() {
               <span>Google API key</span>
               <input type="password" value={config.googleApiKey} onChange={(e) => patchConfig('googleApiKey', e.target.value)} />
             </label>
+            <div className="admin-grid two-up">
+              <label className="field-stack">
+                <span>Google Cloud project ID (optional)</span>
+                <input value={config.googleCloudProjectId} onChange={(e) => patchConfig('googleCloudProjectId', e.target.value)} placeholder="gen-lang-client-0815518176" />
+              </label>
+              <label className="field-stack">
+                <span>Speech location</span>
+                <input value={config.googleTranscriptLocation} onChange={(e) => patchConfig('googleTranscriptLocation', e.target.value)} placeholder="global" />
+              </label>
+            </div>
             <label className="field-stack">
-              <span>Gemini transcript model</span>
+              <span>Google STT model</span>
               <input value={config.googleTranscriptModel} onChange={(e) => patchConfig('googleTranscriptModel', e.target.value)} />
             </label>
-            <p className="admin-message">Live partial transcript uses Deepgram only. With Google provider, app will transcribe after recording stops.</p>
+            <p className="admin-message">Recommended model: chirp_3. To keep a single transcript source, leave partial transcript disabled.</p>
           </>
         ) : config.transcriptProvider === 'thirdparty' ? (
           <>
@@ -385,7 +408,7 @@ export default function AdminPage() {
             </label>
             <label className="field-stack">
               <span>Google model for Ohm analysis</span>
-              <input value={config.googleTranscriptModel} onChange={(e) => patchConfig('googleTranscriptModel', e.target.value)} />
+              <input value={config.googleOhmModel} onChange={(e) => patchConfig('googleOhmModel', e.target.value)} />
             </label>
           </>
         )}

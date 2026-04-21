@@ -23,6 +23,11 @@ function toOhmScore(voltage: number) {
   return Math.max(0, Math.min(100, Math.round((voltage / 120) * 100)));
 }
 
+function shouldUseDeepgramLivePartial() {
+  const config = loadAdminRuntimeConfig();
+  return config.transcriptProvider === 'deepgram' && config.partialTranscriptEnabled === true;
+}
+
 export function useCaptionCrewRound() {
   const captainRecorder = useRoundRecorder();
   const crewRecorder = useRoundRecorder();
@@ -195,13 +200,21 @@ export function useCaptionCrewRound() {
   const startCaptain = useCallback(async () => {
     resetRound();
     setState('captain-recording');
-    setCaptainStreamingStatus('Connecting live Vietnamese transcript…');
-    const session = beginStreamingSession('captain', 'vi', setCaptainLiveTranscript, setCaptainStreamingStatus);
-    captainStreamingSessionRef.current = session;
-    await captainRecorder.start({
-      timesliceMs: 250,
-      onChunk: (chunk) => session.sendAudioChunk(chunk),
-    });
+
+    if (shouldUseDeepgramLivePartial()) {
+      setCaptainStreamingStatus('Connecting live Vietnamese transcript…');
+      const session = beginStreamingSession('captain', 'vi', setCaptainLiveTranscript, setCaptainStreamingStatus);
+      captainStreamingSessionRef.current = session;
+      await captainRecorder.start({
+        timesliceMs: 250,
+        onChunk: (chunk) => session.sendAudioChunk(chunk),
+      });
+      return;
+    }
+
+    setCaptainStreamingStatus('Live partial transcript disabled — using a single batch transcript after stop.');
+    captainStreamingSessionRef.current = null;
+    await captainRecorder.start();
   }, [beginStreamingSession, captainRecorder, resetRound]);
 
   const stopCaptain = useCallback(async () => {
@@ -218,18 +231,32 @@ export function useCaptionCrewRound() {
     setState('crew-waiting');
     setCountdownMs(settings.maxCrewStartDelayMs);
 
-    const batchPromise = startCaptainTranscriptionPrefetch(blob);
-    captainPrimaryTranscriptPromiseRef.current = resolvePrimaryTranscript({
-      session: captainStreamingSessionRef.current,
-      fallbackPromise: batchPromise,
-      role: 'captain',
-      language: 'vi',
-      setPrimaryTranscript: setCaptainTranscript,
-      setVerifiedTranscript: setCaptainVerifiedTranscript,
-      setLiveTranscript: setCaptainLiveTranscript,
-      setStatus: setCaptainStreamingStatus,
-    });
-    void captainPrimaryTranscriptPromiseRef.current.catch(() => undefined);
+    if (shouldUseDeepgramLivePartial()) {
+      const batchPromise = startCaptainTranscriptionPrefetch(blob);
+      captainPrimaryTranscriptPromiseRef.current = resolvePrimaryTranscript({
+        session: captainStreamingSessionRef.current,
+        fallbackPromise: batchPromise,
+        role: 'captain',
+        language: 'vi',
+        setPrimaryTranscript: setCaptainTranscript,
+        setVerifiedTranscript: setCaptainVerifiedTranscript,
+        setLiveTranscript: setCaptainLiveTranscript,
+        setStatus: setCaptainStreamingStatus,
+      });
+      void captainPrimaryTranscriptPromiseRef.current.catch(() => undefined);
+    } else {
+      const singlePromise = transcribeRoundAudio(blob, { role: 'captain', language: 'vi', preferServerConfig: true })
+        .then((result) => {
+          setCaptainTranscript(result);
+          setCaptainVerifiedTranscript(result);
+          setCaptainLiveTranscript(result.transcript);
+          setCaptainStreamingStatus('Captain transcript ready (single batch mode)');
+          return result;
+        });
+      captainBatchTranscriptPromiseRef.current = singlePromise;
+      captainPrimaryTranscriptPromiseRef.current = singlePromise;
+      void singlePromise.catch(() => undefined);
+    }
 
     const waitingStartedAt = Date.now();
     timeoutRef.current = window.setTimeout(() => {
@@ -257,13 +284,21 @@ export function useCaptionCrewRound() {
 
     clearCrewTimers();
     setState('crew-recording');
-    setCrewStreamingStatus('Connecting live English transcript…');
-    const session = beginStreamingSession('crew', 'en', setCrewLiveTranscript, setCrewStreamingStatus);
-    crewStreamingSessionRef.current = session;
-    await crewRecorder.start({
-      timesliceMs: 250,
-      onChunk: (chunk) => session.sendAudioChunk(chunk),
-    });
+
+    if (shouldUseDeepgramLivePartial()) {
+      setCrewStreamingStatus('Connecting live English transcript…');
+      const session = beginStreamingSession('crew', 'en', setCrewLiveTranscript, setCrewStreamingStatus);
+      crewStreamingSessionRef.current = session;
+      await crewRecorder.start({
+        timesliceMs: 250,
+        onChunk: (chunk) => session.sendAudioChunk(chunk),
+      });
+      return;
+    }
+
+    setCrewStreamingStatus('Live partial transcript disabled — using a single batch transcript after stop.');
+    crewStreamingSessionRef.current = null;
+    await crewRecorder.start();
   }, [beginStreamingSession, clearCrewTimers, crewRecorder, settings.maxCrewStartDelayMs, state]);
 
   const stopCrew = useCallback(async () => {
@@ -283,41 +318,64 @@ export function useCaptionCrewRound() {
 
     try {
       const roundToken = activeRoundTokenRef.current;
+      const livePartialEnabled = shouldUseDeepgramLivePartial();
       const captainBatchPromise = captainBatchTranscriptPromiseRef.current || startCaptainTranscriptionPrefetch(captainAudioBlobRef.current);
-      const crewBatchPromise = transcribeRoundAudio(crewBlob, { role: 'crew', language: 'en' })
-        .then((result) => {
-          if (activeRoundTokenRef.current === roundToken) {
-            setCrewVerifiedTranscript(result);
-          }
-          return result;
+
+      let crewBatchPromise: Promise<TranscriptResult>;
+      let captainPromise: Promise<TranscriptResult>;
+      let crewPromise: Promise<TranscriptResult>;
+
+      if (livePartialEnabled) {
+        crewBatchPromise = transcribeRoundAudio(crewBlob, { role: 'crew', language: 'en' })
+          .then((result) => {
+            if (activeRoundTokenRef.current === roundToken) {
+              setCrewVerifiedTranscript(result);
+            }
+            return result;
+          });
+
+        captainPromise = captainPrimaryTranscriptPromiseRef.current || resolvePrimaryTranscript({
+          session: captainStreamingSessionRef.current,
+          fallbackPromise: captainBatchPromise,
+          role: 'captain',
+          language: 'vi',
+          setPrimaryTranscript: setCaptainTranscript,
+          setVerifiedTranscript: setCaptainVerifiedTranscript,
+          setLiveTranscript: setCaptainLiveTranscript,
+          setStatus: setCaptainStreamingStatus,
         });
 
-      const captainPromise = captainPrimaryTranscriptPromiseRef.current || resolvePrimaryTranscript({
-        session: captainStreamingSessionRef.current,
-        fallbackPromise: captainBatchPromise,
-        role: 'captain',
-        language: 'vi',
-        setPrimaryTranscript: setCaptainTranscript,
-        setVerifiedTranscript: setCaptainVerifiedTranscript,
-        setLiveTranscript: setCaptainLiveTranscript,
-        setStatus: setCaptainStreamingStatus,
-      });
+        crewPromise = resolvePrimaryTranscript({
+          session: crewStreamingSessionRef.current,
+          fallbackPromise: crewBatchPromise,
+          role: 'crew',
+          language: 'en',
+          setPrimaryTranscript: setCrewTranscript,
+          setVerifiedTranscript: setCrewVerifiedTranscript,
+          setLiveTranscript: setCrewLiveTranscript,
+          setStatus: setCrewStreamingStatus,
+        });
+      } else {
+        crewBatchPromise = transcribeRoundAudio(crewBlob, { role: 'crew', language: 'en', preferServerConfig: true })
+          .then((result) => {
+            if (activeRoundTokenRef.current === roundToken) {
+              setCrewVerifiedTranscript(result);
+              setCrewStreamingStatus('Crew transcript ready (single batch mode)');
+            }
+            return result;
+          });
 
-      const crewPromise = resolvePrimaryTranscript({
-        session: crewStreamingSessionRef.current,
-        fallbackPromise: crewBatchPromise,
-        role: 'crew',
-        language: 'en',
-        setPrimaryTranscript: setCrewTranscript,
-        setVerifiedTranscript: setCrewVerifiedTranscript,
-        setLiveTranscript: setCrewLiveTranscript,
-        setStatus: setCrewStreamingStatus,
-      });
+        captainPromise = captainPrimaryTranscriptPromiseRef.current || captainBatchPromise;
+        crewPromise = crewBatchPromise;
+      }
 
       const [captainResult, crewResult] = await Promise.all([captainPromise, crewPromise]);
 
       setCaptainTranscript(captainResult);
       setCrewTranscript(crewResult);
+      if (!livePartialEnabled) {
+        setCrewLiveTranscript(crewResult.transcript);
+      }
 
       const runtimeConfig = loadAdminRuntimeConfig();
       const ohmCurrent = runtimeConfig.semanticOhmCurrent > 0 ? runtimeConfig.semanticOhmCurrent : 1.0;
@@ -327,7 +385,7 @@ export function useCaptionCrewRound() {
         const aiAnalysis = await analyzeTranscript(captainResult.transcript, {
           provider: runtimeConfig.ohmAnalysisProvider,
           googleApiKey: runtimeConfig.googleApiKey,
-          googleModel: runtimeConfig.googleTranscriptModel,
+          googleModel: runtimeConfig.googleOhmModel,
           thirdPartyOhmUrl: runtimeConfig.thirdPartyOhmUrl,
           thirdPartyOhmApiKey: runtimeConfig.thirdPartyOhmApiKey,
           thirdPartyOhmModel: runtimeConfig.thirdPartyOhmModel,
