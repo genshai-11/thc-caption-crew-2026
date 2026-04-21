@@ -745,7 +745,11 @@ const PINK_COMMON_PHRASES = new Set(['ngày mai', 'hôm nay', 'bây giờ', 'đi
 const RED_IDIOM_MARKERS = [
   'gieo gió', 'gặt bão', 'đứng núi này trông núi nọ', 'vỏ quýt dày có móng tay nhọn', 'đâm sau lưng',
   'bút sa gà chết', 'xa mặt cách lòng', 'khách hàng là thượng đế', 'chuyện gì tới nó tới', 'đừng đùa với lửa',
-  'bữa tiệc nào rồi cũng có lúc tàn', 'im lặng là đồng ý', 'có cái giá', 'đi guốc trong bụng'
+  'bữa tiệc nào rồi cũng có lúc tàn', 'im lặng là đồng ý', 'có cái giá', 'đi guốc trong bụng',
+  'gần mực thì đen gần đèn thì sáng'
+];
+const RED_COMPOSITE_IDIOMS = [
+  'gần mực thì đen gần đèn thì sáng'
 ];
 const BLUE_FRAME_MARKERS = [
   'cậu có', 'bạn có', 'điều gì làm', 'nếu cậu', 'nếu bạn', 'tui nghĩ', 'tôi nghĩ', 'hãy', 'đừng', 'làm sao', 'sao cậu', 'ai mà', 'một mặt', 'mặt khác'
@@ -809,15 +813,38 @@ function sanitizeOhmChunks(chunks = [], transcript = '') {
   });
 }
 
-function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = [], transcript = '') {
+function detectCompositeIdiomChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
+  const source = normalizeOhmText(transcript);
+  const chunks = [];
+  for (const idiom of RED_COMPOSITE_IDIOMS) {
+    const normalized = normalizeOhmText(idiom);
+    if (!normalized || !source.includes(normalized)) continue;
+    chunks.push({
+      text: idiom,
+      label: 'RED',
+      ohm: Number(weights.RED || 9),
+      confidence: 0.999,
+      reason: 'composite idiom exact match',
+    });
+  }
+  return chunks;
+}
+
+function mergeLexiconAndModelChunks(compositeChunks = [], lexiconChunks = [], modelChunks = [], transcript = '') {
   const map = new Map();
+
+  for (const chunk of compositeChunks) {
+    const normalized = normalizeOhmText(chunk.text);
+    const key = `${chunk.label}::${normalized}`;
+    map.set(key, chunk);
+  }
 
   for (const chunk of lexiconChunks) {
     const normalized = normalizeOhmText(chunk.text);
     const label = String(chunk.label || '').toUpperCase();
     if (!isLabelChunkAcceptable(label, normalized, transcript, 'lexicon')) continue;
     const key = `${label}::${normalized}`;
-    map.set(key, chunk);
+    if (!map.has(key)) map.set(key, chunk);
   }
 
   for (const chunk of modelChunks) {
@@ -834,7 +861,17 @@ function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = [], transc
     }
   }
 
-  return Array.from(map.values());
+  const items = Array.from(map.values());
+  const compositeNorms = compositeChunks.map((c) => normalizeOhmText(c.text));
+  if (compositeNorms.length === 0) return items;
+
+  return items.filter((chunk) => {
+    const normalized = normalizeOhmText(chunk.text);
+    const isComposite = compositeNorms.includes(normalized);
+    if (isComposite) return true;
+    if (String(chunk.label || '').toUpperCase() !== 'RED') return true;
+    return !compositeNorms.some((comp) => comp.includes(normalized));
+  });
 }
 
 function logOhmTrainingSample(payload) {
@@ -929,7 +966,8 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
 
     const modelChunks = sanitizeOhmChunks(rawChunks, transcript);
     const lexiconChunks = detectLexiconChunks(transcript, ohmSettings.weights);
-    const chunks = mergeLexiconAndModelChunks(lexiconChunks, modelChunks, transcript);
+    const compositeChunks = detectCompositeIdiomChunks(transcript, ohmSettings.weights);
+    const chunks = mergeLexiconAndModelChunks(compositeChunks, lexiconChunks, modelChunks, transcript);
 
     const { baseOhm, formula: baseFormula } = computeOhmFromChunks(chunks, ohmSettings.weights);
     const { sentenceCount, wordCount, lengthBucket } = resolveLengthBucket(transcript, ohmSettings.constraints);
@@ -955,6 +993,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       elapsedMs,
       filteredChunkCount: Math.max(0, rawChunks.length - modelChunks.length),
       lexiconChunkCount: lexiconChunks.length,
+      compositeChunkCount: compositeChunks.length,
     };
 
     logOhmTrainingSample({
@@ -963,6 +1002,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       rawModelChunks: rawChunks,
       modelChunks,
       lexiconChunks,
+      compositeChunks,
       mergedChunks: chunks,
       baseOhm,
       totalOhm,

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ResultCard } from '@/components/ResultCard';
-import { SummaryLocationState, TranscriptResult } from '@/types';
+import { OhmChunkResult, SummaryLocationState, TranscriptResult } from '@/types';
 
 function formatConfidence(confidence?: number) {
   if (typeof confidence !== 'number' || Number.isNaN(confidence) || confidence <= 0) return '—';
@@ -30,9 +30,11 @@ function getTranscriptPlaceholder(transcript?: TranscriptResult | null) {
 function SummaryOhmCard({
   totalOhm,
   current,
+  chunks,
 }: {
   totalOhm: number;
   current: number;
+  chunks: OhmChunkResult[];
 }) {
   return (
     <section className="soft-card admin-section-minimal">
@@ -52,6 +54,21 @@ function SummaryOhmCard({
           <span className="metric-label">(length coefficient)</span>
           <span className="metric-value">{current.toFixed(2)}</span>
         </div>
+      </div>
+
+      <div className="summary-transcript-block">
+        <span className="metric-label">detected chunks</span>
+        {chunks.length === 0 ? (
+          <p className="admin-message">No chunks detected.</p>
+        ) : (
+          <ul className="analysis-detail-list">
+            {chunks.map((chunk, idx) => (
+              <li key={`${chunk.label}-${idx}-${chunk.text.slice(0, 16)}`}>
+                <strong>{chunk.label}</strong> · {chunk.ohm} Ω · {chunk.text}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );
@@ -195,6 +212,7 @@ export default function AnalysisSummaryPage() {
         <SummaryOhmCard
           totalOhm={summary.ohmResult.totalOhm}
           current={summary.ohmResult.current}
+          chunks={summary.ohmResult.chunks}
         />
       )}
 
