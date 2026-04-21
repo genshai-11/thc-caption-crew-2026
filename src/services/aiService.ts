@@ -15,6 +15,9 @@ export interface OhmAnalysisResult {
   formula: string;
   totalOhm: number;
   modelUsed?: string;
+  baseOhm?: number;
+  lengthBucket?: 'veryShort' | 'short' | 'medium' | 'long' | 'overLong';
+  lengthCoefficient?: number;
 }
 
 const ANALYZE_OHM_URL = import.meta.env.DEV
@@ -24,14 +27,8 @@ const ANALYZE_OHM_URL = import.meta.env.DEV
 export async function analyzeTranscript(
   transcript: string,
   options?: {
-    provider?: 'google' | 'thirdparty';
-    googleApiKey?: string;
-    googleModel?: string;
-    thirdPartyOhmUrl?: string;
-    thirdPartyOhmApiKey?: string;
-    thirdPartyOhmModel?: string;
-    thirdPartyOhmAuthScheme?: 'none' | 'bearer' | 'x-api-key';
-    thirdPartyOhmWebhookUrl?: string;
+    model?: string;
+    fallbackModel?: string;
   },
 ): Promise<OhmAnalysisResult> {
   if (!ANALYZE_OHM_URL) {
@@ -39,22 +36,17 @@ export async function analyzeTranscript(
   }
 
   const config = loadAdminRuntimeConfig();
-  const provider = options?.provider || config.ohmAnalysisProvider || 'google';
 
   const response = await fetch(ANALYZE_OHM_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-ohm-analysis-provider': provider,
-      ...(options?.googleApiKey ? { 'x-google-api-key': options.googleApiKey } : {}),
-      ...(options?.googleModel ? { 'x-google-ohm-model': options.googleModel } : {}),
-      ...(options?.thirdPartyOhmUrl ? { 'x-thirdparty-ohm-url': options.thirdPartyOhmUrl } : {}),
-      ...(options?.thirdPartyOhmApiKey ? { 'x-thirdparty-ohm-api-key': options.thirdPartyOhmApiKey } : {}),
-      ...(options?.thirdPartyOhmModel ? { 'x-thirdparty-ohm-model': options.thirdPartyOhmModel } : {}),
-      ...(options?.thirdPartyOhmAuthScheme ? { 'x-thirdparty-ohm-auth-scheme': options.thirdPartyOhmAuthScheme } : {}),
-      ...(options?.thirdPartyOhmWebhookUrl ? { 'x-thirdparty-ohm-webhook-url': options.thirdPartyOhmWebhookUrl } : {}),
     },
-    body: JSON.stringify({ transcript }),
+    body: JSON.stringify({
+      transcript,
+      model: options?.model || config.ohmModel || config.router9Model,
+      fallbackModel: options?.fallbackModel || config.ohmFallbackModel || config.router9FallbackModel,
+    }),
   });
 
   const data = await response.json().catch(() => ({}));
@@ -67,5 +59,8 @@ export async function analyzeTranscript(
     formula: String(data.formula || '0'),
     totalOhm: Number(data.totalOhm || 0),
     modelUsed: typeof data.modelUsed === 'string' ? data.modelUsed : undefined,
+    baseOhm: typeof data.baseOhm === 'number' ? data.baseOhm : undefined,
+    lengthBucket: typeof data.lengthBucket === 'string' ? data.lengthBucket : undefined,
+    lengthCoefficient: typeof data.lengthCoefficient === 'number' ? data.lengthCoefficient : undefined,
   };
 }

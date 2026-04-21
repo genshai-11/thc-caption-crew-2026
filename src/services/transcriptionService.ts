@@ -30,7 +30,10 @@ export async function transcribeRoundAudio(
   const config = loadAdminRuntimeConfig();
   const transcriptProvider = options.providerOverride || config.transcriptProvider || 'deepgram';
   const selectedDeepgramModel = options.deepgramModelOverride || (options.role === 'captain' ? config.captainDeepgramModel : config.crewDeepgramModel);
-  const selectedGoogleModel = options.googleModelOverride || config.googleTranscriptModel || 'chirp_3';
+  const selectedGoogleModel = String(options.googleModelOverride || config.googleTranscriptModel || 'chirp_3')
+    .trim()
+    .replace(/[\s.,;:!?]+$/g, '')
+    .toLowerCase();
   const selectedGoogleProjectId = options.googleProjectIdOverride || config.googleCloudProjectId || '';
   const selectedGoogleLocation = options.googleLocationOverride || config.googleTranscriptLocation || 'global';
   const selectedThirdPartyModel = options.thirdPartyTranscriptModelOverride || config.thirdPartyTranscriptModel || '';

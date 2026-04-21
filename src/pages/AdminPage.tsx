@@ -102,19 +102,13 @@ export default function AdminPage() {
     setAnalysisState({ status: 'loading', message: 'Analyzing transcript with AI…' });
     try {
       const result = await analyzeTranscript(normalizedTranscript, {
-        provider: config.ohmAnalysisProvider,
-        googleApiKey: config.googleApiKey,
-        googleModel: config.googleOhmModel,
-        thirdPartyOhmUrl: config.thirdPartyOhmUrl,
-        thirdPartyOhmApiKey: config.thirdPartyOhmApiKey,
-        thirdPartyOhmModel: config.thirdPartyOhmModel,
-        thirdPartyOhmAuthScheme: config.thirdPartyOhmAuthScheme,
-        thirdPartyOhmWebhookUrl: config.thirdPartyOhmWebhookUrl,
+        model: config.ohmModel || config.router9Model,
+        fallbackModel: config.ohmFallbackModel || config.router9FallbackModel,
       });
       setAnalysisResult(result);
       setAnalysisState({
         status: 'success',
-        message:           `Analysis complete • provider ${config.ohmAnalysisProvider === 'thirdparty' ? 'third-party' : 'google'} • model ${result.modelUsed || config.thirdPartyOhmModel || config.googleOhmModel || 'default'}`,
+        message: `Analysis complete • engine Router9 • model ${result.modelUsed || config.ohmModel || config.router9Model || 'default'}`,
       });
     } catch (error: any) {
       setAnalysisResult(null);
@@ -147,8 +141,14 @@ export default function AdminPage() {
       const models = await fetchRouterModels();
       setRouterModels(models);
       setModelsState({ status: 'success', message: `${models.length} model(s) loaded.` });
-      if (!config.router9Model && models[0]?.id) {
-        setConfig((prev) => ({ ...prev, router9Model: models[0].id, router9FallbackModel: prev.router9FallbackModel || models[1]?.id || models[0].id }));
+      if (models[0]?.id) {
+        setConfig((prev) => ({
+          ...prev,
+          router9Model: prev.router9Model || models[0].id,
+          router9FallbackModel: prev.router9FallbackModel || models[1]?.id || models[0].id,
+          ohmModel: prev.ohmModel || models[0].id,
+          ohmFallbackModel: prev.ohmFallbackModel || models[1]?.id || models[0].id,
+        }));
       }
     } catch (error: any) {
       setModelsState({ status: 'error', message: error.message || 'Failed to fetch models.' });
@@ -324,7 +324,7 @@ export default function AdminPage() {
   };
 
   const transcriptReady = config.transcriptProvider === 'google'
-    ? !!config.googleApiKey && captainTestState.status === 'success' && crewTestState.status === 'success'
+    ? captainTestState.status === 'success' && crewTestState.status === 'success'
     : config.transcriptProvider === 'thirdparty'
       ? !!config.thirdPartyTranscriptUrl && captainTestState.status === 'success' && crewTestState.status === 'success'
       : !!config.deepgramApiKey && captainTestState.status === 'success' && crewTestState.status === 'success';
@@ -484,16 +484,7 @@ export default function AdminPage() {
             <p className="admin-message">Expected API contract: POST transcript + settings.ohmBaseValues (Green=5, Blue=7, Red=9, Pink=3) + optional webhookUrl to /api/analyze-ohm; return transcriptRaw, transcriptNormalized, chunks, formula, totalOhm, modelUsed.</p>
           </>
         ) : (
-          <>
-            <label className="field-stack">
-              <span>Google API key for Ohm analysis</span>
-              <input type="password" value={config.googleApiKey} onChange={(e) => patchConfig('googleApiKey', e.target.value)} />
-            </label>
-            <label className="field-stack">
-              <span>Google model for Ohm analysis</span>
-              <input value={config.googleOhmModel} onChange={(e) => patchConfig('googleOhmModel', e.target.value)} />
-            </label>
-          </>
+          <p className="admin-message">Deepgram settings are active for transcript. OHM analysis model is configured in the Router9 section below.</p>
         )}
         <p className="admin-message">{analysisState.message}</p>
         {analysisTranscript ? (
@@ -596,6 +587,67 @@ export default function AdminPage() {
           <StatusBadge label={routerTestState.status === 'success' ? 'pass' : routerTestState.status === 'error' ? 'fail' : 'pending'} status={routerTestState.status === 'success' ? 'success' : routerTestState.status === 'error' ? 'error' : 'idle'} />
         </div>
         <p className="admin-message">{routerTestState.message}</p>
+      </section>
+
+      <section className="soft-card admin-section-minimal">
+        <div className="section-title-row">
+          <h2 className="section-title">OHM analysis (Router9)</h2>
+        </div>
+
+        <div className="admin-grid two-up">
+          <label className="field-stack">
+            <span>OHM primary model</span>
+            {modelOptions.length > 0 ? (
+              <select value={config.ohmModel} onChange={(e) => patchConfig('ohmModel', e.target.value)}>
+                <option value="">Select a model</option>
+                {modelOptions.map((modelId) => <option key={`ohm-${modelId}`} value={modelId}>{modelId}</option>)}
+              </select>
+            ) : (
+              <input value={config.ohmModel} onChange={(e) => patchConfig('ohmModel', e.target.value)} placeholder="gpt" />
+            )}
+          </label>
+          <label className="field-stack">
+            <span>OHM fallback model</span>
+            {modelOptions.length > 0 ? (
+              <select value={config.ohmFallbackModel} onChange={(e) => patchConfig('ohmFallbackModel', e.target.value)}>
+                <option value="">Select a fallback model</option>
+                {modelOptions.map((modelId) => <option key={`ohm-fallback-${modelId}`} value={modelId}>{modelId}</option>)}
+              </select>
+            ) : (
+              <input value={config.ohmFallbackModel} onChange={(e) => patchConfig('ohmFallbackModel', e.target.value)} placeholder="gpt" />
+            )}
+          </label>
+        </div>
+
+        <div className="admin-grid four-up">
+          <label className="field-stack"><span>GREEN</span><input type="number" value={config.ohmWeights.GREEN} onChange={(e) => setConfig((prev) => ({ ...prev, ohmWeights: { ...prev.ohmWeights, GREEN: Number(e.target.value) || 0 } }))} /></label>
+          <label className="field-stack"><span>BLUE</span><input type="number" value={config.ohmWeights.BLUE} onChange={(e) => setConfig((prev) => ({ ...prev, ohmWeights: { ...prev.ohmWeights, BLUE: Number(e.target.value) || 0 } }))} /></label>
+          <label className="field-stack"><span>RED</span><input type="number" value={config.ohmWeights.RED} onChange={(e) => setConfig((prev) => ({ ...prev, ohmWeights: { ...prev.ohmWeights, RED: Number(e.target.value) || 0 } }))} /></label>
+          <label className="field-stack"><span>PINK</span><input type="number" value={config.ohmWeights.PINK} onChange={(e) => setConfig((prev) => ({ ...prev, ohmWeights: { ...prev.ohmWeights, PINK: Number(e.target.value) || 0 } }))} /></label>
+        </div>
+
+        <div className="admin-grid four-up">
+          <label className="field-stack"><span>Very short max sentences</span><input type="number" value={config.ohmLengthConstraints.veryShort.maxSentences} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, veryShort: { ...prev.ohmLengthConstraints.veryShort, maxSentences: Number(e.target.value) || 1 } } }))} /></label>
+          <label className="field-stack"><span>Very short max words</span><input type="number" value={config.ohmLengthConstraints.veryShort.maxWords} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, veryShort: { ...prev.ohmLengthConstraints.veryShort, maxWords: Number(e.target.value) || 25 } } }))} /></label>
+          <label className="field-stack"><span>Short max sentences</span><input type="number" value={config.ohmLengthConstraints.short.maxSentences} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, short: { ...prev.ohmLengthConstraints.short, maxSentences: Number(e.target.value) || 2 } } }))} /></label>
+          <label className="field-stack"><span>Short max words</span><input type="number" value={config.ohmLengthConstraints.short.maxWords} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, short: { ...prev.ohmLengthConstraints.short, maxWords: Number(e.target.value) || 35 } } }))} /></label>
+        </div>
+
+        <div className="admin-grid four-up">
+          <label className="field-stack"><span>Medium max sentences</span><input type="number" value={config.ohmLengthConstraints.medium.maxSentences} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, medium: { ...prev.ohmLengthConstraints.medium, maxSentences: Number(e.target.value) || 3 } } }))} /></label>
+          <label className="field-stack"><span>Medium max words</span><input type="number" value={config.ohmLengthConstraints.medium.maxWords} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, medium: { ...prev.ohmLengthConstraints.medium, maxWords: Number(e.target.value) || 60 } } }))} /></label>
+          <label className="field-stack"><span>Long max sentences</span><input type="number" value={config.ohmLengthConstraints.long.maxSentences} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, long: { ...prev.ohmLengthConstraints.long, maxSentences: Number(e.target.value) || 5 } } }))} /></label>
+          <label className="field-stack"><span>Long max words</span><input type="number" value={config.ohmLengthConstraints.long.maxWords} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthConstraints: { ...prev.ohmLengthConstraints, long: { ...prev.ohmLengthConstraints.long, maxWords: Number(e.target.value) || 110 } } }))} /></label>
+        </div>
+
+        <div className="admin-grid four-up">
+          <label className="field-stack"><span>Very short coef</span><select value={String(config.ohmLengthCoefficients.veryShort)} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthCoefficients: { ...prev.ohmLengthCoefficients, veryShort: Number(e.target.value) } }))}><option value="1">1</option><option value="1.5">1.5</option><option value="2">2</option><option value="2.5">2.5</option></select></label>
+          <label className="field-stack"><span>Short coef</span><select value={String(config.ohmLengthCoefficients.short)} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthCoefficients: { ...prev.ohmLengthCoefficients, short: Number(e.target.value) } }))}><option value="1">1</option><option value="1.5">1.5</option><option value="2">2</option><option value="2.5">2.5</option></select></label>
+          <label className="field-stack"><span>Medium coef</span><select value={String(config.ohmLengthCoefficients.medium)} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthCoefficients: { ...prev.ohmLengthCoefficients, medium: Number(e.target.value) } }))}><option value="1">1</option><option value="1.5">1.5</option><option value="2">2</option><option value="2.5">2.5</option></select></label>
+          <label className="field-stack"><span>Long coef</span><select value={String(config.ohmLengthCoefficients.long)} onChange={(e) => setConfig((prev) => ({ ...prev, ohmLengthCoefficients: { ...prev.ohmLengthCoefficients, long: Number(e.target.value) } }))}><option value="1">1</option><option value="1.5">1.5</option><option value="2">2</option><option value="2.5">2.5</option></select></label>
+        </div>
+
+        <p className="admin-message">Allowed coefficients: 1, 1.5, 2, 2.5. overLong is fixed at 2.5.</p>
       </section>
 
       <section className="soft-card admin-section-minimal">

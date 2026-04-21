@@ -61,18 +61,34 @@ const defaultSharedConfig = {
   googleTranscriptModel: 'chirp_3',
   googleTranscriptLocation: 'global',
   googleOhmModel: 'gemini-1.5-flash',
+  ohmModel: 'gpt',
+  ohmFallbackModel: 'gpt',
+  ohmWeights: { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 },
+  ohmLengthConstraints: {
+    veryShort: { maxSentences: 1, maxWords: 25 },
+    short: { maxSentences: 2, maxWords: 35 },
+    medium: { maxSentences: 3, maxWords: 60 },
+    long: { maxSentences: 5, maxWords: 110 },
+  },
+  ohmLengthCoefficients: {
+    veryShort: 1,
+    short: 1.5,
+    medium: 2,
+    long: 2.5,
+    overLong: 2.5,
+  },
   thirdPartyTranscriptUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/transcribe',
   thirdPartyTranscriptApiKey: '',
   thirdPartyTranscriptModel: '',
   thirdPartyTranscriptAuthScheme: 'bearer',
-  ohmAnalysisProvider: 'google',
+  ohmAnalysisProvider: 'router9',
   thirdPartyOhmUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/analyze-ohm',
   thirdPartyOhmApiKey: '',
   thirdPartyOhmModel: '',
   thirdPartyOhmAuthScheme: 'bearer',
   thirdPartyOhmWebhookUrl: '',
   router9ApiKey: '',
-  router9BaseUrl: 'https://rqlaeq5.9router.com/v1',
+  router9BaseUrl: 'http://34.87.121.108:20128/v1',
   router9Model: '',
   router9FallbackModel: '',
   meaningStrictness: 'medium',
@@ -139,9 +155,48 @@ function normalizeGoogleModelList(rawModels) {
   return GOOGLE_STT_MODELS.map((model) => model.id);
 }
 
-async function callGoogleSpeechTranscribe({ apiKey, model, language, location, projectId, contentType, audioBuffer }) {
-  const cleanModel = String(model || 'chirp_3').replace(/^models\//, '');
-  const selectedLocation = String(location || 'global');
+function sanitizeSpeechModel(model) {
+  return String(model || 'chirp_3')
+    .replace(/^models\//, '')
+    .trim()
+    .replace(/[\s.,;:!?]+$/g, '')
+    .toLowerCase();
+}
+
+function resolveSpeechLocation(model, location) {
+  const cleanModel = sanitizeSpeechModel(model);
+  const selected = String(location || 'global').trim().toLowerCase();
+
+  if ((cleanModel === 'chirp_3' || cleanModel === 'chirp_2' || cleanModel.startsWith('chirp_')) && selected === 'global') {
+    return 'us';
+  }
+
+  return selected || 'us';
+}
+
+async function getGcpAccessToken() {
+  const metadataUrl = 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token';
+  const response = await fetch(metadataUrl, {
+    method: 'GET',
+    headers: {
+      'Metadata-Flavor': 'Google',
+    },
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Could not obtain GCP access token (${response.status}): ${body}`);
+  }
+
+  const payload = await response.json();
+  const accessToken = String(payload?.access_token || '');
+  if (!accessToken) throw new Error('GCP access token was empty');
+  return accessToken;
+}
+
+async function callGoogleSpeechTranscribe({ model, language, location, projectId, contentType, audioBuffer }) {
+  const cleanModel = sanitizeSpeechModel(model);
+  const selectedLocation = resolveSpeechLocation(cleanModel, location);
   const selectedProjectId = String(
     projectId
     || process.env.GCLOUD_PROJECT
@@ -157,11 +212,18 @@ async function callGoogleSpeechTranscribe({ apiKey, model, language, location, p
   const languageCode = language === 'vi' ? 'vi-VN' : language === 'en' ? 'en-US' : 'en-US';
   const base64Audio = Buffer.from(audioBuffer).toString('base64');
 
+  const accessToken = await getGcpAccessToken();
+
+  const speechHost = selectedLocation === 'global'
+    ? 'speech.googleapis.com'
+    : `${selectedLocation}-speech.googleapis.com`;
+
   const response = await fetch(
-    `https://speech.googleapis.com/v2/projects/${encodeURIComponent(selectedProjectId)}/locations/${encodeURIComponent(selectedLocation)}/recognizers/_:recognize?key=${encodeURIComponent(apiKey)}`,
+    `https://${speechHost}/v2/projects/${encodeURIComponent(selectedProjectId)}/locations/${encodeURIComponent(selectedLocation)}/recognizers/_:recognize`,
     {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -388,15 +450,12 @@ exports.transcribeRoundAudio = onRequest({ cors: false, invoker: 'public' }, asy
 
     if (transcriptProvider === 'google') {
       const googleModel = String(req.headers['x-google-model'] || sharedConfig.googleTranscriptModel || 'chirp_3');
-      const googleApiKey = req.headers['x-google-api-key'] || process.env.GOOGLE_API_KEY || sharedConfig.googleApiKey;
       const googleProjectId = String(req.headers['x-google-project-id'] || sharedConfig.googleCloudProjectId || process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT || '');
       const googleLocation = String(req.headers['x-google-location'] || sharedConfig.googleTranscriptLocation || 'global');
-      if (!googleApiKey) throw new Error('GOOGLE_API_KEY not configured');
 
       logger.info('STT request received (google)', { role, language, googleModel, googleLocation, googleProjectId, contentType, audioBytes });
 
       const googleResult = await callGoogleSpeechTranscribe({
-        apiKey: googleApiKey,
         model: googleModel,
         language,
         location: googleLocation,
@@ -515,6 +574,94 @@ function extractFirstJsonObject(text) {
   return raw.slice(start, end + 1);
 }
 
+function normalizeOhmSettings(sharedConfig = {}) {
+  const defaultWeights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 };
+  const defaultConstraints = {
+    veryShort: { maxSentences: 1, maxWords: 25 },
+    short: { maxSentences: 2, maxWords: 35 },
+    medium: { maxSentences: 3, maxWords: 60 },
+    long: { maxSentences: 5, maxWords: 110 },
+  };
+  const defaultCoefficients = { veryShort: 1, short: 1.5, medium: 2, long: 2.5, overLong: 2.5 };
+
+  return {
+    weights: {
+      GREEN: Number(sharedConfig?.ohmWeights?.GREEN || defaultWeights.GREEN),
+      BLUE: Number(sharedConfig?.ohmWeights?.BLUE || defaultWeights.BLUE),
+      RED: Number(sharedConfig?.ohmWeights?.RED || defaultWeights.RED),
+      PINK: Number(sharedConfig?.ohmWeights?.PINK || defaultWeights.PINK),
+    },
+    constraints: {
+      veryShort: {
+        maxSentences: Number(sharedConfig?.ohmLengthConstraints?.veryShort?.maxSentences || defaultConstraints.veryShort.maxSentences),
+        maxWords: Number(sharedConfig?.ohmLengthConstraints?.veryShort?.maxWords || defaultConstraints.veryShort.maxWords),
+      },
+      short: {
+        maxSentences: Number(sharedConfig?.ohmLengthConstraints?.short?.maxSentences || defaultConstraints.short.maxSentences),
+        maxWords: Number(sharedConfig?.ohmLengthConstraints?.short?.maxWords || defaultConstraints.short.maxWords),
+      },
+      medium: {
+        maxSentences: Number(sharedConfig?.ohmLengthConstraints?.medium?.maxSentences || defaultConstraints.medium.maxSentences),
+        maxWords: Number(sharedConfig?.ohmLengthConstraints?.medium?.maxWords || defaultConstraints.medium.maxWords),
+      },
+      long: {
+        maxSentences: Number(sharedConfig?.ohmLengthConstraints?.long?.maxSentences || defaultConstraints.long.maxSentences),
+        maxWords: Number(sharedConfig?.ohmLengthConstraints?.long?.maxWords || defaultConstraints.long.maxWords),
+      },
+    },
+    coefficients: {
+      veryShort: Number(sharedConfig?.ohmLengthCoefficients?.veryShort || defaultCoefficients.veryShort),
+      short: Number(sharedConfig?.ohmLengthCoefficients?.short || defaultCoefficients.short),
+      medium: Number(sharedConfig?.ohmLengthCoefficients?.medium || defaultCoefficients.medium),
+      long: Number(sharedConfig?.ohmLengthCoefficients?.long || defaultCoefficients.long),
+      overLong: Number(sharedConfig?.ohmLengthCoefficients?.overLong || defaultCoefficients.overLong),
+    },
+  };
+}
+
+function resolveLengthBucket(transcript, constraints = {}) {
+  const sentenceCount = String(transcript || '').split(/[.!?\n\r]+/).map((segment) => segment.trim()).filter(Boolean).length || 1;
+  const wordCount = String(transcript || '').trim().split(/\s+/).filter(Boolean).length;
+
+  if (sentenceCount <= (constraints.veryShort?.maxSentences || 1) && wordCount <= (constraints.veryShort?.maxWords || 25)) {
+    return { sentenceCount, wordCount, lengthBucket: 'veryShort' };
+  }
+  if (sentenceCount <= (constraints.short?.maxSentences || 2) && wordCount <= (constraints.short?.maxWords || 35)) {
+    return { sentenceCount, wordCount, lengthBucket: 'short' };
+  }
+  if (sentenceCount <= (constraints.medium?.maxSentences || 3) && wordCount <= (constraints.medium?.maxWords || 60)) {
+    return { sentenceCount, wordCount, lengthBucket: 'medium' };
+  }
+  if (sentenceCount <= (constraints.long?.maxSentences || 5) && wordCount <= (constraints.long?.maxWords || 110)) {
+    return { sentenceCount, wordCount, lengthBucket: 'long' };
+  }
+  return { sentenceCount, wordCount, lengthBucket: 'overLong' };
+}
+
+function computeOhmFromChunks(chunks = [], weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
+  const groups = { GREEN: [], BLUE: [], RED: [], PINK: [] };
+  for (const chunk of chunks) {
+    const label = String(chunk?.label || '').toUpperCase();
+    if (!groups[label]) continue;
+    groups[label].push(Number(weights[label] || 0));
+  }
+
+  const grouped = Object.keys(groups)
+    .map((label) => ({ label, parts: groups[label], sum: groups[label].reduce((acc, value) => acc + value, 0) }))
+    .filter((entry) => entry.parts.length > 0);
+
+  if (grouped.length === 0) {
+    return { baseOhm: 0, formula: '0' };
+  }
+
+  const baseOhm = grouped.reduce((acc, entry) => acc * entry.sum, 1);
+  const formula = grouped
+    .map((entry) => (entry.parts.length > 1 ? `(${entry.parts.join(' + ')})` : `${entry.parts[0]}`))
+    .join(' x ');
+
+  return { baseOhm, formula };
+}
+
 exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, async (req, res) => {
   try {
     if (handleOptions(req, res)) return;
@@ -524,102 +671,62 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     if (!transcript) throw new Error('Transcript is required');
 
     const sharedConfig = await getSharedAdminConfig();
-    const provider = String(req.headers['x-ohm-analysis-provider'] || sharedConfig.ohmAnalysisProvider || 'google').toLowerCase();
+    const apiKey = req.body.routerApiKey || process.env.ROUTER9_API_KEY || sharedConfig.router9ApiKey;
+    const baseUrl = req.body.routerBaseUrl || process.env.ROUTER9_BASE_URL || sharedConfig.router9BaseUrl || 'http://34.87.121.108:20128/v1';
+    const model = String(req.body.model || sharedConfig.ohmModel || sharedConfig.router9Model || process.env.ROUTER9_MODEL || 'gpt').trim();
+    const fallbackModel = String(req.body.fallbackModel || sharedConfig.ohmFallbackModel || sharedConfig.router9FallbackModel || process.env.ROUTER9_FALLBACK_MODEL || model).trim();
+    const ohmSettings = normalizeOhmSettings(sharedConfig);
 
-    if (provider === 'thirdparty') {
-      const thirdPartyOhmUrl = String(req.headers['x-thirdparty-ohm-url'] || process.env.THIRD_PARTY_OHM_URL || sharedConfig.thirdPartyOhmUrl || '');
-      const thirdPartyOhmApiKey = req.headers['x-thirdparty-ohm-api-key'] || process.env.THIRD_PARTY_OHM_API_KEY || sharedConfig.thirdPartyOhmApiKey;
-      const thirdPartyOhmModel = String(req.headers['x-thirdparty-ohm-model'] || process.env.THIRD_PARTY_OHM_MODEL || sharedConfig.thirdPartyOhmModel || '');
-      const thirdPartyOhmAuthScheme = String(req.headers['x-thirdparty-ohm-auth-scheme'] || process.env.THIRD_PARTY_OHM_AUTH_SCHEME || sharedConfig.thirdPartyOhmAuthScheme || 'bearer').toLowerCase();
-      const thirdPartyOhmWebhookUrl = String(req.headers['x-thirdparty-ohm-webhook-url'] || process.env.THIRD_PARTY_OHM_WEBHOOK_URL || sharedConfig.thirdPartyOhmWebhookUrl || '');
+    const prompt = `You are an expert linguistic analyzer. Analyze transcript and extract semantic chunks in labels GREEN, BLUE, RED, PINK only.\n\nRules:\n1) Do not classify everything.\n2) Extract exact substrings from transcript.\n3) Return valid JSON object only.\n4) Keep confidence in 0..1.\n\nTranscript:\n${JSON.stringify(transcript)}\n\nReturn JSON with keys: transcriptRaw, transcriptNormalized, chunks.\nEach chunk item must include text, label, confidence, reason.`;
 
-      const thirdPartyResult = await callThirdPartyOhm({
-        url: thirdPartyOhmUrl,
-        apiKey: thirdPartyOhmApiKey,
-        authScheme: thirdPartyOhmAuthScheme,
-        model: thirdPartyOhmModel,
-        transcript,
-        webhookUrl: thirdPartyOhmWebhookUrl,
-      });
-
-      res.json({
-        transcriptRaw: thirdPartyResult.transcriptRaw,
-        transcriptNormalized: thirdPartyResult.transcriptNormalized,
-        chunks: thirdPartyResult.chunks,
-        formula: thirdPartyResult.formula,
-        totalOhm: thirdPartyResult.totalOhm,
-        modelUsed: thirdPartyResult.modelUsed,
-      });
-      return;
-    }
-
-    const model = String(req.headers['x-google-ohm-model'] || req.headers['x-google-model'] || sharedConfig.googleOhmModel || sharedConfig.googleTranscriptModel || 'gemini-1.5-flash');
-    const googleApiKey = req.headers['x-google-api-key'] || process.env.GOOGLE_API_KEY || sharedConfig.googleApiKey;
-    if (!googleApiKey) throw new Error('GOOGLE_API_KEY not configured');
-
-    const prompt = `You are an expert linguistic analyzer. Analyze the following transcript and extract semantic chunks based on these 4 categories:
-- GREEN (5 Ohm): Gap fillers, discourse markers, transition phrases, openers.
-- BLUE (7 Ohm): Sentence frames, reusable communication templates (incomplete starter patterns).
-- RED (9 Ohm): Idiomatic expressions, figurative language, vivid colloquial sayings.
-- PINK (3 Ohm): Key terms, specific concepts, lexical topic units.
-
-CRITICAL RULES:
-1) Do not classify everything. Ignore normal speech.
-2) BLUE is not catch-all.
-3) Common words are not PINK unless specific technical terms.
-4) Do not force classification.
-5) Extract exact substrings from transcript.
-6) Add short reason and confidence (0..1).
-
-Ohm rules:
-- Same label: sum
-- Different labels: multiply group sums
-
-Transcript:
-"${transcript.replace(/\"/g, '\\\"')}"
-
-Return STRICT JSON object:
-{
-  "transcriptRaw": "original transcript",
-  "transcriptNormalized": "lowercase, no punctuation",
-  "chunks": [
-    {
-      "text": "extracted text",
-      "label": "GREEN|BLUE|RED|PINK",
-      "ohm": number,
-      "confidence": number,
-      "reason": "short reason"
-    }
-  ],
-  "formula": "(5 + 5) x 9",
-  "totalOhm": number
-}`;
-
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(String(model).replace(/^models\//, ''))}:generateContent?key=${encodeURIComponent(String(googleApiKey))}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0 },
-      }),
+    const completion = await callRouterChat({
+      apiKey,
+      baseUrl,
+      model,
+      fallbackModel,
+      temperature: 0,
+      responseFormat: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: 'Return strict JSON. Labels allowed: GREEN, BLUE, RED, PINK.' },
+        { role: 'user', content: prompt },
+      ],
     });
 
-    if (!response.ok) {
-      const body = await response.text();
-      throw new Error(`Gemini analyze error (${response.status}): ${body}`);
-    }
+    const raw = completion?.choices?.[0]?.message?.content;
+    const parsed = typeof raw === 'string' ? JSON.parse(extractFirstJsonObject(raw)) : (raw || {});
 
-    const payload = await response.json();
-    const answerText = String(payload?.candidates?.[0]?.content?.parts?.map((part) => part?.text || '').join(' ') || payload?.text || '');
-    const parsed = JSON.parse(extractFirstJsonObject(answerText));
+    const chunks = Array.isArray(parsed?.chunks)
+      ? parsed.chunks
+          .map((chunk) => {
+            const label = String(chunk?.label || '').toUpperCase();
+            return {
+              text: String(chunk?.text || ''),
+              label,
+              ohm: Number(ohmSettings.weights[label] || 0),
+              confidence: Number(chunk?.confidence || 0),
+              reason: String(chunk?.reason || ''),
+            };
+          })
+          .filter((chunk) => ['GREEN', 'BLUE', 'RED', 'PINK'].includes(chunk.label) && chunk.text)
+      : [];
+
+    const { baseOhm, formula } = computeOhmFromChunks(chunks, ohmSettings.weights);
+    const { sentenceCount, wordCount, lengthBucket } = resolveLengthBucket(transcript, ohmSettings.constraints);
+    const lengthCoefficient = Number(ohmSettings.coefficients[lengthBucket] || ohmSettings.coefficients.overLong || 2.5);
+    const totalOhm = Number((baseOhm * lengthCoefficient).toFixed(4));
 
     res.json({
       transcriptRaw: String(parsed?.transcriptRaw || transcript),
       transcriptNormalized: String(parsed?.transcriptNormalized || ''),
-      chunks: Array.isArray(parsed?.chunks) ? parsed.chunks : [],
-      formula: String(parsed?.formula || '0'),
-      totalOhm: Number(parsed?.totalOhm || 0),
-      modelUsed: String(model),
+      chunks,
+      formula: String(parsed?.formula || formula || '0'),
+      totalOhm,
+      modelUsed: String(completion?.model || model || fallbackModel || ''),
+      baseOhm,
+      lengthBucket,
+      lengthCoefficient,
+      sentenceCount,
+      wordCount,
     });
   } catch (error) {
     logger.error(error);
@@ -628,14 +735,17 @@ Return STRICT JSON object:
   }
 });
 
+
 async function callRouterChat({ apiKey, baseUrl, model, fallbackModel, messages, temperature = 0.2, responseFormat }) {
-  if (!apiKey) throw new Error('ROUTER9_API_KEY not configured');
+  const cleanApiKey = String(apiKey || '').trim();
+  const cleanBaseUrl = String(baseUrl || '').trim();
+  if (!cleanApiKey) throw new Error('ROUTER9_API_KEY not configured');
   if (!model && !fallbackModel) throw new Error('No Router9 model configured');
 
-  const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
+  const response = await fetch(`${cleanBaseUrl.replace(/\/$/, '')}/chat/completions`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${cleanApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -689,12 +799,10 @@ exports.testGoogleSttModels = onRequest({ cors: false, invoker: 'public' }, asyn
 
     if (!audioBuffer || !audioBytes) throw new Error('No audio payload received');
 
-    const googleApiKey = req.headers['x-google-api-key'] || process.env.GOOGLE_API_KEY || sharedConfig.googleApiKey;
     const googleProjectId = String(req.headers['x-google-project-id'] || sharedConfig.googleCloudProjectId || process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT || '');
     const googleLocation = String(req.headers['x-google-location'] || sharedConfig.googleTranscriptLocation || 'global');
     const requestedModels = normalizeGoogleModelList(req.headers['x-google-models'] || req.body?.models);
 
-    if (!googleApiKey) throw new Error('GOOGLE_API_KEY not configured');
     if (!googleProjectId) throw new Error('Google STT project ID is missing');
 
     logger.info('Testing Google STT models', { role, language, models: requestedModels, googleLocation, googleProjectId, contentType, audioBytes });
@@ -704,7 +812,6 @@ exports.testGoogleSttModels = onRequest({ cors: false, invoker: 'public' }, asyn
       const modelStartedAt = Date.now();
       try {
         const result = await callGoogleSpeechTranscribe({
-          apiKey: googleApiKey,
           model: modelId,
           language,
           location: googleLocation,

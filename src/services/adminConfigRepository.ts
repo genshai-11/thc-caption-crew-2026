@@ -18,7 +18,7 @@ export interface AdminRuntimeConfig {
   thirdPartyTranscriptApiKey: string;
   thirdPartyTranscriptModel: string;
   thirdPartyTranscriptAuthScheme: 'none' | 'bearer' | 'x-api-key';
-  ohmAnalysisProvider: 'google' | 'thirdparty';
+  ohmAnalysisProvider: 'router9';
   thirdPartyOhmUrl: string;
   thirdPartyOhmApiKey: string;
   thirdPartyOhmModel: string;
@@ -28,6 +28,27 @@ export interface AdminRuntimeConfig {
   router9BaseUrl: string;
   router9Model: string;
   router9FallbackModel: string;
+  ohmModel: string;
+  ohmFallbackModel: string;
+  ohmWeights: {
+    GREEN: number;
+    BLUE: number;
+    RED: number;
+    PINK: number;
+  };
+  ohmLengthConstraints: {
+    veryShort: { maxSentences: number; maxWords: number };
+    short: { maxSentences: number; maxWords: number };
+    medium: { maxSentences: number; maxWords: number };
+    long: { maxSentences: number; maxWords: number };
+  };
+  ohmLengthCoefficients: {
+    veryShort: number;
+    short: number;
+    medium: number;
+    long: number;
+    overLong: number;
+  };
   meaningStrictness: 'loose' | 'medium' | 'strict';
   meaningWeight: number;
   feedbackEnabled: boolean;
@@ -62,16 +83,37 @@ export const defaultAdminRuntimeConfig: AdminRuntimeConfig = {
   thirdPartyTranscriptApiKey: '',
   thirdPartyTranscriptModel: '',
   thirdPartyTranscriptAuthScheme: 'bearer',
-  ohmAnalysisProvider: 'google',
+  ohmAnalysisProvider: 'router9',
   thirdPartyOhmUrl: 'https://ais-dev-msgfyvxutdkvwq3bz4qbhr-148630698694.asia-southeast1.run.app/api/analyze-ohm',
   thirdPartyOhmApiKey: '',
   thirdPartyOhmModel: '',
   thirdPartyOhmAuthScheme: 'bearer',
   thirdPartyOhmWebhookUrl: '',
   router9ApiKey: '',
-  router9BaseUrl: 'https://rqlaeq5.9router.com/v1',
-  router9Model: '',
-  router9FallbackModel: '',
+  router9BaseUrl: 'http://34.87.121.108:20128/v1',
+  router9Model: 'gpt',
+  router9FallbackModel: 'gpt',
+  ohmModel: 'gpt',
+  ohmFallbackModel: 'gpt',
+  ohmWeights: {
+    GREEN: 5,
+    BLUE: 7,
+    RED: 9,
+    PINK: 3,
+  },
+  ohmLengthConstraints: {
+    veryShort: { maxSentences: 1, maxWords: 25 },
+    short: { maxSentences: 2, maxWords: 35 },
+    medium: { maxSentences: 3, maxWords: 60 },
+    long: { maxSentences: 5, maxWords: 110 },
+  },
+  ohmLengthCoefficients: {
+    veryShort: 1,
+    short: 1.5,
+    medium: 2,
+    long: 2.5,
+    overLong: 2.5,
+  },
   meaningStrictness: 'medium',
   meaningWeight: 100,
   feedbackEnabled: true,
@@ -111,7 +153,7 @@ function normalizeAdminConfig(raw?: Partial<AdminRuntimeConfig> | null): AdminRu
         ? 'thirdparty'
         : 'deepgram',
     partialTranscriptEnabled: raw?.partialTranscriptEnabled === true,
-    ohmAnalysisProvider: raw?.ohmAnalysisProvider === 'thirdparty' ? 'thirdparty' : 'google',
+    ohmAnalysisProvider: 'router9',
     thirdPartyTranscriptAuthScheme: raw?.thirdPartyTranscriptAuthScheme === 'none'
       ? 'none'
       : raw?.thirdPartyTranscriptAuthScheme === 'x-api-key'
@@ -124,6 +166,39 @@ function normalizeAdminConfig(raw?: Partial<AdminRuntimeConfig> | null): AdminRu
         : 'bearer',
     visualTheme: normalizeVisualTheme(raw?.visualTheme || defaultAdminRuntimeConfig.visualTheme),
     semanticOhmCurrent: Number(raw?.semanticOhmCurrent || defaultAdminRuntimeConfig.semanticOhmCurrent),
+    ohmModel: String(raw?.ohmModel || raw?.router9Model || defaultAdminRuntimeConfig.ohmModel),
+    ohmFallbackModel: String(raw?.ohmFallbackModel || raw?.router9FallbackModel || defaultAdminRuntimeConfig.ohmFallbackModel),
+    ohmWeights: {
+      GREEN: Number(raw?.ohmWeights?.GREEN || defaultAdminRuntimeConfig.ohmWeights.GREEN),
+      BLUE: Number(raw?.ohmWeights?.BLUE || defaultAdminRuntimeConfig.ohmWeights.BLUE),
+      RED: Number(raw?.ohmWeights?.RED || defaultAdminRuntimeConfig.ohmWeights.RED),
+      PINK: Number(raw?.ohmWeights?.PINK || defaultAdminRuntimeConfig.ohmWeights.PINK),
+    },
+    ohmLengthConstraints: {
+      veryShort: {
+        maxSentences: Number(raw?.ohmLengthConstraints?.veryShort?.maxSentences || defaultAdminRuntimeConfig.ohmLengthConstraints.veryShort.maxSentences),
+        maxWords: Number(raw?.ohmLengthConstraints?.veryShort?.maxWords || defaultAdminRuntimeConfig.ohmLengthConstraints.veryShort.maxWords),
+      },
+      short: {
+        maxSentences: Number(raw?.ohmLengthConstraints?.short?.maxSentences || defaultAdminRuntimeConfig.ohmLengthConstraints.short.maxSentences),
+        maxWords: Number(raw?.ohmLengthConstraints?.short?.maxWords || defaultAdminRuntimeConfig.ohmLengthConstraints.short.maxWords),
+      },
+      medium: {
+        maxSentences: Number(raw?.ohmLengthConstraints?.medium?.maxSentences || defaultAdminRuntimeConfig.ohmLengthConstraints.medium.maxSentences),
+        maxWords: Number(raw?.ohmLengthConstraints?.medium?.maxWords || defaultAdminRuntimeConfig.ohmLengthConstraints.medium.maxWords),
+      },
+      long: {
+        maxSentences: Number(raw?.ohmLengthConstraints?.long?.maxSentences || defaultAdminRuntimeConfig.ohmLengthConstraints.long.maxSentences),
+        maxWords: Number(raw?.ohmLengthConstraints?.long?.maxWords || defaultAdminRuntimeConfig.ohmLengthConstraints.long.maxWords),
+      },
+    },
+    ohmLengthCoefficients: {
+      veryShort: Number(raw?.ohmLengthCoefficients?.veryShort || defaultAdminRuntimeConfig.ohmLengthCoefficients.veryShort),
+      short: Number(raw?.ohmLengthCoefficients?.short || defaultAdminRuntimeConfig.ohmLengthCoefficients.short),
+      medium: Number(raw?.ohmLengthCoefficients?.medium || defaultAdminRuntimeConfig.ohmLengthCoefficients.medium),
+      long: Number(raw?.ohmLengthCoefficients?.long || defaultAdminRuntimeConfig.ohmLengthCoefficients.long),
+      overLong: Number(raw?.ohmLengthCoefficients?.overLong || defaultAdminRuntimeConfig.ohmLengthCoefficients.overLong),
+    },
     semanticRuleOverrides: {
       GREEN: Array.isArray(raw?.semanticRuleOverrides?.GREEN) ? raw?.semanticRuleOverrides?.GREEN : defaultAdminRuntimeConfig.semanticRuleOverrides.GREEN,
       BLUE: Array.isArray(raw?.semanticRuleOverrides?.BLUE) ? raw?.semanticRuleOverrides?.BLUE : defaultAdminRuntimeConfig.semanticRuleOverrides.BLUE,

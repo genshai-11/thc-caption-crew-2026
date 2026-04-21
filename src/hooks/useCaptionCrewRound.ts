@@ -383,14 +383,8 @@ export function useCaptionCrewRound() {
       let nextOhmResult: OhmResult;
       try {
         const aiAnalysis = await analyzeTranscript(captainResult.transcript, {
-          provider: runtimeConfig.ohmAnalysisProvider,
-          googleApiKey: runtimeConfig.googleApiKey,
-          googleModel: runtimeConfig.googleOhmModel,
-          thirdPartyOhmUrl: runtimeConfig.thirdPartyOhmUrl,
-          thirdPartyOhmApiKey: runtimeConfig.thirdPartyOhmApiKey,
-          thirdPartyOhmModel: runtimeConfig.thirdPartyOhmModel,
-          thirdPartyOhmAuthScheme: runtimeConfig.thirdPartyOhmAuthScheme,
-          thirdPartyOhmWebhookUrl: runtimeConfig.thirdPartyOhmWebhookUrl,
+          model: runtimeConfig.ohmModel || runtimeConfig.router9Model,
+          fallbackModel: runtimeConfig.ohmFallbackModel || runtimeConfig.router9FallbackModel,
         });
 
         const voltage = aiAnalysis.totalOhm * ohmCurrent;
