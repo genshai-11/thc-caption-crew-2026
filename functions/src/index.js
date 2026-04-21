@@ -747,7 +747,8 @@ const RED_IDIOM_MARKERS = [
   'bút sa gà chết', 'xa mặt cách lòng', 'khách hàng là thượng đế', 'chuyện gì tới nó tới', 'đừng đùa với lửa',
   'bữa tiệc nào rồi cũng có lúc tàn', 'im lặng là đồng ý', 'có cái giá', 'đi guốc trong bụng',
   'gần mực thì đen gần đèn thì sáng', 'nói trước bước không qua', 'thời gian sẽ trả lời',
-  'đứng núi này', 'trông núi nọ', 'bóp chết từ trong trứng nước', 'tiền nào của đó', 'yêu từ cái nhìn đầu tiên'
+  'đứng núi này', 'trông núi nọ', 'bóp chết từ trong trứng nước', 'tiền nào của đó', 'yêu từ cái nhìn đầu tiên',
+  'gừng càng già càng cay'
 ];
 const RED_EXACT_SET = new Set([
   'gần mực thì đen gần đèn thì sáng',
@@ -764,14 +765,16 @@ const RED_EXACT_SET = new Set([
   'khách hàng là thượng đế',
   'im lặng là đồng ý',
   'chuyện gì tới nó tới',
-  'bữa tiệc nào rồi cũng có lúc tàn'
+  'bữa tiệc nào rồi cũng có lúc tàn',
+  'gừng càng già càng cay'
 ]);
 const RED_COMPOSITE_IDIOMS = [
   'gần mực thì đen gần đèn thì sáng',
   'gieo gió thì gặt bão',
   'đứng núi này trông núi nọ',
   'vỏ quýt dày có móng tay nhọn',
-  'bữa tiệc nào rồi cũng có lúc tàn'
+  'bữa tiệc nào rồi cũng có lúc tàn',
+  'gừng càng già càng cay'
 ];
 const BLUE_FRAME_MARKERS = [
   'cậu có', 'bạn có', 'điều gì làm', 'nếu cậu', 'nếu bạn', 'tui nghĩ', 'tôi nghĩ', 'hãy', 'đừng', 'làm sao', 'sao cậu', 'ai mà', 'một mặt', 'mặt khác'
@@ -884,7 +887,7 @@ function mergeLexiconAndModelChunks(compositeChunks = [], lexiconChunks = [], mo
     const label = String(chunk?.label || '').toUpperCase();
     const normalized = normalizeOhmText(chunk.text);
 
-    if (confidence < 0.95) continue;
+    if (confidence < 0.9) continue;
     if (!isLabelChunkAcceptable(label, normalized, transcript, 'model')) continue;
 
     const key = `${label}::${normalized}`;
