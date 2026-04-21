@@ -9,7 +9,14 @@ import {
   saveAdminRuntimeConfig,
   saveSharedAdminRuntimeConfig,
 } from '@/services/adminConfigRepository';
-import { fetchRouterModels, testRouterCompletion, type RouterModelInfo } from '@/services/adminValidationService';
+import {
+  fetchGoogleSttModels,
+  fetchRouterModels,
+  testGoogleSttModels,
+  testRouterCompletion,
+  type GoogleSttModelInfo,
+  type RouterModelInfo,
+} from '@/services/adminValidationService';
 import { transcribeRoundAudio } from '@/services/transcriptionService';
 import { useRoundRecorder } from '@/hooks/useRoundRecorder';
 import { analyzeTranscript, OhmAnalysisResult } from '@/services/aiService';
@@ -43,6 +50,9 @@ export default function AdminPage() {
   const [crewTestState, setCrewTestState] = useState<TestState>(idleTestState);
   const [googleCaptainTestState, setGoogleCaptainTestState] = useState<TestState>(idleTestState);
   const [googleCrewTestState, setGoogleCrewTestState] = useState<TestState>(idleTestState);
+  const [googleSttModels, setGoogleSttModels] = useState<GoogleSttModelInfo[]>([]);
+  const [googleModelsState, setGoogleModelsState] = useState<TestState>(idleTestState);
+  const [googleModelsTestState, setGoogleModelsTestState] = useState<TestState>(idleTestState);
   const [analysisTranscript, setAnalysisTranscript] = useState('');
   const [analysisResult, setAnalysisResult] = useState<OhmAnalysisResult | null>(null);
   const [analysisState, setAnalysisState] = useState<TestState>(idleTestState);
@@ -259,6 +269,60 @@ export default function AdminPage() {
     }
   };
 
+  const handleFetchGoogleSttModels = async () => {
+    setGoogleModelsState({ status: 'loading', message: 'Fetching Google STT models...' });
+    try {
+      const result = await fetchGoogleSttModels();
+      setGoogleSttModels(result.models);
+      if (result.recommendedModel && !config.googleTranscriptModel) {
+        patchConfig('googleTranscriptModel', result.recommendedModel);
+      }
+      setGoogleModelsState({ status: 'success', message: `${result.models.length} Google STT model(s) loaded.` });
+    } catch (error: any) {
+      setGoogleModelsState({ status: 'error', message: error?.message || 'Failed to fetch Google STT models.' });
+    }
+  };
+
+  const handleTestGoogleModelsParallel = async () => {
+    setGoogleModelsTestState({ status: 'loading', message: 'Testing Google STT models in parallel...' });
+    try {
+      const captainBlob = captainRecorder.audioBlob;
+      const crewBlob = crewRecorder.audioBlob;
+      const blob = captainBlob || crewBlob;
+      if (!blob) throw new Error('Record Captain or Crew sample audio first to test models.');
+
+      const role = captainBlob ? 'captain' : 'crew';
+      const language = captainBlob ? 'vi' : 'en';
+      const modelsToTest = googleSttModels.length > 0 ? googleSttModels.map((model) => model.id) : ['chirp_3', 'chirp_2', 'telephony'];
+
+      const result = await testGoogleSttModels(blob, {
+        role,
+        language,
+        googleApiKey: config.googleApiKey,
+        googleProjectId: config.googleCloudProjectId,
+        googleLocation: config.googleTranscriptLocation,
+        models: modelsToTest,
+      });
+
+      const passCount = result.passedModels.length;
+      const failCount = result.results.filter((entry) => !entry.ok || entry.emptyTranscript).length;
+      const best = result.results
+        .filter((entry) => entry.ok && !entry.emptyTranscript)
+        .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
+
+      if (best?.model) {
+        patchConfig('googleTranscriptModel', best.model);
+      }
+
+      setGoogleModelsTestState({
+        status: passCount > 0 ? 'success' : 'error',
+        message: `Parallel test done • pass ${passCount} • fail ${failCount} • best ${best?.model || 'n/a'} • ${(result.elapsedMs / 1000).toFixed(1)}s`,
+      });
+    } catch (error: any) {
+      setGoogleModelsTestState({ status: 'error', message: error?.message || 'Google STT parallel test failed.' });
+    }
+  };
+
   const transcriptReady = config.transcriptProvider === 'google'
     ? !!config.googleApiKey && captainTestState.status === 'success' && crewTestState.status === 'success'
     : config.transcriptProvider === 'thirdparty'
@@ -372,6 +436,25 @@ export default function AdminPage() {
               <span>Google STT model</span>
               <input value={config.googleTranscriptModel} onChange={(e) => patchConfig('googleTranscriptModel', e.target.value)} />
             </label>
+            <div className="action-row">
+              <button className="ghost-pill-button" onClick={() => void handleFetchGoogleSttModels()} disabled={googleModelsState.status === 'loading'}>
+                {googleModelsState.status === 'loading' ? 'Fetching…' : 'Fetch Google STT models'}
+              </button>
+              <button className="ghost-pill-button" onClick={() => void handleTestGoogleModelsParallel()} disabled={googleModelsTestState.status === 'loading'}>
+                {googleModelsTestState.status === 'loading' ? 'Testing…' : 'Test models in parallel'}
+              </button>
+            </div>
+            <p className="admin-message">{googleModelsState.message}</p>
+            <p className="admin-message">{googleModelsTestState.message}</p>
+            {googleSttModels.length > 0 ? (
+              <ul>
+                {googleSttModels.map((model) => (
+                  <li key={model.id} className="admin-message">
+                    {model.id}{model.recommended ? ' (recommended)' : ''} — {model.description || 'Google STT model'}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             <p className="admin-message">Recommended model: chirp_3. To keep a single transcript source, leave partial transcript disabled.</p>
           </>
         ) : config.transcriptProvider === 'thirdparty' ? (

@@ -9,7 +9,7 @@ if (!admin.apps.length) {
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Deepgram-Api-Key, X-Deepgram-Model, x-deepgram-api-key, x-deepgram-model, x-transcript-provider, x-google-api-key, x-google-model, x-google-project-id, x-google-location, x-google-ohm-model, x-thirdparty-transcript-url, x-thirdparty-transcript-api-key, x-thirdparty-transcript-model, x-thirdparty-transcript-auth-scheme, x-ohm-analysis-provider, x-thirdparty-ohm-url, x-thirdparty-ohm-api-key, x-thirdparty-ohm-model, x-thirdparty-ohm-auth-scheme, x-thirdparty-ohm-webhook-url',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Deepgram-Api-Key, X-Deepgram-Model, x-deepgram-api-key, x-deepgram-model, x-transcript-provider, x-google-api-key, x-google-model, x-google-models, x-google-project-id, x-google-location, x-google-ohm-model, x-thirdparty-transcript-url, x-thirdparty-transcript-api-key, x-thirdparty-transcript-model, x-thirdparty-transcript-auth-scheme, x-ohm-analysis-provider, x-thirdparty-ohm-url, x-thirdparty-ohm-api-key, x-thirdparty-ohm-model, x-thirdparty-ohm-auth-scheme, x-thirdparty-ohm-webhook-url',
   'Access-Control-Max-Age': '3600',
 };
 
@@ -25,6 +25,30 @@ function handleOptions(req, res) {
   }
   return false;
 }
+
+const GOOGLE_STT_MODELS = [
+  {
+    id: 'chirp_3',
+    label: 'Chirp 3',
+    category: 'multilingual',
+    recommended: true,
+    description: 'Latest multilingual model with best quality/speed balance for most use cases.',
+  },
+  {
+    id: 'chirp_2',
+    label: 'Chirp 2',
+    category: 'multilingual',
+    recommended: false,
+    description: 'Previous generation multilingual model. Useful for compatibility checks.',
+  },
+  {
+    id: 'telephony',
+    label: 'Telephony',
+    category: 'phone-call',
+    recommended: false,
+    description: 'Optimized for call-center style audio and narrowband telephony recordings.',
+  },
+];
 
 const defaultSharedConfig = {
   transcriptProvider: 'deepgram',
@@ -103,6 +127,16 @@ function parseDurationSeconds(value) {
   const matched = text.match(/^(\d+(?:\.\d+)?)s$/);
   if (!matched) return 0;
   return Number(matched[1] || 0);
+}
+
+function normalizeGoogleModelList(rawModels) {
+  const explicit = String(rawModels || '')
+    .split(',')
+    .map((value) => String(value || '').trim())
+    .filter(Boolean);
+
+  if (explicit.length > 0) return explicit;
+  return GOOGLE_STT_MODELS.map((model) => model.id);
 }
 
 async function callGoogleSpeechTranscribe({ apiKey, model, language, location, projectId, contentType, audioBuffer }) {
@@ -620,6 +654,108 @@ async function callRouterChat({ apiKey, baseUrl, model, fallbackModel, messages,
 
   return await response.json();
 }
+
+exports.fetchGoogleSttModels = onRequest({ cors: false, invoker: 'public' }, async (req, res) => {
+  try {
+    if (handleOptions(req, res)) return;
+    applyCors(res);
+
+    const sharedConfig = await getSharedAdminConfig();
+    const configuredModel = String(sharedConfig.googleTranscriptModel || 'chirp_3');
+
+    res.json({
+      models: GOOGLE_STT_MODELS,
+      recommendedModel: 'chirp_3',
+      configuredModel,
+    });
+  } catch (error) {
+    logger.error(error);
+    applyCors(res);
+    res.status(500).json({ error: error.message || 'Failed to fetch Google STT models' });
+  }
+});
+
+exports.testGoogleSttModels = onRequest({ cors: false, invoker: 'public' }, async (req, res) => {
+  try {
+    if (handleOptions(req, res)) return;
+    applyCors(res);
+
+    const sharedConfig = await getSharedAdminConfig();
+    const role = String(req.query.role || 'captain');
+    const language = String(req.query.language || (role === 'captain' ? 'vi' : 'en'));
+    const contentType = String(req.headers['content-type'] || 'audio/webm');
+    const audioBuffer = req.rawBody;
+    const audioBytes = audioBuffer?.length || audioBuffer?.byteLength || 0;
+
+    if (!audioBuffer || !audioBytes) throw new Error('No audio payload received');
+
+    const googleApiKey = req.headers['x-google-api-key'] || process.env.GOOGLE_API_KEY || sharedConfig.googleApiKey;
+    const googleProjectId = String(req.headers['x-google-project-id'] || sharedConfig.googleCloudProjectId || process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT || '');
+    const googleLocation = String(req.headers['x-google-location'] || sharedConfig.googleTranscriptLocation || 'global');
+    const requestedModels = normalizeGoogleModelList(req.headers['x-google-models'] || req.body?.models);
+
+    if (!googleApiKey) throw new Error('GOOGLE_API_KEY not configured');
+    if (!googleProjectId) throw new Error('Google STT project ID is missing');
+
+    logger.info('Testing Google STT models', { role, language, models: requestedModels, googleLocation, googleProjectId, contentType, audioBytes });
+
+    const startedAt = Date.now();
+    const results = await Promise.all(requestedModels.map(async (modelId) => {
+      const modelStartedAt = Date.now();
+      try {
+        const result = await callGoogleSpeechTranscribe({
+          apiKey: googleApiKey,
+          model: modelId,
+          language,
+          location: googleLocation,
+          projectId: googleProjectId,
+          contentType,
+          audioBuffer,
+        });
+
+        const transcript = String(result?.transcript || '').trim();
+        return {
+          model: modelId,
+          ok: true,
+          transcript,
+          emptyTranscript: !transcript,
+          confidence: Number(result?.confidence || 0),
+          duration: Number(result?.duration || 0),
+          elapsedMs: Date.now() - modelStartedAt,
+          requestId: String(result?.metadata?.requestId || ''),
+        };
+      } catch (modelError) {
+        return {
+          model: modelId,
+          ok: false,
+          transcript: '',
+          emptyTranscript: true,
+          confidence: 0,
+          duration: 0,
+          elapsedMs: Date.now() - modelStartedAt,
+          error: modelError?.message || String(modelError),
+        };
+      }
+    }));
+
+    const passedModels = results.filter((entry) => entry.ok && !entry.emptyTranscript).map((entry) => entry.model);
+
+    res.json({
+      role,
+      language,
+      location: googleLocation,
+      projectId: googleProjectId,
+      totalModels: requestedModels.length,
+      passedModels,
+      elapsedMs: Date.now() - startedAt,
+      results,
+    });
+  } catch (error) {
+    logger.error(error);
+    applyCors(res);
+    res.status(500).json({ error: error.message || 'Google STT model test failed' });
+  }
+});
 
 exports.fetchRouterModels = onRequest({ cors: false, invoker: 'public' }, async (req, res) => {
   try {

@@ -9,6 +9,13 @@
           "cc-faceoff"
         ]
       }
+    },
+    "thc-caption-crew-2026": {
+      "hosting": {
+        "cc-faceoff": [
+          "thc-caption-crew-2026"
+        ]
+      }
     }
   },
   "etags": {}

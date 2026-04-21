@@ -27,6 +27,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: () => '/testRouterCompletion',
       },
+      '/api/fetchGoogleSttModels': {
+        target: 'https://us-central1-gen-lang-client-0815518176.cloudfunctions.net',
+        changeOrigin: true,
+        rewrite: () => '/fetchGoogleSttModels',
+      },
+      '/api/testGoogleSttModels': {
+        target: 'https://us-central1-gen-lang-client-0815518176.cloudfunctions.net',
+        changeOrigin: true,
+        rewrite: () => '/testGoogleSttModels',
+      },
 
       '/api/analyzeTranscriptOhm': {
         target: 'https://us-central1-gen-lang-client-0815518176.cloudfunctions.net',
