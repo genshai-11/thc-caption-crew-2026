@@ -1,6 +1,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const logger = require('firebase-functions/logger');
 const admin = require('firebase-admin');
+const nuanceLexicon = require('./nuanceLexicon.json');
 
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -639,27 +640,124 @@ function resolveLengthBucket(transcript, constraints = {}) {
 }
 
 function computeOhmFromChunks(chunks = [], weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
-  const groups = { GREEN: [], BLUE: [], RED: [], PINK: [] };
-  for (const chunk of chunks) {
-    const label = String(chunk?.label || '').toUpperCase();
-    if (!groups[label]) continue;
-    groups[label].push(Number(weights[label] || 0));
-  }
+  const values = chunks
+    .map((chunk) => {
+      const label = String(chunk?.label || '').toUpperCase();
+      return Number(weights[label] || 0);
+    })
+    .filter((value) => Number.isFinite(value) && value > 0);
 
-  const grouped = Object.keys(groups)
-    .map((label) => ({ label, parts: groups[label], sum: groups[label].reduce((acc, value) => acc + value, 0) }))
-    .filter((entry) => entry.parts.length > 0);
-
-  if (grouped.length === 0) {
+  if (values.length === 0) {
     return { baseOhm: 0, formula: '0' };
   }
 
-  const baseOhm = grouped.reduce((acc, entry) => acc * entry.sum, 1);
-  const formula = grouped
-    .map((entry) => (entry.parts.length > 1 ? `(${entry.parts.join(' + ')})` : `${entry.parts[0]}`))
-    .join(' x ');
+  const baseOhm = values.reduce((acc, value) => acc + value, 0);
+  const formula = values.length > 1 ? `(${values.join(' + ')})` : `${values[0]}`;
 
   return { baseOhm, formula };
+}
+
+const OHM_NOISE_TERMS = new Set(['liệu', 'à', 'ạ', 'ơi', 'ơ', 'hả', 'nhé', 'nha', 'nhỉ', 'nhỉ?', 'ừ', 'ừm', 'ok', 'okay']);
+
+function normalizeOhmText(value = '') {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[“”"'`]/g, ' ')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const nuanceLexiconIndex = Array.isArray(nuanceLexicon)
+  ? nuanceLexicon
+      .map((entry) => {
+        const normalized = normalizeOhmText(entry?.normalized || entry?.text || '');
+        return {
+          label: String(entry?.label || '').toUpperCase(),
+          text: String(entry?.text || '').trim(),
+          normalized,
+          words: normalized.split(/\s+/).filter(Boolean).length,
+        };
+      })
+      .filter((entry) => ['GREEN', 'BLUE', 'RED', 'PINK'].includes(entry.label) && entry.normalized)
+      .sort((a, b) => b.normalized.length - a.normalized.length)
+  : [];
+
+function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
+  const source = normalizeOhmText(transcript);
+  if (!source) return [];
+
+  const occupied = [];
+  const chunks = [];
+
+  for (const entry of nuanceLexiconIndex) {
+    if ((entry.label === 'GREEN' || entry.label === 'BLUE' || entry.label === 'RED') && entry.words < 2) continue;
+
+    let idx = source.indexOf(entry.normalized);
+    while (idx >= 0) {
+      const start = idx;
+      const end = idx + entry.normalized.length;
+      const overlaps = occupied.some((slot) => !(end <= slot.start || start >= slot.end));
+      if (!overlaps) {
+        occupied.push({ start, end });
+        chunks.push({
+          text: entry.text,
+          label: entry.label,
+          ohm: Number(weights[entry.label] || 0),
+          confidence: 0.99,
+          reason: 'nuance lexicon match',
+        });
+      }
+      idx = source.indexOf(entry.normalized, idx + entry.normalized.length);
+    }
+  }
+
+  return chunks;
+}
+
+function sanitizeOhmChunks(chunks = [], transcript = '') {
+  const source = normalizeOhmText(transcript);
+  return chunks.filter((chunk) => {
+    const text = String(chunk?.text || '').trim();
+    if (!text) return false;
+
+    const lower = normalizeOhmText(text);
+    if (!source.includes(lower)) return false;
+    if (OHM_NOISE_TERMS.has(lower)) return false;
+
+    const words = lower.split(/\s+/).filter(Boolean);
+    const label = String(chunk?.label || '').toUpperCase();
+
+    if ((label === 'GREEN' || label === 'BLUE' || label === 'RED') && words.length < 2) return false;
+    if ((label === 'GREEN' || label === 'BLUE' || label === 'RED') && text.length < 6) return false;
+
+    return true;
+  });
+}
+
+function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = []) {
+  const map = new Map();
+
+  for (const chunk of lexiconChunks) {
+    const key = `${chunk.label}::${normalizeOhmText(chunk.text)}`;
+    map.set(key, chunk);
+  }
+
+  for (const chunk of modelChunks) {
+    const confidence = Number(chunk?.confidence || 0);
+    const words = normalizeOhmText(chunk?.text || '').split(/\s+/).filter(Boolean).length;
+    const label = String(chunk?.label || '').toUpperCase();
+
+    if (confidence < 0.9) continue;
+    if ((label === 'GREEN' || label === 'BLUE' || label === 'RED') && words < 3) continue;
+
+    const key = `${label}::${normalizeOhmText(chunk.text)}`;
+    if (!map.has(key)) {
+      map.set(key, chunk);
+    }
+  }
+
+  return Array.from(map.values());
 }
 
 exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, async (req, res) => {
@@ -677,14 +775,16 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const fallbackModel = String(req.body.fallbackModel || sharedConfig.ohmFallbackModel || sharedConfig.router9FallbackModel || process.env.ROUTER9_FALLBACK_MODEL || model).trim();
     const ohmSettings = normalizeOhmSettings(sharedConfig);
 
-    const prompt = `You are an expert linguistic analyzer. Analyze transcript and extract semantic chunks in labels GREEN, BLUE, RED, PINK only.\n\nRules:\n1) Do not classify everything.\n2) Extract exact substrings from transcript.\n3) Return valid JSON object only.\n4) Keep confidence in 0..1.\n\nTranscript:\n${JSON.stringify(transcript)}\n\nReturn JSON with keys: transcriptRaw, transcriptNormalized, chunks.\nEach chunk item must include text, label, confidence, reason.`;
+    const prompt = `You are an expert linguistic analyzer. Analyze transcript and extract semantic chunks in labels GREEN, BLUE, RED, PINK only.\n\nRules:\n1) Do not classify everything. Most words are NORMAL and must be ignored.\n2) Extract exact substrings from transcript only.\n3) Do NOT classify single filler words, particles, or isolated question words (examples: liệu, à, ạ, hả, nhé).\n4) GREEN/BLUE/RED should usually be phrase-level (>= 2 words).\n5) Return valid JSON object only.\n6) Keep confidence in 0..1.\n\nTranscript:\n${JSON.stringify(transcript)}\n\nReturn JSON with keys: transcriptRaw, transcriptNormalized, chunks.\nEach chunk item must include text, label, confidence, reason.`;
 
+    const startedAt = Date.now();
     const completion = await callRouterChat({
       apiKey,
       baseUrl,
       model,
       fallbackModel,
       temperature: 0,
+      timeoutMs: 12000,
       responseFormat: { type: 'json_object' },
       messages: [
         { role: 'system', content: 'Return strict JSON. Labels allowed: GREEN, BLUE, RED, PINK.' },
@@ -695,7 +795,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const raw = completion?.choices?.[0]?.message?.content;
     const parsed = typeof raw === 'string' ? JSON.parse(extractFirstJsonObject(raw)) : (raw || {});
 
-    const chunks = Array.isArray(parsed?.chunks)
+    const rawChunks = Array.isArray(parsed?.chunks)
       ? parsed.chunks
           .map((chunk) => {
             const label = String(chunk?.label || '').toUpperCase();
@@ -710,16 +810,21 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
           .filter((chunk) => ['GREEN', 'BLUE', 'RED', 'PINK'].includes(chunk.label) && chunk.text)
       : [];
 
-    const { baseOhm, formula } = computeOhmFromChunks(chunks, ohmSettings.weights);
+    const modelChunks = sanitizeOhmChunks(rawChunks, transcript);
+    const lexiconChunks = detectLexiconChunks(transcript, ohmSettings.weights);
+    const chunks = mergeLexiconAndModelChunks(lexiconChunks, modelChunks);
+
+    const { baseOhm, formula: baseFormula } = computeOhmFromChunks(chunks, ohmSettings.weights);
     const { sentenceCount, wordCount, lengthBucket } = resolveLengthBucket(transcript, ohmSettings.constraints);
     const lengthCoefficient = Number(ohmSettings.coefficients[lengthBucket] || ohmSettings.coefficients.overLong || 2.5);
     const totalOhm = Number((baseOhm * lengthCoefficient).toFixed(4));
+    const formula = baseOhm > 0 ? `${baseFormula} x ${lengthCoefficient}` : '0';
 
     res.json({
       transcriptRaw: String(parsed?.transcriptRaw || transcript),
       transcriptNormalized: String(parsed?.transcriptNormalized || ''),
       chunks,
-      formula: String(parsed?.formula || formula || '0'),
+      formula,
       totalOhm,
       modelUsed: String(completion?.model || model || fallbackModel || ''),
       baseOhm,
@@ -727,6 +832,9 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       lengthCoefficient,
       sentenceCount,
       wordCount,
+      elapsedMs: Date.now() - startedAt,
+      filteredChunkCount: Math.max(0, rawChunks.length - modelChunks.length),
+      lexiconChunkCount: lexiconChunks.length,
     });
   } catch (error) {
     logger.error(error);
@@ -736,33 +844,46 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
 });
 
 
-async function callRouterChat({ apiKey, baseUrl, model, fallbackModel, messages, temperature = 0.2, responseFormat }) {
+async function callRouterChat({ apiKey, baseUrl, model, fallbackModel, messages, temperature = 0.2, responseFormat, timeoutMs = 12000 }) {
   const cleanApiKey = String(apiKey || '').trim();
   const cleanBaseUrl = String(baseUrl || '').trim();
   if (!cleanApiKey) throw new Error('ROUTER9_API_KEY not configured');
   if (!model && !fallbackModel) throw new Error('No Router9 model configured');
 
-  const response = await fetch(`${cleanBaseUrl.replace(/\/$/, '')}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${cleanApiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: model || fallbackModel,
-      temperature,
-      stream: false,
-      ...(responseFormat ? { response_format: responseFormat } : {}),
-      messages,
-    }),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), Math.max(3000, Number(timeoutMs) || 12000));
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Router9 error (${response.status}): ${text}`);
+  try {
+    const response = await fetch(`${cleanBaseUrl.replace(/\/$/, '')}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${cleanApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: model || fallbackModel,
+        temperature,
+        stream: false,
+        ...(responseFormat ? { response_format: responseFormat } : {}),
+        messages,
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Router9 error (${response.status}): ${text}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error('Router9 request timeout');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return await response.json();
 }
 
 exports.fetchGoogleSttModels = onRequest({ cors: false, invoker: 'public' }, async (req, res) => {

@@ -244,6 +244,20 @@ Production URL: https://thc-caption-crew-2026.web.app
 - Enforced coefficient set: `1, 1.5, 2, 2.5` with `overLong=2.5`.
 - Kept response schema backward-compatible.
 
+### Deployment evidence (2026-04-21 GMT+7)
+- Release commit: `3ff7ea7`
+- Release tag: `prod-2026-04-21-ohm-router9-v2`
+- Functions deployed (explicit list) to avoid legacy deletion conflict:
+  - `getDeepgramAccessToken`
+  - `transcribeRoundAudio`
+  - `analyzeTranscriptOhm`
+  - `fetchGoogleSttModels`
+  - `testGoogleSttModels`
+  - `fetchRouterModels`
+  - `testRouterCompletion`
+  - `evaluateCaptionCrewMeaning`
+- Hosting deployed: `https://thc-caption-crew-2026.web.app`
+
 ---
 
 ## Go / No-Go checklist

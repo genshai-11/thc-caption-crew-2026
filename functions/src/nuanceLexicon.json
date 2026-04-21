@@ -1,0 +1,7332 @@
+[
+  {
+    "label": "GREEN",
+    "text": "Từ bây giờ",
+    "normalized": "từ bây giờ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Từ giờ trở đi",
+    "normalized": "từ giờ trở đi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu nên nhớ rằng",
+    "normalized": "cậu nên nhớ rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Mật ngọt chết ruồi",
+    "normalized": "mật ngọt chết ruồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Dép lào",
+    "normalized": "dép lào"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui không phiền kể cậu cái này",
+    "normalized": "tui không phiền kể cậu cái này"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu cậu mà biết nghĩ thì cậu đâu có",
+    "normalized": "nếu cậu mà biết nghĩ thì cậu đâu có"
+  },
+  {
+    "label": "RED",
+    "text": "Có ai ở nhà không",
+    "normalized": "có ai ở nhà không"
+  },
+  {
+    "label": "PINK",
+    "text": "Tham lam",
+    "normalized": "tham lam"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cả ngày hôm qua",
+    "normalized": "cả ngày hôm qua"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui thực sự không có đủ thời gian để",
+    "normalized": "tui thực sự không có đủ thời gian để"
+  },
+  {
+    "label": "RED",
+    "text": "Thời gian trôi nhanh thật",
+    "normalized": "thời gian trôi nhanh thật"
+  },
+  {
+    "label": "PINK",
+    "text": "Qúa rõ ràng",
+    "normalized": "qúa rõ ràng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao phải vội thế",
+    "normalized": "sao phải vội thế"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu vội cái gì",
+    "normalized": "cậu vội cái gì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui không hiểu cậu lấy đâu ra nhiều tiền đến thế để",
+    "normalized": "tui không hiểu cậu lấy đâu ra nhiều tiền đến thế để"
+  },
+  {
+    "label": "RED",
+    "text": "Có chuyện gì cậu muốn nói với tui không",
+    "normalized": "có chuyện gì cậu muốn nói với tui không"
+  },
+  {
+    "label": "PINK",
+    "text": "Khui bia",
+    "normalized": "khui bia"
+  },
+  {
+    "label": "GREEN",
+    "text": "Theo lẽ thường",
+    "normalized": "theo lẽ thường"
+  },
+  {
+    "label": "GREEN",
+    "text": "Logic mà nói",
+    "normalized": "logic mà nói"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có phiền nếu tui",
+    "normalized": "cậu có phiền nếu tui"
+  },
+  {
+    "label": "RED",
+    "text": "Tui không có sự lựa chọn",
+    "normalized": "tui không có sự lựa chọn"
+  },
+  {
+    "label": "PINK",
+    "text": "Dùng một lần",
+    "normalized": "dùng một lần"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chịu",
+    "normalized": "chịu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui thua rồi đấy",
+    "normalized": "tui thua rồi đấy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Để tui chỉ cho cậu thấy tại sao",
+    "normalized": "để tui chỉ cho cậu thấy tại sao"
+  },
+  {
+    "label": "RED",
+    "text": "Nó làm tui nổi hết cả da gà",
+    "normalized": "nó làm tui nổi hết cả da gà"
+  },
+  {
+    "label": "PINK",
+    "text": "Tẩy não",
+    "normalized": "tẩy não"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đề đền bù cho cậu",
+    "normalized": "đề đền bù cho cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui nghĩ cậu nên hỏi ý trước đi",
+    "normalized": "tui nghĩ cậu nên hỏi ý trước đi"
+  },
+  {
+    "label": "RED",
+    "text": "Nhớ đến đúng giờ nha",
+    "normalized": "nhớ đến đúng giờ nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Trì hoãn dự án",
+    "normalized": "trì hoãn dự án"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui không biết ai cho",
+    "normalized": "tui không biết ai cho"
+  },
+  {
+    "label": "GREEN",
+    "text": "tiêm cái đó vào đầu cậu",
+    "normalized": "tiêm cái đó vào đầu cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Không thể có cái chuyện",
+    "normalized": "không thể có cái chuyện"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu tới số rồi",
+    "normalized": "cậu tới số rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Kêu gọi tẩy chay",
+    "normalized": "kêu gọi tẩy chay"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cám ơn vì đã mời tui",
+    "normalized": "cám ơn vì đã mời tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu nói cứ như kiểu",
+    "normalized": "cậu nói cứ như kiểu"
+  },
+  {
+    "label": "RED",
+    "text": "Cho tui thêm 2 tuần đi",
+    "normalized": "cho tui thêm 2 tuần đi"
+  },
+  {
+    "label": "PINK",
+    "text": "Mất bình tĩnh",
+    "normalized": "mất bình tĩnh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng có ngại",
+    "normalized": "đừng có ngại"
+  },
+  {
+    "label": "GREEN",
+    "text": "khách sáo",
+    "normalized": "khách sáo"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu không thấy tụi nó cứ à",
+    "normalized": "cậu không thấy tụi nó cứ à"
+  },
+  {
+    "label": "RED",
+    "text": "Có gì (cứ) alo tui",
+    "normalized": "có gì cứ alo tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Cố tình",
+    "normalized": "cố tình"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chẳng sớm thì muộn",
+    "normalized": "chẳng sớm thì muộn"
+  },
+  {
+    "label": "GREEN",
+    "text": "chẳng chóng thì chày",
+    "normalized": "chẳng chóng thì chày"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu thì lúc nào cũng",
+    "normalized": "cậu thì lúc nào cũng"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng sợ",
+    "normalized": "đừng sợ"
+  },
+  {
+    "label": "RED",
+    "text": "có tui đây",
+    "normalized": "có tui đây"
+  },
+  {
+    "label": "PINK",
+    "text": "Mưa lớn",
+    "normalized": "mưa lớn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để rồi",
+    "normalized": "để rồi"
+  },
+  {
+    "label": "GREEN",
+    "text": "cho đến một ngày",
+    "normalized": "cho đến một ngày"
+  },
+  {
+    "label": "BLUE",
+    "text": "thì có gì mà đáng sợ",
+    "normalized": "thì có gì mà đáng sợ"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu làm gì thì cậu tự biết",
+    "normalized": "cậu làm gì thì cậu tự biết"
+  },
+  {
+    "label": "PINK",
+    "text": "Còn sống",
+    "normalized": "còn sống"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trên đường tới đây",
+    "normalized": "trên đường tới đây"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui chẳng hiểu sao cậu cứ",
+    "normalized": "tui chẳng hiểu sao cậu cứ"
+  },
+  {
+    "label": "RED",
+    "text": "Không tin thì cậu đi mà hỏi họ",
+    "normalized": "không tin thì cậu đi mà hỏi họ"
+  },
+  {
+    "label": "PINK",
+    "text": "Ói",
+    "normalized": "ói"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tin tui đi",
+    "normalized": "tin tui đi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui thấy nó khá là",
+    "normalized": "tui thấy nó khá là"
+  },
+  {
+    "label": "RED",
+    "text": "Đời là phù du",
+    "normalized": "đời là phù du"
+  },
+  {
+    "label": "PINK",
+    "text": "Mãn tính",
+    "normalized": "mãn tính"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu tui mà là cậu",
+    "normalized": "nếu tui mà là cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Họ nhờ tui",
+    "normalized": "họ nhờ tui"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu xem tui là loại người gì",
+    "normalized": "cậu xem tui là loại người gì"
+  },
+  {
+    "label": "PINK",
+    "text": "Bà bầu",
+    "normalized": "bà bầu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu cậu mà là tui",
+    "normalized": "nếu cậu mà là tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Trên mạng bây giờ tràn ngập",
+    "normalized": "trên mạng bây giờ tràn ngập"
+  },
+  {
+    "label": "RED",
+    "text": "Mai họ mới về lận",
+    "normalized": "mai họ mới về lận"
+  },
+  {
+    "label": "PINK",
+    "text": "Xếp hàng",
+    "normalized": "xếp hàng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu đó là sự thật",
+    "normalized": "nếu đó là sự thật"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu đúng là vậy",
+    "normalized": "nếu đúng là vậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui thực sự không biết cách để",
+    "normalized": "tui thực sự không biết cách để"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có hiểu cậu đang nói cái gì không",
+    "normalized": "cậu có hiểu cậu đang nói cái gì không"
+  },
+  {
+    "label": "PINK",
+    "text": "Lên cân",
+    "normalized": "lên cân"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui đâu phải con nít",
+    "normalized": "tui đâu phải con nít"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui không có dễ bị dụ",
+    "normalized": "tui không có dễ bị dụ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi không thèm cái",
+    "normalized": "tôi không thèm cái"
+  },
+  {
+    "label": "RED",
+    "text": "Dụ đó sao rồi",
+    "normalized": "dụ đó sao rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Không thể tránh khỏi",
+    "normalized": "không thể tránh khỏi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nghĩ xem",
+    "normalized": "nghĩ xem"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu cậu thực sự nghĩ về cái đó",
+    "normalized": "nếu cậu thực sự nghĩ về cái đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Mỗi khi",
+    "normalized": "mỗi khi"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui lại",
+    "normalized": "tui lại"
+  },
+  {
+    "label": "RED",
+    "text": "Giữ liên lạc nha",
+    "normalized": "giữ liên lạc nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Bỏ việc",
+    "normalized": "bỏ việc"
+  },
+  {
+    "label": "GREEN",
+    "text": "(Cũng) dễ hiểu thôi",
+    "normalized": "cũng dễ hiểu thôi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có tổng cộng",
+    "normalized": "có tổng cộng"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu không ngồi yên được à",
+    "normalized": "cậu không ngồi yên được à"
+  },
+  {
+    "label": "PINK",
+    "text": "Cố chấp",
+    "normalized": "cố chấp"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu thực sự không hiểu à",
+    "normalized": "cậu thực sự không hiểu à"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nó quá là liều để",
+    "normalized": "nó quá là liều để"
+  },
+  {
+    "label": "RED",
+    "text": "Cái gì cũng có cái giá của nó",
+    "normalized": "cái gì cũng có cái giá của nó"
+  },
+  {
+    "label": "PINK",
+    "text": "Lời dèm pha",
+    "normalized": "lời dèm pha"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trùng hợp thế",
+    "normalized": "trùng hợp thế"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui không ngờ",
+    "normalized": "tui không ngờ"
+  },
+  {
+    "label": "RED",
+    "text": "Khoan chỗ đó cậu nói tui không hiểu",
+    "normalized": "khoan chỗ đó cậu nói tui không hiểu"
+  },
+  {
+    "label": "PINK",
+    "text": "Tắt đèn",
+    "normalized": "tắt đèn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lố bịch",
+    "normalized": "lố bịch"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui đang nghĩ liệu có phải vì",
+    "normalized": "tui đang nghĩ liệu có phải vì"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu giải thích tui lại được không",
+    "normalized": "cậu giải thích tui lại được không"
+  },
+  {
+    "label": "PINK",
+    "text": "Khống số liệu",
+    "normalized": "khống số liệu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hồi đầu năm nay",
+    "normalized": "hồi đầu năm nay"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chúng ta không có cửa",
+    "normalized": "chúng ta không có cửa"
+  },
+  {
+    "label": "RED",
+    "text": "Ê ê ê",
+    "normalized": "ê ê ê"
+  },
+  {
+    "label": "RED",
+    "text": "cậu nói vậy là ý gì",
+    "normalized": "cậu nói vậy là ý gì"
+  },
+  {
+    "label": "PINK",
+    "text": "Ví điện tử",
+    "normalized": "ví điện tử"
+  },
+  {
+    "label": "GREEN",
+    "text": "Theo tui",
+    "normalized": "theo tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai",
+    "normalized": "ai"
+  },
+  {
+    "label": "BLUE",
+    "text": "đứa nào chịu trách nhiệm",
+    "normalized": "đứa nào chịu trách nhiệm"
+  },
+  {
+    "label": "RED",
+    "text": "trông tui thế nào",
+    "normalized": "trông tui thế nào"
+  },
+  {
+    "label": "PINK",
+    "text": "Đi tu",
+    "normalized": "đi tu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Quá đẹp",
+    "normalized": "quá đẹp"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tuyệt vời",
+    "normalized": "tuyệt vời"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đây là lần cuối cùng tui",
+    "normalized": "đây là lần cuối cùng tui"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu làm sao hay dzậy",
+    "normalized": "cậu làm sao hay dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Đi tù",
+    "normalized": "đi tù"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thành ra",
+    "normalized": "thành ra"
+  },
+  {
+    "label": "GREEN",
+    "text": "Do đó",
+    "normalized": "do đó"
+  },
+  {
+    "label": "GREEN",
+    "text": "vì vậy",
+    "normalized": "vì vậy"
+  },
+  {
+    "label": "GREEN",
+    "text": "vì lẽ đó",
+    "normalized": "vì lẽ đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Họ cho chúng ta 3 ngày để",
+    "normalized": "họ cho chúng ta 3 ngày để"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu về phe nào",
+    "normalized": "cậu về phe nào"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu bênh ai",
+    "normalized": "cậu bênh ai"
+  },
+  {
+    "label": "GREEN",
+    "text": "Vô hình trung",
+    "normalized": "vô hình trung"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bằng một cách nào đó",
+    "normalized": "bằng một cách nào đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có 3 phút để",
+    "normalized": "cậu có 3 phút để"
+  },
+  {
+    "label": "RED",
+    "text": "Thế thì hay quá",
+    "normalized": "thế thì hay quá"
+  },
+  {
+    "label": "RED",
+    "text": "Thế thì quá okay",
+    "normalized": "thế thì quá okay"
+  },
+  {
+    "label": "PINK",
+    "text": "Dao động",
+    "normalized": "dao động"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tuy nhiên",
+    "normalized": "tuy nhiên"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu cậu đang thì cậu nhầm",
+    "normalized": "nếu cậu đang thì cậu nhầm"
+  },
+  {
+    "label": "RED",
+    "text": "Tui biết ngay thế nào cậu cũng nói vậy mà",
+    "normalized": "tui biết ngay thế nào cậu cũng nói vậy mà"
+  },
+  {
+    "label": "PINK",
+    "text": "Đặt chân đến",
+    "normalized": "đặt chân đến"
+  },
+  {
+    "label": "GREEN",
+    "text": "Một cách miễn cưỡng",
+    "normalized": "một cách miễn cưỡng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Trở thành đâu có khó đến vậy",
+    "normalized": "trở thành đâu có khó đến vậy"
+  },
+  {
+    "label": "RED",
+    "text": "Bả mà biết là bả cạo đầu tui luôn",
+    "normalized": "bả mà biết là bả cạo đầu tui luôn"
+  },
+  {
+    "label": "PINK",
+    "text": "Hết pin",
+    "normalized": "hết pin"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui cho rằng",
+    "normalized": "tui cho rằng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đừng bao giờ cố",
+    "normalized": "đừng bao giờ cố"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có biết tui là ai không",
+    "normalized": "cậu có biết tui là ai không"
+  },
+  {
+    "label": "PINK",
+    "text": "Thuế thu nhập cá nhân",
+    "normalized": "thuế thu nhập cá nhân"
+  },
+  {
+    "label": "GREEN",
+    "text": "Điều đó được cho là",
+    "normalized": "điều đó được cho là"
+  },
+  {
+    "label": "GREEN",
+    "text": "điều đó có nghĩa là",
+    "normalized": "điều đó có nghĩa là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chỉ có một và chỉ một",
+    "normalized": "chỉ có một và chỉ một"
+  },
+  {
+    "label": "RED",
+    "text": "Đổ thêm dầu vào lửa",
+    "normalized": "đổ thêm dầu vào lửa"
+  },
+  {
+    "label": "PINK",
+    "text": "Tôn Ngộ Không",
+    "normalized": "tôn ngộ không"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui nghe lỏm được cái này",
+    "normalized": "tui nghe lỏm được cái này"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đó là mối tương quan giữa và",
+    "normalized": "đó là mối tương quan giữa và"
+  },
+  {
+    "label": "RED",
+    "text": "Mời cậu đi trước",
+    "normalized": "mời cậu đi trước"
+  },
+  {
+    "label": "PINK",
+    "text": "Món quà tinh thần",
+    "normalized": "món quà tinh thần"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cái này cậu đừng nói ai nghe nha",
+    "normalized": "cái này cậu đừng nói ai nghe nha"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu thừa biết là",
+    "normalized": "cậu thừa biết là"
+  },
+  {
+    "label": "RED",
+    "text": "Nhớ mang theo nước",
+    "normalized": "nhớ mang theo nước"
+  },
+  {
+    "label": "PINK",
+    "text": "Bệnh viên công",
+    "normalized": "bệnh viên công"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trớ trêu thay",
+    "normalized": "trớ trêu thay"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có sợ không",
+    "normalized": "cậu có sợ không"
+  },
+  {
+    "label": "RED",
+    "text": "Thêu dệt nên một câu chuyện",
+    "normalized": "thêu dệt nên một câu chuyện"
+  },
+  {
+    "label": "PINK",
+    "text": "Nước mắm",
+    "normalized": "nước mắm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ngạc nhiên thiệt",
+    "normalized": "ngạc nhiên thiệt"
+  },
+  {
+    "label": "BLUE",
+    "text": "Phải rất là thì cậu mới có thể",
+    "normalized": "phải rất là thì cậu mới có thể"
+  },
+  {
+    "label": "RED",
+    "text": "Dể đến thì dễ đi",
+    "normalized": "dể đến thì dễ đi"
+  },
+  {
+    "label": "PINK",
+    "text": "Trúng số",
+    "normalized": "trúng số"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu có phải người Sài Gòn không dzậy",
+    "normalized": "cậu có phải người sài gòn không dzậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chúng ta chẳng biết gì nhiều về",
+    "normalized": "chúng ta chẳng biết gì nhiều về"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có phạm cùng 1 sai lầm 2 lần",
+    "normalized": "đừng có phạm cùng 1 sai lầm 2 lần"
+  },
+  {
+    "label": "PINK",
+    "text": "Về quê",
+    "normalized": "về quê"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng hiểu nhầm ý tui nha",
+    "normalized": "đừng hiểu nhầm ý tui nha"
+  },
+  {
+    "label": "BLUE",
+    "text": "Làm sao để biến thành",
+    "normalized": "làm sao để biến thành"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu ủng hộ hay chống đối cái này",
+    "normalized": "cậu ủng hộ hay chống đối cái này"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhẫn nhịn",
+    "normalized": "nhẫn nhịn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mới nhắc Tào Tháo",
+    "normalized": "mới nhắc tào tháo"
+  },
+  {
+    "label": "BLUE",
+    "text": "Wow",
+    "normalized": "wow"
+  },
+  {
+    "label": "BLUE",
+    "text": "cậu quả là",
+    "normalized": "cậu quả là"
+  },
+  {
+    "label": "RED",
+    "text": "Ê câu đó của tui (nói) nha",
+    "normalized": "ê câu đó của tui nói nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Sang chấn",
+    "normalized": "sang chấn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói dzậy cũng nói",
+    "normalized": "nói dzậy cũng nói"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu vẫn còn",
+    "normalized": "cậu vẫn còn"
+  },
+  {
+    "label": "BLUE",
+    "text": "phải không",
+    "normalized": "phải không"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng chờ nữa",
+    "normalized": "đừng chờ nữa"
+  },
+  {
+    "label": "RED",
+    "text": "họ không đến đâu",
+    "normalized": "họ không đến đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Cứng họng",
+    "normalized": "cứng họng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ở cái đất Sài Gòn này",
+    "normalized": "ở cái đất sài gòn này"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui chỉ nói vậy với hi vọng rằng",
+    "normalized": "tui chỉ nói vậy với hi vọng rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Không biết mà lại là hay",
+    "normalized": "không biết mà lại là hay"
+  },
+  {
+    "label": "PINK",
+    "text": "Bỏ tay vào túi",
+    "normalized": "bỏ tay vào túi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mới đó mà đã 5 năm rồi",
+    "normalized": "mới đó mà đã 5 năm rồi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu gọi cái này là à",
+    "normalized": "cậu gọi cái này là à"
+  },
+  {
+    "label": "RED",
+    "text": "Không có gì là qua được mắt tui",
+    "normalized": "không có gì là qua được mắt tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Chống nạnh",
+    "normalized": "chống nạnh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nhắc mới nhớ",
+    "normalized": "nhắc mới nhớ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Trong quá khứ tui từng nghĩ",
+    "normalized": "trong quá khứ tui từng nghĩ"
+  },
+  {
+    "label": "RED",
+    "text": "Đi chỗ khác chơi",
+    "normalized": "đi chỗ khác chơi"
+  },
+  {
+    "label": "RED",
+    "text": "nhìn gì mà nhìn",
+    "normalized": "nhìn gì mà nhìn"
+  },
+  {
+    "label": "PINK",
+    "text": "Tằng hắng",
+    "normalized": "tằng hắng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng có mà lộn xộn nha",
+    "normalized": "đừng có mà lộn xộn nha"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai xúi cậu",
+    "normalized": "ai xúi cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có gì để mất",
+    "normalized": "cậu có gì để mất"
+  },
+  {
+    "label": "PINK",
+    "text": "Có tâm",
+    "normalized": "có tâm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Uả lộn",
+    "normalized": "uả lộn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu họ chỉ là bạn bè thì họ đâu có",
+    "normalized": "nếu họ chỉ là bạn bè thì họ đâu có"
+  },
+  {
+    "label": "RED",
+    "text": "(Cái đó) cũng dễ hiểu thôi",
+    "normalized": "cái đó cũng dễ hiểu thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Đổ sông đổ biển",
+    "normalized": "đổ sông đổ biển"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thế cơ à",
+    "normalized": "thế cơ à"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nhanh quá ha mới đó mà",
+    "normalized": "nhanh quá ha mới đó mà"
+  },
+  {
+    "label": "RED",
+    "text": "Bút sa gà chết",
+    "normalized": "bút sa gà chết"
+  },
+  {
+    "label": "PINK",
+    "text": "Ẫn dụ",
+    "normalized": "ẫn dụ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hình như",
+    "normalized": "hình như"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có vẻ",
+    "normalized": "có vẻ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cậu lại có thể",
+    "normalized": "sao cậu lại có thể"
+  },
+  {
+    "label": "BLUE",
+    "text": "coi sao được",
+    "normalized": "coi sao được"
+  },
+  {
+    "label": "BLUE",
+    "text": "còn ra cái thể thống gì nữa",
+    "normalized": "còn ra cái thể thống gì nữa"
+  },
+  {
+    "label": "RED",
+    "text": "Tui có 1 câu hỏi",
+    "normalized": "tui có 1 câu hỏi"
+  },
+  {
+    "label": "PINK",
+    "text": "Khó chịu",
+    "normalized": "khó chịu"
+  },
+  {
+    "label": "PINK",
+    "text": "khó chiều",
+    "normalized": "khó chiều"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hèn gì",
+    "normalized": "hèn gì"
+  },
+  {
+    "label": "GREEN",
+    "text": "thảo nào",
+    "normalized": "thảo nào"
+  },
+  {
+    "label": "GREEN",
+    "text": "chả trách",
+    "normalized": "chả trách"
+  },
+  {
+    "label": "GREEN",
+    "text": "ai dè",
+    "normalized": "ai dè"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có vậy thôi mà cũng",
+    "normalized": "có vậy thôi mà cũng"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nói vậy có rõ chưa",
+    "normalized": "tui nói vậy có rõ chưa"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nói vậy có dễ hiểu chưa",
+    "normalized": "tui nói vậy có dễ hiểu chưa"
+  },
+  {
+    "label": "PINK",
+    "text": "Vô tri",
+    "normalized": "vô tri"
+  },
+  {
+    "label": "GREEN",
+    "text": "Là saooo",
+    "normalized": "là saooo"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nhìn vậy thôi chớ đó nha",
+    "normalized": "nhìn vậy thôi chớ đó nha"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu nói sao ấy chớ",
+    "normalized": "cậu nói sao ấy chớ"
+  },
+  {
+    "label": "PINK",
+    "text": "Hống hách",
+    "normalized": "hống hách"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nghe ổn đấy",
+    "normalized": "nghe ổn đấy"
+  },
+  {
+    "label": "GREEN",
+    "text": "nghe okay đấy",
+    "normalized": "nghe okay đấy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đâu",
+    "normalized": "đâu"
+  },
+  {
+    "label": "BLUE",
+    "text": "nó đâu có dữ dzậy",
+    "normalized": "nó đâu có dữ dzậy"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu nói thì dễ rồi",
+    "normalized": "cậu nói thì dễ rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Thất thường",
+    "normalized": "thất thường"
+  },
+  {
+    "label": "GREEN",
+    "text": "Báo cậu biết luôn",
+    "normalized": "báo cậu biết luôn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu không thấy tui đang . à",
+    "normalized": "cậu không thấy tui đang à"
+  },
+  {
+    "label": "RED",
+    "text": "Cám ơn",
+    "normalized": "cám ơn"
+  },
+  {
+    "label": "RED",
+    "text": "xin lỗi trước nha",
+    "normalized": "xin lỗi trước nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Chảnh",
+    "normalized": "chảnh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thiệttt",
+    "normalized": "thiệttt"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ý cậu là tui à",
+    "normalized": "ý cậu là tui à"
+  },
+  {
+    "label": "BLUE",
+    "text": "ý cậu đang nói là tui . á hả",
+    "normalized": "ý cậu đang nói là tui á hả"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu xong phim rồi",
+    "normalized": "cậu xong phim rồi"
+  },
+  {
+    "label": "RED",
+    "text": "cậu lên dĩa rồi",
+    "normalized": "cậu lên dĩa rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "tránh xa khỏi",
+    "normalized": "tránh xa khỏi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để chiii",
+    "normalized": "để chiii"
+  },
+  {
+    "label": "BLUE",
+    "text": "Không có cậu là tui rồi",
+    "normalized": "không có cậu là tui rồi"
+  },
+  {
+    "label": "RED",
+    "text": "Tui không có cố tình",
+    "normalized": "tui không có cố tình"
+  },
+  {
+    "label": "RED",
+    "text": "Tui đâu cố tình đâu",
+    "normalized": "tui đâu cố tình đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Về lâu về dài",
+    "normalized": "về lâu về dài"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ngày xửa ngày xưa",
+    "normalized": "ngày xửa ngày xưa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Không biết cậu sao chứ tui thì",
+    "normalized": "không biết cậu sao chứ tui thì"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có sao không",
+    "normalized": "cậu có sao không"
+  },
+  {
+    "label": "RED",
+    "text": "cậu có bị thương không",
+    "normalized": "cậu có bị thương không"
+  },
+  {
+    "label": "PINK",
+    "text": "Muối tôm",
+    "normalized": "muối tôm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói đi thì cũng phải nói lại",
+    "normalized": "nói đi thì cũng phải nói lại"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói gì nói",
+    "normalized": "nói gì nói"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu mà một lần nữa thì đừng có trách",
+    "normalized": "cậu mà một lần nữa thì đừng có trách"
+  },
+  {
+    "label": "RED",
+    "text": "Ê đừng có nhìn tui vậy nha",
+    "normalized": "ê đừng có nhìn tui vậy nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Để ý tới",
+    "normalized": "để ý tới"
+  },
+  {
+    "label": "PINK",
+    "text": "chú ý tới",
+    "normalized": "chú ý tới"
+  },
+  {
+    "label": "PINK",
+    "text": "để tâm đến",
+    "normalized": "để tâm đến"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đằng nào",
+    "normalized": "đằng nào"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nói xin lỗi chớ",
+    "normalized": "nói xin lỗi chớ"
+  },
+  {
+    "label": "BLUE",
+    "text": "nói cậu đừng để bụng",
+    "normalized": "nói cậu đừng để bụng"
+  },
+  {
+    "label": "RED",
+    "text": "Vòng vo tam quốc",
+    "normalized": "vòng vo tam quốc"
+  },
+  {
+    "label": "PINK",
+    "text": "Đễ mắt tới",
+    "normalized": "đễ mắt tới"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hôm bữa",
+    "normalized": "hôm bữa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu bộ chết hả",
+    "normalized": "cậu bộ chết hả"
+  },
+  {
+    "label": "RED",
+    "text": "Giờ tui nói cậu nghe nè",
+    "normalized": "giờ tui nói cậu nghe nè"
+  },
+  {
+    "label": "PINK",
+    "text": "Tận dụng",
+    "normalized": "tận dụng"
+  },
+  {
+    "label": "PINK",
+    "text": "lợi dụng",
+    "normalized": "lợi dụng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Gì",
+    "normalized": "gì"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cái gììì",
+    "normalized": "cái gììì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đừng nói tui là cậu đó nha",
+    "normalized": "đừng nói tui là cậu đó nha"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu điên à",
+    "normalized": "cậu điên à"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có điên không",
+    "normalized": "cậu có điên không"
+  },
+  {
+    "label": "RED",
+    "text": "cậu có mất trí không",
+    "normalized": "cậu có mất trí không"
+  },
+  {
+    "label": "PINK",
+    "text": "Cái gọi là",
+    "normalized": "cái gọi là"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng lo",
+    "normalized": "đừng lo"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng có lo",
+    "normalized": "đừng có lo"
+  },
+  {
+    "label": "BLUE",
+    "text": "Uả",
+    "normalized": "uả"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui không có được (phép) hả",
+    "normalized": "tui không có được phép hả"
+  },
+  {
+    "label": "RED",
+    "text": "Tui có cách rồi",
+    "normalized": "tui có cách rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Xem nhẹ",
+    "normalized": "xem nhẹ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cùng lắm",
+    "normalized": "cùng lắm"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu nói vậy chẳng khác nào",
+    "normalized": "cậu nói vậy chẳng khác nào"
+  },
+  {
+    "label": "RED",
+    "text": "Mấy chuyện như này xảy ra hoài",
+    "normalized": "mấy chuyện như này xảy ra hoài"
+  },
+  {
+    "label": "RED",
+    "text": "Chuyện bình thường",
+    "normalized": "chuyện bình thường"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhận ra",
+    "normalized": "nhận ra"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu đang nói cái gì dzậy",
+    "normalized": "cậu đang nói cái gì dzậy"
+  },
+  {
+    "label": "GREEN",
+    "text": "cậu nói gì kỳ dzậy",
+    "normalized": "cậu nói gì kỳ dzậy"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu nói dzậy mà nghe được à",
+    "normalized": "cậu nói dzậy mà nghe được à"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nè, tui nói vậy không có nghĩa là",
+    "normalized": "nè tui nói vậy không có nghĩa là"
+  },
+  {
+    "label": "RED",
+    "text": "Chờ đây",
+    "normalized": "chờ đây"
+  },
+  {
+    "label": "RED",
+    "text": "tui quay lại liền",
+    "normalized": "tui quay lại liền"
+  },
+  {
+    "label": "PINK",
+    "text": "Phát hiện ra",
+    "normalized": "phát hiện ra"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bây giờ tôi hỏi cậu nè",
+    "normalized": "bây giờ tôi hỏi cậu nè"
+  },
+  {
+    "label": "BLUE",
+    "text": "Xin lỗi giờ tui không có hứng",
+    "normalized": "xin lỗi giờ tui không có hứng"
+  },
+  {
+    "label": "RED",
+    "text": "Giữ máy chút nha",
+    "normalized": "giữ máy chút nha"
+  },
+  {
+    "label": "PINK",
+    "text": "rất",
+    "normalized": "rất"
+  },
+  {
+    "label": "PINK",
+    "text": "quá là tào lao",
+    "normalized": "quá là tào lao"
+  },
+  {
+    "label": "PINK",
+    "text": "quá là dở",
+    "normalized": "quá là dở"
+  },
+  {
+    "label": "PINK",
+    "text": "tệ",
+    "normalized": "tệ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nhìn nè",
+    "normalized": "nhìn nè"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nghe nè",
+    "normalized": "nghe nè"
+  },
+  {
+    "label": "BLUE",
+    "text": "cái kiểu gì mà",
+    "normalized": "cái kiểu gì mà"
+  },
+  {
+    "label": "RED",
+    "text": "Tí nữa tui nói cho nghe",
+    "normalized": "tí nữa tui nói cho nghe"
+  },
+  {
+    "label": "PINK",
+    "text": "Hợp rơ",
+    "normalized": "hợp rơ"
+  },
+  {
+    "label": "PINK",
+    "text": "hợp cạ",
+    "normalized": "hợp cạ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Giờ cá không?!? Tôi dám cá",
+    "normalized": "giờ cá không tôi dám cá"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê cậu không được nha",
+    "normalized": "ê cậu không được nha"
+  },
+  {
+    "label": "RED",
+    "text": "Chuyện gì tới nó tới",
+    "normalized": "chuyện gì tới nó tới"
+  },
+  {
+    "label": "PINK",
+    "text": "Nghĩ ra",
+    "normalized": "nghĩ ra"
+  },
+  {
+    "label": "PINK",
+    "text": "tìm ra",
+    "normalized": "tìm ra"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hổng ấy",
+    "normalized": "hổng ấy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Bất kể nó có đến thế nào đi nữa, đó vẫn là",
+    "normalized": "bất kể nó có đến thế nào đi nữa đó vẫn là"
+  },
+  {
+    "label": "RED",
+    "text": "Tui không nghĩ đó là ý hay đâu",
+    "normalized": "tui không nghĩ đó là ý hay đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Bánh vẽ",
+    "normalized": "bánh vẽ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nhìn vậy thôi",
+    "normalized": "nhìn vậy thôi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chứ cậu nghĩ tại sao tui lại",
+    "normalized": "chứ cậu nghĩ tại sao tui lại"
+  },
+  {
+    "label": "RED",
+    "text": "Dễ như ăn bánh",
+    "normalized": "dễ như ăn bánh"
+  },
+  {
+    "label": "PINK",
+    "text": "Lật đật",
+    "normalized": "lật đật"
+  },
+  {
+    "label": "PINK",
+    "text": "vội vã",
+    "normalized": "vội vã"
+  },
+  {
+    "label": "GREEN",
+    "text": "còn lâu",
+    "normalized": "còn lâu"
+  },
+  {
+    "label": "GREEN",
+    "text": "không đời nào",
+    "normalized": "không đời nào"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai cho phép cậu",
+    "normalized": "ai cho phép cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Tui không có lặp lại đâu nha",
+    "normalized": "tui không có lặp lại đâu nha"
+  },
+  {
+    "label": "RED",
+    "text": "tui không có nói lại đâu nha",
+    "normalized": "tui không có nói lại đâu nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Vấn đề trước mắt",
+    "normalized": "vấn đề trước mắt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chuyện cũng lâu rồi",
+    "normalized": "chuyện cũng lâu rồi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui lấy để chi",
+    "normalized": "tui lấy để chi"
+  },
+  {
+    "label": "RED",
+    "text": "Vậy mà cậu cũng nói được",
+    "normalized": "vậy mà cậu cũng nói được"
+  },
+  {
+    "label": "PINK",
+    "text": "Vấn đề sống còn",
+    "normalized": "vấn đề sống còn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói cậu biết luôn",
+    "normalized": "nói cậu biết luôn"
+  },
+  {
+    "label": "GREEN",
+    "text": "nói luôn với cậu",
+    "normalized": "nói luôn với cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu không có quyền ở đây",
+    "normalized": "cậu không có quyền ở đây"
+  },
+  {
+    "label": "BLUE",
+    "text": "okay",
+    "normalized": "okay"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đâu trong cảnh tui cậu đâu biết",
+    "normalized": "cậu đâu trong cảnh tui cậu đâu biết"
+  },
+  {
+    "label": "PINK",
+    "text": "Nãy giờ",
+    "normalized": "nãy giờ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói sao ta",
+    "normalized": "nói sao ta"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói thế nào nhỉ",
+    "normalized": "nói thế nào nhỉ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui cũng không biết nói sao nữa",
+    "normalized": "tui cũng không biết nói sao nữa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui không thể chịu nổi cái cảm giác",
+    "normalized": "tui không thể chịu nổi cái cảm giác"
+  },
+  {
+    "label": "RED",
+    "text": "Tiền nào của đó thôi",
+    "normalized": "tiền nào của đó thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Vô hiệu hóa",
+    "normalized": "vô hiệu hóa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Làm hết hồn",
+    "normalized": "làm hết hồn"
+  },
+  {
+    "label": "GREEN",
+    "text": "hết hồn hà",
+    "normalized": "hết hồn hà"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cũng lâu rồi từ khi",
+    "normalized": "cũng lâu rồi từ khi"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nói gì sai à",
+    "normalized": "tui nói gì sai à"
+  },
+  {
+    "label": "PINK",
+    "text": "Đụng phải cùng một vấn đề",
+    "normalized": "đụng phải cùng một vấn đề"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui không có đùa nha",
+    "normalized": "tui không có đùa nha"
+  },
+  {
+    "label": "GREEN",
+    "text": "tui không có giỡn à",
+    "normalized": "tui không có giỡn à"
+  },
+  {
+    "label": "BLUE",
+    "text": "nói cũng có lý đấy",
+    "normalized": "nói cũng có lý đấy"
+  },
+  {
+    "label": "RED",
+    "text": "Đó không phải ý tui",
+    "normalized": "đó không phải ý tui"
+  },
+  {
+    "label": "RED",
+    "text": "Ý tui không phải dzậy",
+    "normalized": "ý tui không phải dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Đối phó với",
+    "normalized": "đối phó với"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu tui nhớ không nhầm thì",
+    "normalized": "nếu tui nhớ không nhầm thì"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu tui nhớ đúng thì",
+    "normalized": "nếu tui nhớ đúng thì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nhỡ thì sao",
+    "normalized": "nhỡ thì sao"
+  },
+  {
+    "label": "RED",
+    "text": "Khách hàng là thượng đế",
+    "normalized": "khách hàng là thượng đế"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhìn đểu",
+    "normalized": "nhìn đểu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lúc đó cậu nghĩ cái gì vậy",
+    "normalized": "lúc đó cậu nghĩ cái gì vậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu tốn bao lâu để",
+    "normalized": "cậu tốn bao lâu để"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu hiểu sao thì hiểu",
+    "normalized": "cậu hiểu sao thì hiểu"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhìn nhìn ngó ngó",
+    "normalized": "nhìn nhìn ngó ngó"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu hiểu hông",
+    "normalized": "cậu hiểu hông"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu hiểu ý tui hông",
+    "normalized": "cậu hiểu ý tui hông"
+  },
+  {
+    "label": "BLUE",
+    "text": "Không tin thì cậu đi mà hỏi",
+    "normalized": "không tin thì cậu đi mà hỏi"
+  },
+  {
+    "label": "RED",
+    "text": "Nhìn mặt cậu là tui biết rồi",
+    "normalized": "nhìn mặt cậu là tui biết rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Bắt tai",
+    "normalized": "bắt tai"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ý cậu sao",
+    "normalized": "ý cậu sao"
+  },
+  {
+    "label": "GREEN",
+    "text": "cậu nghĩ sao",
+    "normalized": "cậu nghĩ sao"
+  },
+  {
+    "label": "BLUE",
+    "text": "thì liên quan gì đến tui",
+    "normalized": "thì liên quan gì đến tui"
+  },
+  {
+    "label": "RED",
+    "text": "Khi đời trở nên sóng gió",
+    "normalized": "khi đời trở nên sóng gió"
+  },
+  {
+    "label": "RED",
+    "text": "khi mọi thứ không được thuận lợi",
+    "normalized": "khi mọi thứ không được thuận lợi"
+  },
+  {
+    "label": "PINK",
+    "text": "Hết giờ",
+    "normalized": "hết giờ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Giờ vầy đi",
+    "normalized": "giờ vầy đi"
+  },
+  {
+    "label": "GREEN",
+    "text": "chuyện là dzầy",
+    "normalized": "chuyện là dzầy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui biết tui còn khuya mới bằng cậu",
+    "normalized": "tui biết tui còn khuya mới bằng cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Xa mặt cách lòng",
+    "normalized": "xa mặt cách lòng"
+  },
+  {
+    "label": "PINK",
+    "text": "Một đứa bạn của tui",
+    "normalized": "một đứa bạn của tui"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói hay lắm",
+    "normalized": "nói hay lắm"
+  },
+  {
+    "label": "BLUE",
+    "text": "Điều gì làm cậu tin rằng",
+    "normalized": "điều gì làm cậu tin rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Cái gì cũng có lần đầu mà",
+    "normalized": "cái gì cũng có lần đầu mà"
+  },
+  {
+    "label": "PINK",
+    "text": "tỉ lệ thuận",
+    "normalized": "tỉ lệ thuận"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bây giờ tui hỏi cậu nè",
+    "normalized": "bây giờ tui hỏi cậu nè"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi thực sự không nỡ",
+    "normalized": "tôi thực sự không nỡ"
+  },
+  {
+    "label": "RED",
+    "text": "Rồi cậu sẽ làm gì",
+    "normalized": "rồi cậu sẽ làm gì"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu tính sẽ làm gì",
+    "normalized": "cậu tính sẽ làm gì"
+  },
+  {
+    "label": "PINK",
+    "text": "Trải",
+    "normalized": "trải"
+  },
+  {
+    "label": "PINK",
+    "text": "đi",
+    "normalized": "đi"
+  },
+  {
+    "label": "PINK",
+    "text": "kinh qua vô vàn những khó khăn",
+    "normalized": "kinh qua vô vàn những khó khăn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thôi bỏ đi",
+    "normalized": "thôi bỏ đi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không có gì",
+    "normalized": "không có gì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui từng có",
+    "normalized": "tui từng có"
+  },
+  {
+    "label": "RED",
+    "text": "Có gì tui báo",
+    "normalized": "có gì tui báo"
+  },
+  {
+    "label": "PINK",
+    "text": "Truyền miệng",
+    "normalized": "truyền miệng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hài thiệt",
+    "normalized": "hài thiệt"
+  },
+  {
+    "label": "GREEN",
+    "text": "hài thiệt chứ",
+    "normalized": "hài thiệt chứ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui từng một lần",
+    "normalized": "tui từng một lần"
+  },
+  {
+    "label": "RED",
+    "text": "Nó đâu có đơn giản vậy",
+    "normalized": "nó đâu có đơn giản vậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Quán ruột",
+    "normalized": "quán ruột"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tào lao",
+    "normalized": "tào lao"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nhảm nhí",
+    "normalized": "nhảm nhí"
+  },
+  {
+    "label": "GREEN",
+    "text": "Xàm xí",
+    "normalized": "xàm xí"
+  },
+  {
+    "label": "BLUE",
+    "text": "Càng lớn tui càng nhận ra",
+    "normalized": "càng lớn tui càng nhận ra"
+  },
+  {
+    "label": "RED",
+    "text": "Cái quái gì đây",
+    "normalized": "cái quái gì đây"
+  },
+  {
+    "label": "PINK",
+    "text": "Khách vãng lai",
+    "normalized": "khách vãng lai"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chết bà",
+    "normalized": "chết bà"
+  },
+  {
+    "label": "GREEN",
+    "text": "chết cha",
+    "normalized": "chết cha"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui nhớ là đã bị rồi",
+    "normalized": "tui nhớ là đã bị rồi"
+  },
+  {
+    "label": "RED",
+    "text": "Đó đâu phải chuyện của cậu",
+    "normalized": "đó đâu phải chuyện của cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Rút kinh nghiệm",
+    "normalized": "rút kinh nghiệm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ngặt nỗi",
+    "normalized": "ngặt nỗi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chỉ là",
+    "normalized": "chỉ là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có",
+    "normalized": "có"
+  },
+  {
+    "label": "BLUE",
+    "text": "làm thấy ghê",
+    "normalized": "làm thấy ghê"
+  },
+  {
+    "label": "RED",
+    "text": "Vài điều tốt hơn là không nên nói ra",
+    "normalized": "vài điều tốt hơn là không nên nói ra"
+  },
+  {
+    "label": "RED",
+    "text": "tốt hơn là nên giữ mồm giữ miệng",
+    "normalized": "tốt hơn là nên giữ mồm giữ miệng"
+  },
+  {
+    "label": "PINK",
+    "text": "Trễ họp",
+    "normalized": "trễ họp"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mọi thứ kết thúc rồi",
+    "normalized": "mọi thứ kết thúc rồi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui đã và đang",
+    "normalized": "tui đã và đang"
+  },
+  {
+    "label": "RED",
+    "text": "Có một thứ tui cần cậu biết trước",
+    "normalized": "có một thứ tui cần cậu biết trước"
+  },
+  {
+    "label": "PINK",
+    "text": "Bắt quả tang",
+    "normalized": "bắt quả tang"
+  },
+  {
+    "label": "GREEN",
+    "text": "Khoannn",
+    "normalized": "khoannn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui chỉ nói vậy vì thôi",
+    "normalized": "tui chỉ nói vậy vì thôi"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có hối tui",
+    "normalized": "đừng có hối tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Sến",
+    "normalized": "sến"
+  },
+  {
+    "label": "PINK",
+    "text": "sến súa",
+    "normalized": "sến súa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cũng hên",
+    "normalized": "cũng hên"
+  },
+  {
+    "label": "GREEN",
+    "text": "cũng may",
+    "normalized": "cũng may"
+  },
+  {
+    "label": "BLUE",
+    "text": "Làm sao cậu biết",
+    "normalized": "làm sao cậu biết"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu theo kịp không",
+    "normalized": "cậu theo kịp không"
+  },
+  {
+    "label": "PINK",
+    "text": "giả ngơ",
+    "normalized": "giả ngơ"
+  },
+  {
+    "label": "PINK",
+    "text": "giả điếc",
+    "normalized": "giả điếc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chuyện nhỏ mà",
+    "normalized": "chuyện nhỏ mà"
+  },
+  {
+    "label": "GREEN",
+    "text": "chuyện gì lớn đâu",
+    "normalized": "chuyện gì lớn đâu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cái điều quan trọng là",
+    "normalized": "cái điều quan trọng là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Quan trọng nhất là",
+    "normalized": "quan trọng nhất là"
+  },
+  {
+    "label": "RED",
+    "text": "Ê dạo này sao rồi",
+    "normalized": "ê dạo này sao rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "bị khép góc",
+    "normalized": "bị khép góc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao lâu vậy ta",
+    "normalized": "sao lâu vậy ta"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui rất biết ơn vì",
+    "normalized": "tui rất biết ơn vì"
+  },
+  {
+    "label": "RED",
+    "text": "Rồi tui nên nói gì giờ",
+    "normalized": "rồi tui nên nói gì giờ"
+  },
+  {
+    "label": "PINK",
+    "text": "Okay chốt",
+    "normalized": "okay chốt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tôi nói cậu nghe nè",
+    "normalized": "tôi nói cậu nghe nè"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi dành rất nhiều thời gian cho việc",
+    "normalized": "tôi dành rất nhiều thời gian cho việc"
+  },
+  {
+    "label": "RED",
+    "text": "Tiền không thành vấn đề",
+    "normalized": "tiền không thành vấn đề"
+  },
+  {
+    "label": "PINK",
+    "text": "Soán ngôi",
+    "normalized": "soán ngôi"
+  },
+  {
+    "label": "GREEN",
+    "text": "(Nói) không phải khoe chớ",
+    "normalized": "nói không phải khoe chớ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui không thích chút nào hết",
+    "normalized": "tui không thích chút nào hết"
+  },
+  {
+    "label": "RED",
+    "text": "Tui muốn nói tiếp chỗ mình dừng hôm bữa nha",
+    "normalized": "tui muốn nói tiếp chỗ mình dừng hôm bữa nha"
+  },
+  {
+    "label": "PINK",
+    "text": "So với cùng kỳ năm ngoái",
+    "normalized": "so với cùng kỳ năm ngoái"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bên cạnh đó",
+    "normalized": "bên cạnh đó"
+  },
+  {
+    "label": "GREEN",
+    "text": "Với lại",
+    "normalized": "với lại"
+  },
+  {
+    "label": "GREEN",
+    "text": "với cả",
+    "normalized": "với cả"
+  },
+  {
+    "label": "BLUE",
+    "text": "Điều gì làm cậu",
+    "normalized": "điều gì làm cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Nó liên quan gì đến chuyện mà ta đang nói",
+    "normalized": "nó liên quan gì đến chuyện mà ta đang nói"
+  },
+  {
+    "label": "PINK",
+    "text": "Không có cửa thắng",
+    "normalized": "không có cửa thắng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cụ thể",
+    "normalized": "cụ thể"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nghe thì có vẻ lạ nhưng mà",
+    "normalized": "nghe thì có vẻ lạ nhưng mà"
+  },
+  {
+    "label": "BLUE",
+    "text": "nghe thì có vẻ khó tin nhưng mà",
+    "normalized": "nghe thì có vẻ khó tin nhưng mà"
+  },
+  {
+    "label": "PINK",
+    "text": "Tạo thêm giá trị",
+    "normalized": "tạo thêm giá trị"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu nói vậy đâu được",
+    "normalized": "cậu nói vậy đâu được"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu làm gì có gan để",
+    "normalized": "cậu làm gì có gan để"
+  },
+  {
+    "label": "BLUE",
+    "text": "cậu chẳng có gan để đâu",
+    "normalized": "cậu chẳng có gan để đâu"
+  },
+  {
+    "label": "RED",
+    "text": "Nhìn cho kỹ dzô",
+    "normalized": "nhìn cho kỹ dzô"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không lâu sao đó",
+    "normalized": "không lâu sao đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có cái ví dụ nào cụ thể cho không",
+    "normalized": "cậu có cái ví dụ nào cụ thể cho không"
+  },
+  {
+    "label": "RED",
+    "text": "Uả xí",
+    "normalized": "uả xí"
+  },
+  {
+    "label": "RED",
+    "text": "tui chưa hiểu gì hết",
+    "normalized": "tui chưa hiểu gì hết"
+  },
+  {
+    "label": "PINK",
+    "text": "Cắt giảm chi phí",
+    "normalized": "cắt giảm chi phí"
+  },
+  {
+    "label": "GREEN",
+    "text": "Xui thay",
+    "normalized": "xui thay"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đen thay",
+    "normalized": "đen thay"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui mà biết trước",
+    "normalized": "tui mà biết trước"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui đã",
+    "normalized": "tui đã"
+  },
+  {
+    "label": "RED",
+    "text": "Im lặng",
+    "normalized": "im lặng"
+  },
+  {
+    "label": "RED",
+    "text": "im hết coi",
+    "normalized": "im hết coi"
+  },
+  {
+    "label": "PINK",
+    "text": "Sẽ có thể",
+    "normalized": "sẽ có thể"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mấy nay",
+    "normalized": "mấy nay"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bữa giờ",
+    "normalized": "bữa giờ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Dạo này",
+    "normalized": "dạo này"
+  },
+  {
+    "label": "GREEN",
+    "text": "nghe bảo",
+    "normalized": "nghe bảo"
+  },
+  {
+    "label": "BLUE",
+    "text": "Không quan trọng nó đến cỡ nào",
+    "normalized": "không quan trọng nó đến cỡ nào"
+  },
+  {
+    "label": "RED",
+    "text": "Sao mặt buồn so dzậy",
+    "normalized": "sao mặt buồn so dzậy"
+  },
+  {
+    "label": "RED",
+    "text": "Sao mặt đưa đám dzậy",
+    "normalized": "sao mặt đưa đám dzậy"
+  },
+  {
+    "label": "GREEN",
+    "text": "May thay",
+    "normalized": "may thay"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tất cả mọi người ai cũng đều trừ tui",
+    "normalized": "tất cả mọi người ai cũng đều trừ tui"
+  },
+  {
+    "label": "RED",
+    "text": "Xin lỗi làm phiền anh giờ này nha",
+    "normalized": "xin lỗi làm phiền anh giờ này nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Lưu loát và mạch lạc",
+    "normalized": "lưu loát và mạch lạc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ai lại",
+    "normalized": "ai lại"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ai lại không",
+    "normalized": "ai lại không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tất cả những gì tui có thể làm cho cậu là",
+    "normalized": "tất cả những gì tui có thể làm cho cậu là"
+  },
+  {
+    "label": "RED",
+    "text": "Àaa",
+    "normalized": "àaa"
+  },
+  {
+    "label": "RED",
+    "text": "ra là dzậy",
+    "normalized": "ra là dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Đánh giá cao",
+    "normalized": "đánh giá cao"
+  },
+  {
+    "label": "GREEN",
+    "text": "Từ góc độ của tui",
+    "normalized": "từ góc độ của tui"
+  },
+  {
+    "label": "GREEN",
+    "text": "Từ góc nhìn của tui",
+    "normalized": "từ góc nhìn của tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê, tui mới là cái đứa phải đây nè",
+    "normalized": "ê tui mới là cái đứa phải đây nè"
+  },
+  {
+    "label": "RED",
+    "text": "Thôi đừng có càm ràm nữa",
+    "normalized": "thôi đừng có càm ràm nữa"
+  },
+  {
+    "label": "PINK",
+    "text": "Một điểm cộng lớn",
+    "normalized": "một điểm cộng lớn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói cách khác",
+    "normalized": "nói cách khác"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu càng cố gắng",
+    "normalized": "cậu càng cố gắng"
+  },
+  {
+    "label": "BLUE",
+    "text": "cuộc chơi sẽ càng",
+    "normalized": "cuộc chơi sẽ càng"
+  },
+  {
+    "label": "RED",
+    "text": "Nếu cậu không phiền tui hỏi",
+    "normalized": "nếu cậu không phiền tui hỏi"
+  },
+  {
+    "label": "RED",
+    "text": "nếu cậu không phiền",
+    "normalized": "nếu cậu không phiền"
+  },
+  {
+    "label": "PINK",
+    "text": "Làm tui bực",
+    "normalized": "làm tui bực"
+  },
+  {
+    "label": "PINK",
+    "text": "chọc điên tui",
+    "normalized": "chọc điên tui"
+  },
+  {
+    "label": "GREEN",
+    "text": "Suy cho cùng",
+    "normalized": "suy cho cùng"
+  },
+  {
+    "label": "GREEN",
+    "text": "cuối cùng",
+    "normalized": "cuối cùng"
+  },
+  {
+    "label": "BLUE",
+    "text": "đều quy về cùng một chuyện cả thôi",
+    "normalized": "đều quy về cùng một chuyện cả thôi"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nhờ cậu (1) chuyện được không",
+    "normalized": "tui nhờ cậu 1 chuyện được không"
+  },
+  {
+    "label": "PINK",
+    "text": "Cú đêm",
+    "normalized": "cú đêm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thử đi",
+    "normalized": "thử đi"
+  },
+  {
+    "label": "BLUE",
+    "text": "bị sao vậy",
+    "normalized": "bị sao vậy"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu (đang) nói cái gì dzậy",
+    "normalized": "cậu đang nói cái gì dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Công an phường",
+    "normalized": "công an phường"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui xạo câu chi",
+    "normalized": "tui xạo câu chi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui lừa cậu làm gì",
+    "normalized": "tui lừa cậu làm gì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui lấy đâu ra cái đây",
+    "normalized": "tui lấy đâu ra cái đây"
+  },
+  {
+    "label": "RED",
+    "text": "Lẹ lên",
+    "normalized": "lẹ lên"
+  },
+  {
+    "label": "RED",
+    "text": "tui không có rảnh à",
+    "normalized": "tui không có rảnh à"
+  },
+  {
+    "label": "PINK",
+    "text": "Hải quan",
+    "normalized": "hải quan"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mới đó mà đã 3 năm rồi",
+    "normalized": "mới đó mà đã 3 năm rồi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có một chuyện tui chưa từng nói cậu",
+    "normalized": "có một chuyện tui chưa từng nói cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu theo kịp tui không",
+    "normalized": "cậu theo kịp tui không"
+  },
+  {
+    "label": "RED",
+    "text": "Tui có nói nhanh quá không",
+    "normalized": "tui có nói nhanh quá không"
+  },
+  {
+    "label": "PINK",
+    "text": "Chú Cuội",
+    "normalized": "chú cuội"
+  },
+  {
+    "label": "GREEN",
+    "text": "Về cơ bản",
+    "normalized": "về cơ bản"
+  },
+  {
+    "label": "GREEN",
+    "text": "cơ bản mà nói",
+    "normalized": "cơ bản mà nói"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cậu cứ thế nhỉ",
+    "normalized": "sao cậu cứ thế nhỉ"
+  },
+  {
+    "label": "PINK",
+    "text": "Gà ta",
+    "normalized": "gà ta"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thôi thôi tui xin",
+    "normalized": "thôi thôi tui xin"
+  },
+  {
+    "label": "GREEN",
+    "text": "tui lạy cậu",
+    "normalized": "tui lạy cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu đâu nhất thiết phải",
+    "normalized": "cậu đâu nhất thiết phải"
+  },
+  {
+    "label": "RED",
+    "text": "Cách đó không có work",
+    "normalized": "cách đó không có work"
+  },
+  {
+    "label": "RED",
+    "text": "cách đó không được đâu",
+    "normalized": "cách đó không được đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Bánh trung thu",
+    "normalized": "bánh trung thu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Okay tui thua",
+    "normalized": "okay tui thua"
+  },
+  {
+    "label": "GREEN",
+    "text": "okay tui thua rồi đấy",
+    "normalized": "okay tui thua rồi đấy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Lúc đó tui đang",
+    "normalized": "lúc đó tui đang"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu thử chưa mà biết",
+    "normalized": "cậu thử chưa mà biết"
+  },
+  {
+    "label": "RED",
+    "text": "Sao cậu biết không được",
+    "normalized": "sao cậu biết không được"
+  },
+  {
+    "label": "PINK",
+    "text": "Áy náy",
+    "normalized": "áy náy"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thôi đừng có chọc",
+    "normalized": "thôi đừng có chọc"
+  },
+  {
+    "label": "GREEN",
+    "text": "ghẹo tui nữa",
+    "normalized": "ghẹo tui nữa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nhiều khi tui cũng không biết",
+    "normalized": "nhiều khi tui cũng không biết"
+  },
+  {
+    "label": "RED",
+    "text": "Tui biết ngay thế nào cậu cũng nói dzậy mà",
+    "normalized": "tui biết ngay thế nào cậu cũng nói dzậy mà"
+  },
+  {
+    "label": "PINK",
+    "text": "ở ẩn",
+    "normalized": "ở ẩn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Dần dần theo thời gian",
+    "normalized": "dần dần theo thời gian"
+  },
+  {
+    "label": "GREEN",
+    "text": "dần dà",
+    "normalized": "dần dà"
+  },
+  {
+    "label": "GREEN",
+    "text": "lâu dần",
+    "normalized": "lâu dần"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu nghĩ thử coi",
+    "normalized": "cậu nghĩ thử coi"
+  },
+  {
+    "label": "BLUE",
+    "text": "nếu bây giờ",
+    "normalized": "nếu bây giờ"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu không biết cái đó hả",
+    "normalized": "cậu không biết cái đó hả"
+  },
+  {
+    "label": "PINK",
+    "text": "Chạy một dự án",
+    "normalized": "chạy một dự án"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có trời biết",
+    "normalized": "có trời biết"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui có thể đồng ý mọi thứ ngoại trừ",
+    "normalized": "tui có thể đồng ý mọi thứ ngoại trừ"
+  },
+  {
+    "label": "BLUE",
+    "text": "trừ",
+    "normalized": "trừ"
+  },
+  {
+    "label": "PINK",
+    "text": "Chậm nhất là chủ nhật",
+    "normalized": "chậm nhất là chủ nhật"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hồi đó",
+    "normalized": "hồi đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Rồi họ chưa",
+    "normalized": "rồi họ chưa"
+  },
+  {
+    "label": "RED",
+    "text": "Một phần không thể thiếu của cuộc sống",
+    "normalized": "một phần không thể thiếu của cuộc sống"
+  },
+  {
+    "label": "PINK",
+    "text": "Ngon bổ rẻ",
+    "normalized": "ngon bổ rẻ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hồi cấp ba",
+    "normalized": "hồi cấp ba"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu phải thì mới được",
+    "normalized": "cậu phải thì mới được"
+  },
+  {
+    "label": "RED",
+    "text": "Chuyện gì rồi cũng có cách giải quyết thôi",
+    "normalized": "chuyện gì rồi cũng có cách giải quyết thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Tiêu chảy",
+    "normalized": "tiêu chảy"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lẹ lên",
+    "normalized": "lẹ lên"
+  },
+  {
+    "label": "GREEN",
+    "text": "nhanh lên",
+    "normalized": "nhanh lên"
+  },
+  {
+    "label": "BLUE",
+    "text": "đang dần",
+    "normalized": "đang dần"
+  },
+  {
+    "label": "RED",
+    "text": "Nói được làm được nha",
+    "normalized": "nói được làm được nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Ngất xỉu",
+    "normalized": "ngất xỉu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trong suốt 10 năm",
+    "normalized": "trong suốt 10 năm"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đã bảo mà",
+    "normalized": "đã bảo mà"
+  },
+  {
+    "label": "BLUE",
+    "text": "đã bảo cậu mà",
+    "normalized": "đã bảo cậu mà"
+  },
+  {
+    "label": "RED",
+    "text": "Tui có tin tốt",
+    "normalized": "tui có tin tốt"
+  },
+  {
+    "label": "RED",
+    "text": "xấu cho cậu đây",
+    "normalized": "xấu cho cậu đây"
+  },
+  {
+    "label": "PINK",
+    "text": "Trong gang tấc",
+    "normalized": "trong gang tấc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ngày này năm sau",
+    "normalized": "ngày này năm sau"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cậu lúc nào cũng",
+    "normalized": "sao cậu lúc nào cũng"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nhờ cậu này được không",
+    "normalized": "tui nhờ cậu này được không"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu giúp tui chuyện được không",
+    "normalized": "cậu giúp tui chuyện được không"
+  },
+  {
+    "label": "PINK",
+    "text": "Cầu vồng",
+    "normalized": "cầu vồng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Trời đẹp thế này mà không thì quả là phí phạm",
+    "normalized": "trời đẹp thế này mà không thì quả là phí phạm"
+  },
+  {
+    "label": "RED",
+    "text": "Đẹp quá ta",
+    "normalized": "đẹp quá ta"
+  },
+  {
+    "label": "PINK",
+    "text": "Nửa vời",
+    "normalized": "nửa vời"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thế thì cậu nhầm",
+    "normalized": "thế thì cậu nhầm"
+  },
+  {
+    "label": "BLUE",
+    "text": "thì đã sao",
+    "normalized": "thì đã sao"
+  },
+  {
+    "label": "BLUE",
+    "text": "thì đã bị làm sao",
+    "normalized": "thì đã bị làm sao"
+  },
+  {
+    "label": "RED",
+    "text": "9 người 10 ý",
+    "normalized": "9 người 10 ý"
+  },
+  {
+    "label": "PINK",
+    "text": "Yêu quái",
+    "normalized": "yêu quái"
+  },
+  {
+    "label": "GREEN",
+    "text": "Dẫu vậy",
+    "normalized": "dẫu vậy"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mặc dù vậy",
+    "normalized": "mặc dù vậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu không có được (phép) nha",
+    "normalized": "cậu không có được phép nha"
+  },
+  {
+    "label": "RED",
+    "text": "Làm sao (mà) tui biết được",
+    "normalized": "làm sao mà tui biết được"
+  },
+  {
+    "label": "PINK",
+    "text": "Ưu tiên hàng đầu",
+    "normalized": "ưu tiên hàng đầu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hay chính xác hơn",
+    "normalized": "hay chính xác hơn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai mà hổng biết",
+    "normalized": "ai mà hổng biết"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai cũng biết",
+    "normalized": "ai cũng biết"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có cần tui giúp một tay không",
+    "normalized": "cậu có cần tui giúp một tay không"
+  },
+  {
+    "label": "PINK",
+    "text": "Diễn đạt suy nghĩ",
+    "normalized": "diễn đạt suy nghĩ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Xém nữa",
+    "normalized": "xém nữa"
+  },
+  {
+    "label": "GREEN",
+    "text": "xém chết",
+    "normalized": "xém chết"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui thắc mắc liệu",
+    "normalized": "tui thắc mắc liệu"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nợ cậu lần này",
+    "normalized": "tui nợ cậu lần này"
+  },
+  {
+    "label": "PINK",
+    "text": "Tửu lượng",
+    "normalized": "tửu lượng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thấy chưa",
+    "normalized": "thấy chưa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sáng mắt ra chưa",
+    "normalized": "sáng mắt ra chưa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tốt hơn là cậu nên",
+    "normalized": "tốt hơn là cậu nên"
+  },
+  {
+    "label": "BLUE",
+    "text": "cậu tốt hơn nên",
+    "normalized": "cậu tốt hơn nên"
+  },
+  {
+    "label": "RED",
+    "text": "Bình tĩnh",
+    "normalized": "bình tĩnh"
+  },
+  {
+    "label": "RED",
+    "text": "hết sức bình tĩnh",
+    "normalized": "hết sức bình tĩnh"
+  },
+  {
+    "label": "RED",
+    "text": "có phải tận thế đâu",
+    "normalized": "có phải tận thế đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "3 ngày liền",
+    "normalized": "3 ngày liền"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thề luôn",
+    "normalized": "thề luôn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui thề",
+    "normalized": "tui thề"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thề có trời",
+    "normalized": "thề có trời"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cậu không thử",
+    "normalized": "sao cậu không thử"
+  },
+  {
+    "label": "RED",
+    "text": "Đâm sau lưng",
+    "normalized": "đâm sau lưng"
+  },
+  {
+    "label": "PINK",
+    "text": "Vỉa hè",
+    "normalized": "vỉa hè"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cứ từ từ",
+    "normalized": "cứ từ từ"
+  },
+  {
+    "label": "GREEN",
+    "text": "không gấp",
+    "normalized": "không gấp"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui tốn cả một năm trời chỉ để",
+    "normalized": "tui tốn cả một năm trời chỉ để"
+  },
+  {
+    "label": "RED",
+    "text": "Nó làm tui mất ngủ nhiều đêm",
+    "normalized": "nó làm tui mất ngủ nhiều đêm"
+  },
+  {
+    "label": "PINK",
+    "text": "1 2 3 Dzô",
+    "normalized": "1 2 3 dzô"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nghĩ kỹ chưa",
+    "normalized": "nghĩ kỹ chưa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu không nhận ra à",
+    "normalized": "cậu không nhận ra à"
+  },
+  {
+    "label": "RED",
+    "text": "Tóm lại cậu muốn cái gì ở tui",
+    "normalized": "tóm lại cậu muốn cái gì ở tui"
+  },
+  {
+    "label": "RED",
+    "text": "Tóm lại thì tui làm được cái gì",
+    "normalized": "tóm lại thì tui làm được cái gì"
+  },
+  {
+    "label": "PINK",
+    "text": "Cưa bill (chia bill)",
+    "normalized": "cưa bill chia bill"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thíệtttt",
+    "normalized": "thíệtttt"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có biết tôi đã phải . không",
+    "normalized": "cậu có biết tôi đã phải không"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nói nãy giờ cậu không hiểu hả",
+    "normalized": "tui nói nãy giờ cậu không hiểu hả"
+  },
+  {
+    "label": "PINK",
+    "text": "Ghế nóng",
+    "normalized": "ghế nóng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu giúp tui chuyện được không",
+    "normalized": "cậu giúp tui chuyện được không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Điều tui đang muốn nói là",
+    "normalized": "điều tui đang muốn nói là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ý tui là",
+    "normalized": "ý tui là"
+  },
+  {
+    "label": "RED",
+    "text": "Được ăn cả ngã về không",
+    "normalized": "được ăn cả ngã về không"
+  },
+  {
+    "label": "PINK",
+    "text": "cờ tỉ phú",
+    "normalized": "cờ tỉ phú"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tính ra",
+    "normalized": "tính ra"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui chưa bao giờ",
+    "normalized": "tui chưa bao giờ"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui chưa từng bao giờ",
+    "normalized": "tui chưa từng bao giờ"
+  },
+  {
+    "label": "RED",
+    "text": "Nói lớn lên tui chả nghe gì cả",
+    "normalized": "nói lớn lên tui chả nghe gì cả"
+  },
+  {
+    "label": "PINK",
+    "text": "giữ bí mật",
+    "normalized": "giữ bí mật"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hóa ra",
+    "normalized": "hóa ra"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu cậu thì cứ tự nhiên",
+    "normalized": "nếu cậu thì cứ tự nhiên"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu cậu thì cứ thoải mái",
+    "normalized": "nếu cậu thì cứ thoải mái"
+  },
+  {
+    "label": "RED",
+    "text": "Chính xác",
+    "normalized": "chính xác"
+  },
+  {
+    "label": "RED",
+    "text": "Chuẩn",
+    "normalized": "chuẩn"
+  },
+  {
+    "label": "PINK",
+    "text": "Ngon banh xác",
+    "normalized": "ngon banh xác"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tóm lại",
+    "normalized": "tóm lại"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có bao giờ",
+    "normalized": "cậu có bao giờ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có từng chưa",
+    "normalized": "cậu có từng chưa"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có chĩa mũi vào chuyện người khác",
+    "normalized": "đừng có chĩa mũi vào chuyện người khác"
+  },
+  {
+    "label": "RED",
+    "text": "Cái này đâu phải chuyện của cậu",
+    "normalized": "cái này đâu phải chuyện của cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Qúa đáng",
+    "normalized": "qúa đáng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ngược lại",
+    "normalized": "ngược lại"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có cách nào tui có thể không",
+    "normalized": "có cách nào tui có thể không"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu join không",
+    "normalized": "cậu join không"
+  },
+  {
+    "label": "RED",
+    "text": "cậu tham gia không",
+    "normalized": "cậu tham gia không"
+  },
+  {
+    "label": "PINK",
+    "text": "Luật bất thành văn",
+    "normalized": "luật bất thành văn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mừng cho cậu",
+    "normalized": "mừng cho cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu không có cậu chắc tui đã",
+    "normalized": "nếu không có cậu chắc tui đã"
+  },
+  {
+    "label": "RED",
+    "text": "Đó chỉ là vấn đề thời gian thôi",
+    "normalized": "đó chỉ là vấn đề thời gian thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Đỉnh của đỉnh",
+    "normalized": "đỉnh của đỉnh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lần này tui tha",
+    "normalized": "lần này tui tha"
+  },
+  {
+    "label": "GREEN",
+    "text": "lần này tui bỏ qua",
+    "normalized": "lần này tui bỏ qua"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đã nói cậu rồi mà",
+    "normalized": "đã nói cậu rồi mà"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu thích cái nào hơn",
+    "normalized": "cậu thích cái nào hơn"
+  },
+  {
+    "label": "PINK",
+    "text": "Thiên vị",
+    "normalized": "thiên vị"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bất thình lình",
+    "normalized": "bất thình lình"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tự dưng",
+    "normalized": "tự dưng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai bắt cậu",
+    "normalized": "ai bắt cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đứa nào bắt cậu",
+    "normalized": "đứa nào bắt cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu thì biết cái gì mà nói",
+    "normalized": "cậu thì biết cái gì mà nói"
+  },
+  {
+    "label": "PINK",
+    "text": "Nước mía",
+    "normalized": "nước mía"
+  },
+  {
+    "label": "GREEN",
+    "text": "Phải vậy chớ",
+    "normalized": "phải vậy chớ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có để ý không",
+    "normalized": "cậu có để ý không"
+  },
+  {
+    "label": "RED",
+    "text": "Quá ảo",
+    "normalized": "quá ảo"
+  },
+  {
+    "label": "RED",
+    "text": "Ảo ma canada",
+    "normalized": "ảo ma canada"
+  },
+  {
+    "label": "RED",
+    "text": "Ảo thế",
+    "normalized": "ảo thế"
+  },
+  {
+    "label": "RED",
+    "text": "Khó tin thế",
+    "normalized": "khó tin thế"
+  },
+  {
+    "label": "PINK",
+    "text": "Cùng một lúc",
+    "normalized": "cùng một lúc"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui còn khuya mới",
+    "normalized": "tui còn khuya mới"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nghĩ thông (suốt) rồi",
+    "normalized": "tui nghĩ thông suốt rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Thức khuya dậy sớm",
+    "normalized": "thức khuya dậy sớm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu biết sao không",
+    "normalized": "cậu biết sao không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu cậu là người Việt chắc chắn cậu biết",
+    "normalized": "nếu cậu là người việt chắc chắn cậu biết"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu vừa nói gì",
+    "normalized": "cậu vừa nói gì"
+  },
+  {
+    "label": "PINK",
+    "text": "Vòng tròn luẩn quẩn",
+    "normalized": "vòng tròn luẩn quẩn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mới nãy",
+    "normalized": "mới nãy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê cậu xong chưa",
+    "normalized": "ê cậu xong chưa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê cậu xong cái chưa",
+    "normalized": "ê cậu xong cái chưa"
+  },
+  {
+    "label": "RED",
+    "text": "Cái đó nghe quen lắm nha",
+    "normalized": "cái đó nghe quen lắm nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Heo đất",
+    "normalized": "heo đất"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu biết tin gì chưa",
+    "normalized": "cậu biết tin gì chưa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu nghe tin gì chưa",
+    "normalized": "cậu nghe tin gì chưa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui đâu có sự lựa chọn nào khác ngoài việc",
+    "normalized": "tui đâu có sự lựa chọn nào khác ngoài việc"
+  },
+  {
+    "label": "RED",
+    "text": "Thực hiện 1 giao dịch",
+    "normalized": "thực hiện 1 giao dịch"
+  },
+  {
+    "label": "PINK",
+    "text": "Chu đáo",
+    "normalized": "chu đáo"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có tin tức gì không",
+    "normalized": "có tin tức gì không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cứ hở ra là cậu lại dzậy",
+    "normalized": "sao cứ hở ra là cậu lại dzậy"
+  },
+  {
+    "label": "RED",
+    "text": "Tui không có bị dụ đâu",
+    "normalized": "tui không có bị dụ đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Phản tác dụng",
+    "normalized": "phản tác dụng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui e là",
+    "normalized": "tui e là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Để tui thử xem sao",
+    "normalized": "để tui thử xem sao"
+  },
+  {
+    "label": "RED",
+    "text": "Chúc bạn may mắn lần sau",
+    "normalized": "chúc bạn may mắn lần sau"
+  },
+  {
+    "label": "PINK",
+    "text": "Thăng trầm",
+    "normalized": "thăng trầm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có một thứ mà tui quên báo cậu trước",
+    "normalized": "có một thứ mà tui quên báo cậu trước"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu nói Cậu có bằng chứng không",
+    "normalized": "cậu nói cậu có bằng chứng không"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu nghe đúng rồi đấy",
+    "normalized": "cậu nghe đúng rồi đấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Thao túng",
+    "normalized": "thao túng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nản thiệt chứ",
+    "normalized": "nản thiệt chứ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nản thiệt",
+    "normalized": "nản thiệt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chán đời thiệt",
+    "normalized": "chán đời thiệt"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có sẵn lòng không",
+    "normalized": "cậu có sẵn lòng không"
+  },
+  {
+    "label": "RED",
+    "text": "Nó hiệu quả như thuốc tiên ấy",
+    "normalized": "nó hiệu quả như thuốc tiên ấy"
+  },
+  {
+    "label": "RED",
+    "text": "Nó rất là hiệu quả nha",
+    "normalized": "nó rất là hiệu quả nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Đầu cơ",
+    "normalized": "đầu cơ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đúng nghĩa thì",
+    "normalized": "đúng nghĩa thì"
+  },
+  {
+    "label": "GREEN",
+    "text": "đúng ra thì",
+    "normalized": "đúng ra thì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đó chính là lý do mà",
+    "normalized": "đó chính là lý do mà"
+  },
+  {
+    "label": "BLUE",
+    "text": "đó cũng là lý do mà",
+    "normalized": "đó cũng là lý do mà"
+  },
+  {
+    "label": "RED",
+    "text": "Rõ ràng anh có nói",
+    "normalized": "rõ ràng anh có nói"
+  },
+  {
+    "label": "RED",
+    "text": "làm vậy nha",
+    "normalized": "làm vậy nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Trưởng thành",
+    "normalized": "trưởng thành"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tin hay không thì tùy",
+    "normalized": "tin hay không thì tùy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Thực ra đây là lần đầu tôi",
+    "normalized": "thực ra đây là lần đầu tôi"
+  },
+  {
+    "label": "RED",
+    "text": "Tui không biết ảnh",
+    "normalized": "tui không biết ảnh"
+  },
+  {
+    "label": "RED",
+    "text": "cổ có nói cậu chưa",
+    "normalized": "cổ có nói cậu chưa"
+  },
+  {
+    "label": "PINK",
+    "text": "Hồi phục",
+    "normalized": "hồi phục"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để tui nhắc cho cậu nhớ",
+    "normalized": "để tui nhắc cho cậu nhớ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu làm như ai cũng không bằng",
+    "normalized": "cậu làm như ai cũng không bằng"
+  },
+  {
+    "label": "RED",
+    "text": "Làm vậy mất nhiều thời gian lắm",
+    "normalized": "làm vậy mất nhiều thời gian lắm"
+  },
+  {
+    "label": "PINK",
+    "text": "Thức ăn đường phố",
+    "normalized": "thức ăn đường phố"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói nhỏ thôi",
+    "normalized": "nói nhỏ thôi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói khẽ thôi",
+    "normalized": "nói khẽ thôi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu phải hiểu là",
+    "normalized": "cậu phải hiểu là"
+  },
+  {
+    "label": "RED",
+    "text": "Giờ cậu có rảnh nói chuyện chút không",
+    "normalized": "giờ cậu có rảnh nói chuyện chút không"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nói chuyện cậu chút được không",
+    "normalized": "tui nói chuyện cậu chút được không"
+  },
+  {
+    "label": "PINK",
+    "text": "Sự thật trần trụi",
+    "normalized": "sự thật trần trụi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu cậu để ý",
+    "normalized": "nếu cậu để ý"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có cái mà khoe quài",
+    "normalized": "có cái mà khoe quài"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có kén chọn quá",
+    "normalized": "đừng có kén chọn quá"
+  },
+  {
+    "label": "PINK",
+    "text": "Cháo hành",
+    "normalized": "cháo hành"
+  },
+  {
+    "label": "BLUE",
+    "text": "Uả tui không thì tui ngồi đây chi",
+    "normalized": "uả tui không thì tui ngồi đây chi"
+  },
+  {
+    "label": "RED",
+    "text": "Bữa tiệc nào rồi cũng có lúc tàn",
+    "normalized": "bữa tiệc nào rồi cũng có lúc tàn"
+  },
+  {
+    "label": "PINK",
+    "text": "Làm động tác giả",
+    "normalized": "làm động tác giả"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu quên rồi à",
+    "normalized": "cậu quên rồi à"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu nói thì hay lắm sao cậu không tự đi mà",
+    "normalized": "cậu nói thì hay lắm sao cậu không tự đi mà"
+  },
+  {
+    "label": "RED",
+    "text": "Tui bị lây thói quen của cậu đấy",
+    "normalized": "tui bị lây thói quen của cậu đấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Sư tử cái",
+    "normalized": "sư tử cái"
+  },
+  {
+    "label": "GREEN",
+    "text": "Quan trọng hơn",
+    "normalized": "quan trọng hơn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Thế nào mai tụi nó cũng cho mà xem",
+    "normalized": "thế nào mai tụi nó cũng cho mà xem"
+  },
+  {
+    "label": "RED",
+    "text": "Lúc nào tui cũng phải nhìn ngó nơm nớp lo sợ",
+    "normalized": "lúc nào tui cũng phải nhìn ngó nơm nớp lo sợ"
+  },
+  {
+    "label": "PINK",
+    "text": "Tưới cây",
+    "normalized": "tưới cây"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có một lần như vầy",
+    "normalized": "có một lần như vầy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê đừng có lôi vô đây nha",
+    "normalized": "ê đừng có lôi vô đây nha"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có mà tưởng bở",
+    "normalized": "đừng có mà tưởng bở"
+  },
+  {
+    "label": "RED",
+    "text": "Nhìn vậy không phải vậy đâu",
+    "normalized": "nhìn vậy không phải vậy đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Đi rón rén",
+    "normalized": "đi rón rén"
+  },
+  {
+    "label": "GREEN",
+    "text": "Như tui đã nói",
+    "normalized": "như tui đã nói"
+  },
+  {
+    "label": "BLUE",
+    "text": "Từ đó tui không bao giờ",
+    "normalized": "từ đó tui không bao giờ"
+  },
+  {
+    "label": "RED",
+    "text": "Có gì là khác nhau",
+    "normalized": "có gì là khác nhau"
+  },
+  {
+    "label": "RED",
+    "text": "Khác nhau chỗ nào",
+    "normalized": "khác nhau chỗ nào"
+  },
+  {
+    "label": "PINK",
+    "text": "Sống thử",
+    "normalized": "sống thử"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tôi cũng không chắc",
+    "normalized": "tôi cũng không chắc"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ngay từ đầu tui đã biết",
+    "normalized": "ngay từ đầu tui đã biết"
+  },
+  {
+    "label": "RED",
+    "text": "Ê tui thì liên quan gì",
+    "normalized": "ê tui thì liên quan gì"
+  },
+  {
+    "label": "PINK",
+    "text": "Cách mạng hóa",
+    "normalized": "cách mạng hóa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cái vấn đề là",
+    "normalized": "cái vấn đề là"
+  },
+  {
+    "label": "GREEN",
+    "text": "Vấn đề là",
+    "normalized": "vấn đề là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Một khi cậu đã quyết định",
+    "normalized": "một khi cậu đã quyết định"
+  },
+  {
+    "label": "RED",
+    "text": "Có cái gì đó không hợp lý lắm ở đây",
+    "normalized": "có cái gì đó không hợp lý lắm ở đây"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhà thương điên",
+    "normalized": "nhà thương điên"
+  },
+  {
+    "label": "GREEN",
+    "text": "Còn phải hỏi",
+    "normalized": "còn phải hỏi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Vậy cũng hỏi",
+    "normalized": "vậy cũng hỏi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chứ còn gì nữa",
+    "normalized": "chứ còn gì nữa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đương nhiên",
+    "normalized": "đương nhiên"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu (làm) xong chưa",
+    "normalized": "cậu làm xong chưa"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có giả điên với tui",
+    "normalized": "đừng có giả điên với tui"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có chơi trò mèo vờn chuột với tui",
+    "normalized": "đừng có chơi trò mèo vờn chuột với tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Xin chữ ký",
+    "normalized": "xin chữ ký"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói vô đề",
+    "normalized": "nói vô đề"
+  },
+  {
+    "label": "GREEN",
+    "text": "nói vào trọng tâm",
+    "normalized": "nói vào trọng tâm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bớt nói xàm đi",
+    "normalized": "bớt nói xàm đi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cứ 10 người thì có 1 người",
+    "normalized": "cứ 10 người thì có 1 người"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đi guốc trong bụng tui rồi",
+    "normalized": "cậu đi guốc trong bụng tui rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Ngày trọng đại",
+    "normalized": "ngày trọng đại"
+  },
+  {
+    "label": "GREEN",
+    "text": "(Khi) nói về",
+    "normalized": "khi nói về"
+  },
+  {
+    "label": "GREEN",
+    "text": "Khi nói đến chuyện",
+    "normalized": "khi nói đến chuyện"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai rồi cũng sẽ thôi",
+    "normalized": "ai rồi cũng sẽ thôi"
+  },
+  {
+    "label": "RED",
+    "text": "Không có đơn giản vậy đâu",
+    "normalized": "không có đơn giản vậy đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "100% nha",
+    "normalized": "100 nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Uống hết nha",
+    "normalized": "uống hết nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Cạn chén",
+    "normalized": "cạn chén"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui biết ngay mà",
+    "normalized": "tui biết ngay mà"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui tin rằng không ai trong chúng ta",
+    "normalized": "tui tin rằng không ai trong chúng ta"
+  },
+  {
+    "label": "RED",
+    "text": "Có gì tui báo cậu sau",
+    "normalized": "có gì tui báo cậu sau"
+  },
+  {
+    "label": "PINK",
+    "text": "Bắt taxi",
+    "normalized": "bắt taxi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Uả",
+    "normalized": "uả"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai bảo cậu là",
+    "normalized": "ai bảo cậu là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đứa nào nói cậu",
+    "normalized": "đứa nào nói cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Tưởng gì mà tưởng",
+    "normalized": "tưởng gì mà tưởng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Báo trước nha",
+    "normalized": "báo trước nha"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để tui báo trước với cậu",
+    "normalized": "để tui báo trước với cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Thật là vinh dự cho tui để",
+    "normalized": "thật là vinh dự cho tui để"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đến",
+    "normalized": "cậu đến"
+  },
+  {
+    "label": "RED",
+    "text": "tới được không",
+    "normalized": "tới được không"
+  },
+  {
+    "label": "PINK",
+    "text": "Vượt đèn đỏ",
+    "normalized": "vượt đèn đỏ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trong những lúc như vầy",
+    "normalized": "trong những lúc như vầy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đố bạn",
+    "normalized": "đố bạn"
+  },
+  {
+    "label": "RED",
+    "text": "Chúc cậu một ngày",
+    "normalized": "chúc cậu một ngày"
+  },
+  {
+    "label": "RED",
+    "text": "buổi tối vui vẻ",
+    "normalized": "buổi tối vui vẻ"
+  },
+  {
+    "label": "PINK",
+    "text": "Giật dây",
+    "normalized": "giật dây"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có vậy thôi đó",
+    "normalized": "có vậy thôi đó"
+  },
+  {
+    "label": "GREEN",
+    "text": "Rồi đó",
+    "normalized": "rồi đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Điều gì làm cậu nghĩ",
+    "normalized": "điều gì làm cậu nghĩ"
+  },
+  {
+    "label": "RED",
+    "text": "Đó là tất cả những gì tui quan tâm",
+    "normalized": "đó là tất cả những gì tui quan tâm"
+  },
+  {
+    "label": "PINK",
+    "text": "Đồng bằng sông Cửu Long",
+    "normalized": "đồng bằng sông cửu long"
+  },
+  {
+    "label": "GREEN",
+    "text": "Như cũ",
+    "normalized": "như cũ"
+  },
+  {
+    "label": "GREEN",
+    "text": "như thường lệ",
+    "normalized": "như thường lệ"
+  },
+  {
+    "label": "GREEN",
+    "text": "như mọi khi",
+    "normalized": "như mọi khi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sẵn tiện cậu nhắc đến chuyện đó",
+    "normalized": "sẵn tiện cậu nhắc đến chuyện đó"
+  },
+  {
+    "label": "RED",
+    "text": "Cay thiệt chớ",
+    "normalized": "cay thiệt chớ"
+  },
+  {
+    "label": "PINK",
+    "text": "Không hạt",
+    "normalized": "không hạt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui cứ thắc mắc",
+    "normalized": "tui cứ thắc mắc"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai ai cũng",
+    "normalized": "ai ai cũng"
+  },
+  {
+    "label": "BLUE",
+    "text": "kể cả tui",
+    "normalized": "kể cả tui"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có để bụng nha",
+    "normalized": "đừng có để bụng nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Những người có liên quan",
+    "normalized": "những người có liên quan"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trong lúc đó",
+    "normalized": "trong lúc đó"
+  },
+  {
+    "label": "GREEN",
+    "text": "trong khi đó",
+    "normalized": "trong khi đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Khổ ghê",
+    "normalized": "khổ ghê"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui đã bảo",
+    "normalized": "tui đã bảo"
+  },
+  {
+    "label": "RED",
+    "text": "Alo?!? cậu bị làm sao dzậy",
+    "normalized": "alo cậu bị làm sao dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Làm việc nhà",
+    "normalized": "làm việc nhà"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao lại không",
+    "normalized": "sao lại không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Quả là một",
+    "normalized": "quả là một"
+  },
+  {
+    "label": "RED",
+    "text": "Đứng im",
+    "normalized": "đứng im"
+  },
+  {
+    "label": "PINK",
+    "text": "Thuật ngữ",
+    "normalized": "thuật ngữ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao lại là tui",
+    "normalized": "sao lại là tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đáng lẽ ra giờ này là",
+    "normalized": "đáng lẽ ra giờ này là"
+  },
+  {
+    "label": "RED",
+    "text": "Mọi thứ đều có lý do của nó cả",
+    "normalized": "mọi thứ đều có lý do của nó cả"
+  },
+  {
+    "label": "RED",
+    "text": "Không có gì là tự nhiên hết",
+    "normalized": "không có gì là tự nhiên hết"
+  },
+  {
+    "label": "PINK",
+    "text": "Tiếng Anh bồi",
+    "normalized": "tiếng anh bồi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thôiiii",
+    "normalized": "thôiiii"
+  },
+  {
+    "label": "GREEN",
+    "text": "thôi màaaaa",
+    "normalized": "thôi màaaaa"
+  },
+  {
+    "label": "RED",
+    "text": "Mấy lúc đó cậu biết tui hay làm gì không",
+    "normalized": "mấy lúc đó cậu biết tui hay làm gì không"
+  },
+  {
+    "label": "PINK",
+    "text": "Cận thị",
+    "normalized": "cận thị"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu biết rồi đó",
+    "normalized": "cậu biết rồi đó"
+  },
+  {
+    "label": "GREEN",
+    "text": "Như cậu cũng biết rồi đó",
+    "normalized": "như cậu cũng biết rồi đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu nghĩ làm vậy là họ sẽ à",
+    "normalized": "cậu nghĩ làm vậy là họ sẽ à"
+  },
+  {
+    "label": "RED",
+    "text": "Quề dốn thiệt",
+    "normalized": "quề dốn thiệt"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhảy việc",
+    "normalized": "nhảy việc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui biết cậu quá",
+    "normalized": "tui biết cậu quá"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui còn lạ gì cậu",
+    "normalized": "tui còn lạ gì cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Mấy chuyện này thường tình mà",
+    "normalized": "mấy chuyện này thường tình mà"
+  },
+  {
+    "label": "BLUE",
+    "text": "Mấy chuyện này xảy ra hoài ấy mà",
+    "normalized": "mấy chuyện này xảy ra hoài ấy mà"
+  },
+  {
+    "label": "RED",
+    "text": "Kệ (nó) đi",
+    "normalized": "kệ nó đi"
+  },
+  {
+    "label": "PINK",
+    "text": "Chuỗi cung ứng",
+    "normalized": "chuỗi cung ứng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu biết tui mà",
+    "normalized": "cậu biết tui mà"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu biết tính tui rồi đấy",
+    "normalized": "cậu biết tính tui rồi đấy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cậu cứ",
+    "normalized": "sao cậu cứ"
+  },
+  {
+    "label": "RED",
+    "text": "Nhìn vậy mà không phải vậy",
+    "normalized": "nhìn vậy mà không phải vậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Vấn đề thiếu người",
+    "normalized": "vấn đề thiếu người"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cơ bản mà nói thì",
+    "normalized": "cơ bản mà nói thì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Từ khi nào mà cậu",
+    "normalized": "từ khi nào mà cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Không thể tin được",
+    "normalized": "không thể tin được"
+  },
+  {
+    "label": "PINK",
+    "text": "Đi đường vòng",
+    "normalized": "đi đường vòng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói đại đi",
+    "normalized": "nói đại đi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ngày nay có rất nhiều",
+    "normalized": "ngày nay có rất nhiều"
+  },
+  {
+    "label": "RED",
+    "text": "Ai bao",
+    "normalized": "ai bao"
+  },
+  {
+    "label": "RED",
+    "text": "Đứa nào bao",
+    "normalized": "đứa nào bao"
+  },
+  {
+    "label": "RED",
+    "text": "Đứa nào khao",
+    "normalized": "đứa nào khao"
+  },
+  {
+    "label": "PINK",
+    "text": "Tập gym",
+    "normalized": "tập gym"
+  },
+  {
+    "label": "GREEN",
+    "text": "Một cách nào đó",
+    "normalized": "một cách nào đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui là fan ruột của",
+    "normalized": "tui là fan ruột của"
+  },
+  {
+    "label": "RED",
+    "text": "Tính tui vô nữa",
+    "normalized": "tính tui vô nữa"
+  },
+  {
+    "label": "RED",
+    "text": "Cho tui 1 vé",
+    "normalized": "cho tui 1 vé"
+  },
+  {
+    "label": "PINK",
+    "text": "Trực giác",
+    "normalized": "trực giác"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ở thời điểm hiện tại",
+    "normalized": "ở thời điểm hiện tại"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hiện tại",
+    "normalized": "hiện tại"
+  },
+  {
+    "label": "BLUE",
+    "text": "thì có chết ai đâu",
+    "normalized": "thì có chết ai đâu"
+  },
+  {
+    "label": "BLUE",
+    "text": "thì có sao đâu",
+    "normalized": "thì có sao đâu"
+  },
+  {
+    "label": "RED",
+    "text": "Bữa tối nay tui mời",
+    "normalized": "bữa tối nay tui mời"
+  },
+  {
+    "label": "PINK",
+    "text": "Thái độ mỉa mai",
+    "normalized": "thái độ mỉa mai"
+  },
+  {
+    "label": "GREEN",
+    "text": "Một lúc nào đó",
+    "normalized": "một lúc nào đó"
+  },
+  {
+    "label": "GREEN",
+    "text": "Vào một thời điểm nào đó",
+    "normalized": "vào một thời điểm nào đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chắc chắn là cậu đang nghĩ",
+    "normalized": "chắc chắn là cậu đang nghĩ"
+  },
+  {
+    "label": "RED",
+    "text": "Buông ra",
+    "normalized": "buông ra"
+  },
+  {
+    "label": "RED",
+    "text": "buông tui ra",
+    "normalized": "buông tui ra"
+  },
+  {
+    "label": "PINK",
+    "text": "Trên trời",
+    "normalized": "trên trời"
+  },
+  {
+    "label": "GREEN",
+    "text": "mọi thời đại",
+    "normalized": "mọi thời đại"
+  },
+  {
+    "label": "BLUE",
+    "text": "Hẳn là cậu đang nghĩ",
+    "normalized": "hẳn là cậu đang nghĩ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chắc hẳn cậu đang nghĩ",
+    "normalized": "chắc hẳn cậu đang nghĩ"
+  },
+  {
+    "label": "RED",
+    "text": "Nhấp môi cái thôi",
+    "normalized": "nhấp môi cái thôi"
+  },
+  {
+    "label": "RED",
+    "text": "Làm ngụm đi",
+    "normalized": "làm ngụm đi"
+  },
+  {
+    "label": "PINK",
+    "text": "Thời buổi này",
+    "normalized": "thời buổi này"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không như cậu",
+    "normalized": "không như cậu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cũng như cậu",
+    "normalized": "cũng như cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui có nằm mơ cũng không bao giờ nghĩ",
+    "normalized": "tui có nằm mơ cũng không bao giờ nghĩ"
+  },
+  {
+    "label": "RED",
+    "text": "Sao",
+    "normalized": "sao"
+  },
+  {
+    "label": "RED",
+    "text": "dụ gì",
+    "normalized": "dụ gì"
+  },
+  {
+    "label": "PINK",
+    "text": "COCC",
+    "normalized": "cocc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hình như cậu đang tìm cái này",
+    "normalized": "hình như cậu đang tìm cái này"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi ước ngày nào đó tui có thể",
+    "normalized": "tôi ước ngày nào đó tui có thể"
+  },
+  {
+    "label": "PINK",
+    "text": "Xe lăn",
+    "normalized": "xe lăn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao không ai nói tui biết trước",
+    "normalized": "sao không ai nói tui biết trước"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao giờ mới nói",
+    "normalized": "sao giờ mới nói"
+  },
+  {
+    "label": "BLUE",
+    "text": "Rồi cậu tính trì hoãn đến khi nào",
+    "normalized": "rồi cậu tính trì hoãn đến khi nào"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu làm sao coi cho được đó nha",
+    "normalized": "cậu làm sao coi cho được đó nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Đường tắt",
+    "normalized": "đường tắt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chuyện dài lắm",
+    "normalized": "chuyện dài lắm"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui đoán họ sắp",
+    "normalized": "tui đoán họ sắp"
+  },
+  {
+    "label": "RED",
+    "text": "Sao lại (là) tại tui",
+    "normalized": "sao lại là tại tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Hột quẹt",
+    "normalized": "hột quẹt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui không có đang cố nói quá lên",
+    "normalized": "tui không có đang cố nói quá lên"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui không có nổ đâu",
+    "normalized": "tui không có nổ đâu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nếu cậu có chuẩn bị",
+    "normalized": "nếu cậu có chuẩn bị"
+  },
+  {
+    "label": "BLUE",
+    "text": "tìm hiểu",
+    "normalized": "tìm hiểu"
+  },
+  {
+    "label": "BLUE",
+    "text": "cậu sẽ biết",
+    "normalized": "cậu sẽ biết"
+  },
+  {
+    "label": "RED",
+    "text": "Sao lúc nào cũng là tui",
+    "normalized": "sao lúc nào cũng là tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Lửa trại",
+    "normalized": "lửa trại"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có một câu nói nổi tiếng nói rằng",
+    "normalized": "có một câu nói nổi tiếng nói rằng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Để tui đoán xem tui có hiểu đúng ý cậu không",
+    "normalized": "để tui đoán xem tui có hiểu đúng ý cậu không"
+  },
+  {
+    "label": "RED",
+    "text": "Nói nhớ giữ lời nha",
+    "normalized": "nói nhớ giữ lời nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Tương xí muội",
+    "normalized": "tương xí muội"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để tui nói vầy đi",
+    "normalized": "để tui nói vầy đi"
+  },
+  {
+    "label": "GREEN",
+    "text": "để tui nói vầy cho dễ hiểu",
+    "normalized": "để tui nói vầy cho dễ hiểu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu đang cố tình đấy à",
+    "normalized": "cậu đang cố tình đấy à"
+  },
+  {
+    "label": "RED",
+    "text": "Ở đây cái đó là cấm kị đấy",
+    "normalized": "ở đây cái đó là cấm kị đấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Cái mẹo",
+    "normalized": "cái mẹo"
+  },
+  {
+    "label": "GREEN",
+    "text": "nghe đồn",
+    "normalized": "nghe đồn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai dạy cậu thế này",
+    "normalized": "ai dạy cậu thế này"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai chỉ cậu thế này",
+    "normalized": "ai chỉ cậu thế này"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đang dọa tui đấy à",
+    "normalized": "cậu đang dọa tui đấy à"
+  },
+  {
+    "label": "PINK",
+    "text": "Áo phao",
+    "normalized": "áo phao"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nghe như kiểu",
+    "normalized": "nghe như kiểu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trông như kiểu",
+    "normalized": "trông như kiểu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Giờ này năm sau chắc tui sẽ đang",
+    "normalized": "giờ này năm sau chắc tui sẽ đang"
+  },
+  {
+    "label": "RED",
+    "text": "Gieo gió thì gặt bão thôi",
+    "normalized": "gieo gió thì gặt bão thôi"
+  },
+  {
+    "label": "RED",
+    "text": "Luật hoa quả thôi",
+    "normalized": "luật hoa quả thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Chiếu tướng",
+    "normalized": "chiếu tướng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cứ nói tiếp",
+    "normalized": "cứ nói tiếp"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui đang nghe đây",
+    "normalized": "tui đang nghe đây"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui nhớ cậu từng nói",
+    "normalized": "tui nhớ cậu từng nói"
+  },
+  {
+    "label": "PINK",
+    "text": "Úm ba la xì bùa",
+    "normalized": "úm ba la xì bùa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để tui ngắt lời cậu ngay đó",
+    "normalized": "để tui ngắt lời cậu ngay đó"
+  },
+  {
+    "label": "GREEN",
+    "text": "Xin phép ngắt lời cậu ngay đó",
+    "normalized": "xin phép ngắt lời cậu ngay đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui không hề nói nha",
+    "normalized": "tui không hề nói nha"
+  },
+  {
+    "label": "RED",
+    "text": "Tụi nó sẽ cho cậu biết tay",
+    "normalized": "tụi nó sẽ cho cậu biết tay"
+  },
+  {
+    "label": "PINK",
+    "text": "Món tráng miệng",
+    "normalized": "món tráng miệng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hổng chừng",
+    "normalized": "hổng chừng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Thống kê chỉ ra rằng",
+    "normalized": "thống kê chỉ ra rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Coi chừng chó dữ",
+    "normalized": "coi chừng chó dữ"
+  },
+  {
+    "label": "PINK",
+    "text": "Hào phóng",
+    "normalized": "hào phóng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui có bảo đâu",
+    "normalized": "tui có bảo đâu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui đâu có nói đâu",
+    "normalized": "tui đâu có nói đâu"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đi đâu dzậy",
+    "normalized": "cậu đi đâu dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Khiêm tốn",
+    "normalized": "khiêm tốn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Mơ đi cưng",
+    "normalized": "mơ đi cưng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê, tui không nói gì không có nghĩa là tui không",
+    "normalized": "ê tui không nói gì không có nghĩa là tui không"
+  },
+  {
+    "label": "RED",
+    "text": "Họ tới liền giờ ấy",
+    "normalized": "họ tới liền giờ ấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Trụ cột gia đình",
+    "normalized": "trụ cột gia đình"
+  },
+  {
+    "label": "GREEN",
+    "text": "Dù gì",
+    "normalized": "dù gì"
+  },
+  {
+    "label": "GREEN",
+    "text": "Dù sao thì",
+    "normalized": "dù sao thì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Giá như hồi đó tui",
+    "normalized": "giá như hồi đó tui"
+  },
+  {
+    "label": "RED",
+    "text": "Rồi cậu sẽ hiểu",
+    "normalized": "rồi cậu sẽ hiểu"
+  },
+  {
+    "label": "PINK",
+    "text": "Keo kiệt",
+    "normalized": "keo kiệt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thú nhận đi",
+    "normalized": "thú nhận đi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thừa nhận đi",
+    "normalized": "thừa nhận đi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chắc",
+    "normalized": "chắc"
+  },
+  {
+    "label": "BLUE",
+    "text": "Hẳn là cậu nhầm với rồi",
+    "normalized": "hẳn là cậu nhầm với rồi"
+  },
+  {
+    "label": "RED",
+    "text": "Hẳn là tui gặp cậu ở đâu rồi",
+    "normalized": "hẳn là tui gặp cậu ở đâu rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Bánh tráng trộn",
+    "normalized": "bánh tráng trộn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thì để tui nói xong đã",
+    "normalized": "thì để tui nói xong đã"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thì đừng có nhảy vô họng tui",
+    "normalized": "thì đừng có nhảy vô họng tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Hơn ai hết cậu biết rõ mà",
+    "normalized": "hơn ai hết cậu biết rõ mà"
+  },
+  {
+    "label": "RED",
+    "text": "Chắc họ đang (trên đường) qua đấy",
+    "normalized": "chắc họ đang trên đường qua đấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Tiểu đường",
+    "normalized": "tiểu đường"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đơn giản mà nói thì",
+    "normalized": "đơn giản mà nói thì"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói một cách đơn giản thì",
+    "normalized": "nói một cách đơn giản thì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chẳng có mấy người sẵn sàng đâu",
+    "normalized": "chẳng có mấy người sẵn sàng đâu"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng bao giờ xem thường bất kỳ ai",
+    "normalized": "đừng bao giờ xem thường bất kỳ ai"
+  },
+  {
+    "label": "PINK",
+    "text": "Hoành thánh",
+    "normalized": "hoành thánh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đặc biệt là khi",
+    "normalized": "đặc biệt là khi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Làm gì có cái gọi là",
+    "normalized": "làm gì có cái gọi là"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu nói cũng phải",
+    "normalized": "cậu nói cũng phải"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có lý đấy",
+    "normalized": "cậu có lý đấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Di chúc",
+    "normalized": "di chúc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đầu tiên và trên hết",
+    "normalized": "đầu tiên và trên hết"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trước hết",
+    "normalized": "trước hết"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui sẽ để nó cho cậu quyết định",
+    "normalized": "tui sẽ để nó cho cậu quyết định"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có để người ta đợi",
+    "normalized": "đừng có để người ta đợi"
+  },
+  {
+    "label": "PINK",
+    "text": "Có hiệu lực",
+    "normalized": "có hiệu lực"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hậu quả là",
+    "normalized": "hậu quả là"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui biết nó nghe khá là khó tin nhưng mà",
+    "normalized": "tui biết nó nghe khá là khó tin nhưng mà"
+  },
+  {
+    "label": "RED",
+    "text": "Thời gian sẽ trả lời",
+    "normalized": "thời gian sẽ trả lời"
+  },
+  {
+    "label": "PINK",
+    "text": "Thâm nhập thị trường",
+    "normalized": "thâm nhập thị trường"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đổi lại",
+    "normalized": "đổi lại"
+  },
+  {
+    "label": "BLUE",
+    "text": "Khi nói đến",
+    "normalized": "khi nói đến"
+  },
+  {
+    "label": "BLUE",
+    "text": "không ai là qua được",
+    "normalized": "không ai là qua được"
+  },
+  {
+    "label": "RED",
+    "text": "Vậy là cậu tự đào hố chôn mình rồi",
+    "normalized": "vậy là cậu tự đào hố chôn mình rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Thị trường ngách",
+    "normalized": "thị trường ngách"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu không bao giờ phải lăn tăn",
+    "normalized": "cậu không bao giờ phải lăn tăn"
+  },
+  {
+    "label": "BLUE",
+    "text": "lo lắng về cái việc",
+    "normalized": "lo lắng về cái việc"
+  },
+  {
+    "label": "PINK",
+    "text": "Cây xăng",
+    "normalized": "cây xăng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thoạt nhìn",
+    "normalized": "thoạt nhìn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ai đời lại",
+    "normalized": "ai đời lại"
+  },
+  {
+    "label": "RED",
+    "text": "Làm vậy tình hình sẽ chỉ tệ hơn",
+    "normalized": "làm vậy tình hình sẽ chỉ tệ hơn"
+  },
+  {
+    "label": "PINK",
+    "text": "Phá sản",
+    "normalized": "phá sản"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có chuyện này tui muốn nói với cậu",
+    "normalized": "có chuyện này tui muốn nói với cậu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chẳng có lý gì",
+    "normalized": "chẳng có lý gì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chẳng có lý do gì mà",
+    "normalized": "chẳng có lý do gì mà"
+  },
+  {
+    "label": "RED",
+    "text": "Yêu từ cái nhìn đầu tiên",
+    "normalized": "yêu từ cái nhìn đầu tiên"
+  },
+  {
+    "label": "PINK",
+    "text": "Giá cả cạnh tranh",
+    "normalized": "giá cả cạnh tranh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói chung",
+    "normalized": "nói chung"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nhìn chung",
+    "normalized": "nhìn chung"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ngoài đường người ta đồn rằng",
+    "normalized": "ngoài đường người ta đồn rằng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Người ta đồn rằng",
+    "normalized": "người ta đồn rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Lụm tui ly cà phê",
+    "normalized": "lụm tui ly cà phê"
+  },
+  {
+    "label": "PINK",
+    "text": "Nước ngọt",
+    "normalized": "nước ngọt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không thể phủ nhận rằng",
+    "normalized": "không thể phủ nhận rằng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu làm như ai cũng",
+    "normalized": "cậu làm như ai cũng"
+  },
+  {
+    "label": "RED",
+    "text": "Lúc đó cậu biết tui nghĩ gì không",
+    "normalized": "lúc đó cậu biết tui nghĩ gì không"
+  },
+  {
+    "label": "PINK",
+    "text": "Thập kỷ",
+    "normalized": "thập kỷ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có biết tui đã phải trải qua những gì để có thể không",
+    "normalized": "cậu có biết tui đã phải trải qua những gì để có thể không"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu sẽ sớm quen với cái đó thôi",
+    "normalized": "cậu sẽ sớm quen với cái đó thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Đóng vai nạn nhân",
+    "normalized": "đóng vai nạn nhân"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sai bét",
+    "normalized": "sai bét"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê đừng có lộn",
+    "normalized": "ê đừng có lộn"
+  },
+  {
+    "label": "BLUE",
+    "text": "nhầm giữa với nha",
+    "normalized": "nhầm giữa với nha"
+  },
+  {
+    "label": "RED",
+    "text": "Cất cái đó đi",
+    "normalized": "cất cái đó đi"
+  },
+  {
+    "label": "PINK",
+    "text": "Xoài Non",
+    "normalized": "xoài non"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu tiếc cái gì",
+    "normalized": "cậu tiếc cái gì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Thực ra",
+    "normalized": "thực ra"
+  },
+  {
+    "label": "BLUE",
+    "text": "dễ hơn tui tưởng nhiều",
+    "normalized": "dễ hơn tui tưởng nhiều"
+  },
+  {
+    "label": "RED",
+    "text": "Đứng núi này trông núi nọ",
+    "normalized": "đứng núi này trông núi nọ"
+  },
+  {
+    "label": "PINK",
+    "text": "Khoai tây chiên",
+    "normalized": "khoai tây chiên"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để cậu không còn lăn tăn",
+    "normalized": "để cậu không còn lăn tăn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để cậu không phải nghĩ ngợi",
+    "normalized": "để cậu không phải nghĩ ngợi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Càng càng tốt",
+    "normalized": "càng càng tốt"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu được cảnh báo trước rồi đó nha",
+    "normalized": "cậu được cảnh báo trước rồi đó nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhiều dầu mỡ",
+    "normalized": "nhiều dầu mỡ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nay cậu (bị làm) sao dzậy",
+    "normalized": "nay cậu bị làm sao dzậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Gần đây cậu có không",
+    "normalized": "gần đây cậu có không"
+  },
+  {
+    "label": "RED",
+    "text": "Im lặng là đồng ý",
+    "normalized": "im lặng là đồng ý"
+  },
+  {
+    "label": "PINK",
+    "text": "Hợp vệ sinh",
+    "normalized": "hợp vệ sinh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu vẫn không hiểu à",
+    "normalized": "cậu vẫn không hiểu à"
+  },
+  {
+    "label": "BLUE",
+    "text": "Để có được ngày hôm nay tui đã phải",
+    "normalized": "để có được ngày hôm nay tui đã phải"
+  },
+  {
+    "label": "RED",
+    "text": "Chân tui đau quá",
+    "normalized": "chân tui đau quá"
+  },
+  {
+    "label": "PINK",
+    "text": "Gánh nặng tài chính",
+    "normalized": "gánh nặng tài chính"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không biết là hên hay xui",
+    "normalized": "không biết là hên hay xui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui ý thức rất rõ được rằng",
+    "normalized": "tui ý thức rất rõ được rằng"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui nhận thức rõ được rằng",
+    "normalized": "tui nhận thức rõ được rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có dầu gió không",
+    "normalized": "cậu có dầu gió không"
+  },
+  {
+    "label": "PINK",
+    "text": "Tuần trăng mật",
+    "normalized": "tuần trăng mật"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lúc đó",
+    "normalized": "lúc đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Điều gì làm cậu lo lắng khi cậu",
+    "normalized": "điều gì làm cậu lo lắng khi cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có gì muốn nói với tôi không",
+    "normalized": "cậu có gì muốn nói với tôi không"
+  },
+  {
+    "label": "PINK",
+    "text": "Liên tục",
+    "normalized": "liên tục"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cuối năm nay",
+    "normalized": "cuối năm nay"
+  },
+  {
+    "label": "BLUE",
+    "text": "Điều gì làm cậu thích khi",
+    "normalized": "điều gì làm cậu thích khi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu thích điều gì khi",
+    "normalized": "cậu thích điều gì khi"
+  },
+  {
+    "label": "RED",
+    "text": "Đó quả là một hiện tượng",
+    "normalized": "đó quả là một hiện tượng"
+  },
+  {
+    "label": "PINK",
+    "text": "Diễn viên hạng A",
+    "normalized": "diễn viên hạng a"
+  },
+  {
+    "label": "GREEN",
+    "text": "Từ hôm qua giờ",
+    "normalized": "từ hôm qua giờ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có một làn ranh rất mỏng giữa và",
+    "normalized": "có một làn ranh rất mỏng giữa và"
+  },
+  {
+    "label": "RED",
+    "text": "Đáp ứng nhu cầu thị trường",
+    "normalized": "đáp ứng nhu cầu thị trường"
+  },
+  {
+    "label": "PINK",
+    "text": "Người vô gia cư",
+    "normalized": "người vô gia cư"
+  },
+  {
+    "label": "GREEN",
+    "text": "Và trên",
+    "normalized": "và trên"
+  },
+  {
+    "label": "GREEN",
+    "text": "hơn hết",
+    "normalized": "hơn hết"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tụi tui chơi với nhau năm rồi",
+    "normalized": "tụi tui chơi với nhau năm rồi"
+  },
+  {
+    "label": "BLUE",
+    "text": "tụi tui biết nhau cũng năm rồi",
+    "normalized": "tụi tui biết nhau cũng năm rồi"
+  },
+  {
+    "label": "RED",
+    "text": "Bắt đầu lại từ đầu",
+    "normalized": "bắt đầu lại từ đầu"
+  },
+  {
+    "label": "PINK",
+    "text": "Đám tang",
+    "normalized": "đám tang"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hết hồn",
+    "normalized": "hết hồn"
+  },
+  {
+    "label": "GREEN",
+    "text": "hết cả hồn",
+    "normalized": "hết cả hồn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Giật bắn người",
+    "normalized": "giật bắn người"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui có 3 năm kinh nghiệm làm",
+    "normalized": "tui có 3 năm kinh nghiệm làm"
+  },
+  {
+    "label": "RED",
+    "text": "Để mai tính",
+    "normalized": "để mai tính"
+  },
+  {
+    "label": "PINK",
+    "text": "Sa thải",
+    "normalized": "sa thải"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không biết hên hay xui",
+    "normalized": "không biết hên hay xui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có ai mà chưa từng đâu",
+    "normalized": "có ai mà chưa từng đâu"
+  },
+  {
+    "label": "RED",
+    "text": "Không có gì là dễ dàng cả",
+    "normalized": "không có gì là dễ dàng cả"
+  },
+  {
+    "label": "PINK",
+    "text": "Múa lân",
+    "normalized": "múa lân"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thực sự mà nói thì",
+    "normalized": "thực sự mà nói thì"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thực sự thì",
+    "normalized": "thực sự thì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cứ mỗi 5 năm tui lại phải một lần",
+    "normalized": "cứ mỗi 5 năm tui lại phải một lần"
+  },
+  {
+    "label": "RED",
+    "text": "Nhớ để mắt tới cái đó",
+    "normalized": "nhớ để mắt tới cái đó"
+  },
+  {
+    "label": "PINK",
+    "text": "Tình yêu vô điều kiện",
+    "normalized": "tình yêu vô điều kiện"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chẳng phải tui đã nói cậu rồi sao",
+    "normalized": "chẳng phải tui đã nói cậu rồi sao"
+  },
+  {
+    "label": "RED",
+    "text": "Thông cảm tui cái đi mà",
+    "normalized": "thông cảm tui cái đi mà"
+  },
+  {
+    "label": "PINK",
+    "text": "Cái giếng",
+    "normalized": "cái giếng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đúng như tui đoán",
+    "normalized": "đúng như tui đoán"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu phải chủ động",
+    "normalized": "cậu phải chủ động"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu phải nghe tui lần này",
+    "normalized": "cậu phải nghe tui lần này"
+  },
+  {
+    "label": "PINK",
+    "text": "Thả diều",
+    "normalized": "thả diều"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu nhìn vậy là ý gì",
+    "normalized": "cậu nhìn vậy là ý gì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nghe chả giống tí nào cả",
+    "normalized": "nghe chả giống tí nào cả"
+  },
+  {
+    "label": "RED",
+    "text": "Bó tay",
+    "normalized": "bó tay"
+  },
+  {
+    "label": "PINK",
+    "text": "Trái bơ",
+    "normalized": "trái bơ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lúc đó tui nghĩ bụng",
+    "normalized": "lúc đó tui nghĩ bụng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui sẽ chỉ cậu cách",
+    "normalized": "tui sẽ chỉ cậu cách"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu làm gì (ở) trỏng lâu dzậy",
+    "normalized": "cậu làm gì ở trỏng lâu dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Sinh tố",
+    "normalized": "sinh tố"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nghiiii lắm nha",
+    "normalized": "nghiiii lắm nha"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đáng nghi lắm nha",
+    "normalized": "đáng nghi lắm nha"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui đâu có đến dzậy",
+    "normalized": "tui đâu có đến dzậy"
+  },
+  {
+    "label": "RED",
+    "text": "Sao giờ cậu mới tới",
+    "normalized": "sao giờ cậu mới tới"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu biết tui chờ bao lâu rồi không",
+    "normalized": "cậu biết tui chờ bao lâu rồi không"
+  },
+  {
+    "label": "PINK",
+    "text": "Sữa đặc",
+    "normalized": "sữa đặc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sự thật đắng lòng",
+    "normalized": "sự thật đắng lòng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thô nhưng thật",
+    "normalized": "thô nhưng thật"
+  },
+  {
+    "label": "BLUE",
+    "text": "Thực ra, nó đâu có quá khó để nhận ra",
+    "normalized": "thực ra nó đâu có quá khó để nhận ra"
+  },
+  {
+    "label": "RED",
+    "text": "Trôi theo dòng",
+    "normalized": "trôi theo dòng"
+  },
+  {
+    "label": "PINK",
+    "text": "Bột ngọt",
+    "normalized": "bột ngọt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chính mắt tui thấy mà",
+    "normalized": "chính mắt tui thấy mà"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi tin rằng hầu hết chúng ta",
+    "normalized": "tôi tin rằng hầu hết chúng ta"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đùa tui à",
+    "normalized": "cậu đùa tui à"
+  },
+  {
+    "label": "PINK",
+    "text": "Ô nhiễm",
+    "normalized": "ô nhiễm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để coi",
+    "normalized": "để coi"
+  },
+  {
+    "label": "BLUE",
+    "text": "chứ nói gì đến",
+    "normalized": "chứ nói gì đến"
+  },
+  {
+    "label": "RED",
+    "text": "Tui nói (cái) gì sai à",
+    "normalized": "tui nói cái gì sai à"
+  },
+  {
+    "label": "PINK",
+    "text": "Bắt nạt",
+    "normalized": "bắt nạt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng có ngây thơ thế",
+    "normalized": "đừng có ngây thơ thế"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui sẵn lòng giúp cậu nếu cậu",
+    "normalized": "tui sẵn lòng giúp cậu nếu cậu"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu thì biết gì mà nói",
+    "normalized": "cậu thì biết gì mà nói"
+  },
+  {
+    "label": "PINK",
+    "text": "Vi phạm",
+    "normalized": "vi phạm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu xem tui là loại người nào",
+    "normalized": "cậu xem tui là loại người nào"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi thấy nó khá là",
+    "normalized": "tôi thấy nó khá là"
+  },
+  {
+    "label": "RED",
+    "text": "Tạo ra tác động tích cực",
+    "normalized": "tạo ra tác động tích cực"
+  },
+  {
+    "label": "PINK",
+    "text": "Gót chân Asin (Điểm chí mạng)",
+    "normalized": "gót chân asin điểm chí mạng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bây giờ cậu có xin lỗi hay là không",
+    "normalized": "bây giờ cậu có xin lỗi hay là không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sẽ có rất nhiều",
+    "normalized": "sẽ có rất nhiều"
+  },
+  {
+    "label": "RED",
+    "text": "Cái này là chuyện giữa tui với cậu",
+    "normalized": "cái này là chuyện giữa tui với cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Uống thuốc",
+    "normalized": "uống thuốc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu cứ nghĩ thử xem",
+    "normalized": "cậu cứ nghĩ thử xem"
+  },
+  {
+    "label": "BLUE",
+    "text": "Họ cứ nằng nặc đòi",
+    "normalized": "họ cứ nằng nặc đòi"
+  },
+  {
+    "label": "RED",
+    "text": "Đó chỉ là công cụ đạt đến mục đích cuối thôi",
+    "normalized": "đó chỉ là công cụ đạt đến mục đích cuối thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Ăn cắp vặt",
+    "normalized": "ăn cắp vặt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu không",
+    "normalized": "nếu không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi thách cậu dám đấy",
+    "normalized": "tôi thách cậu dám đấy"
+  },
+  {
+    "label": "RED",
+    "text": "Cái đó tui bị rồi",
+    "normalized": "cái đó tui bị rồi"
+  },
+  {
+    "label": "RED",
+    "text": "Cái đó xảy ra với tui rồi",
+    "normalized": "cái đó xảy ra với tui rồi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nói chuyện quề dốn",
+    "normalized": "nói chuyện quề dốn"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sâu bên trong tôi tin rằng",
+    "normalized": "sâu bên trong tôi tin rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Không thể xảy ra một sớm một chiều",
+    "normalized": "không thể xảy ra một sớm một chiều"
+  },
+  {
+    "label": "PINK",
+    "text": "Phá đám",
+    "normalized": "phá đám"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thì tui đã nói nãy giờ đóooo",
+    "normalized": "thì tui đã nói nãy giờ đóooo"
+  },
+  {
+    "label": "BLUE",
+    "text": "Hôm qua tui tình cờ",
+    "normalized": "hôm qua tui tình cờ"
+  },
+  {
+    "label": "RED",
+    "text": "Bắt đầu từ số 0",
+    "normalized": "bắt đầu từ số 0"
+  },
+  {
+    "label": "PINK",
+    "text": "Thuận tay trái",
+    "normalized": "thuận tay trái"
+  },
+  {
+    "label": "GREEN",
+    "text": "Xong phim",
+    "normalized": "xong phim"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đây là cái nhất mà tui từng thấy trên đời đấy",
+    "normalized": "đây là cái nhất mà tui từng thấy trên đời đấy"
+  },
+  {
+    "label": "RED",
+    "text": "Chúc ngon miệng (nha)",
+    "normalized": "chúc ngon miệng nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Tạo không khí tích cực",
+    "normalized": "tạo không khí tích cực"
+  },
+  {
+    "label": "GREEN",
+    "text": "Giờ có cho tiền tui cũng hông dám",
+    "normalized": "giờ có cho tiền tui cũng hông dám"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thôi tui sợ lắm",
+    "normalized": "thôi tui sợ lắm"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chắc lúc đó tui đang",
+    "normalized": "chắc lúc đó tui đang"
+  },
+  {
+    "label": "RED",
+    "text": "Thế giới thiệt là tròn",
+    "normalized": "thế giới thiệt là tròn"
+  },
+  {
+    "label": "PINK",
+    "text": "Đền tội",
+    "normalized": "đền tội"
+  },
+  {
+    "label": "GREEN",
+    "text": "Khai ra mau",
+    "normalized": "khai ra mau"
+  },
+  {
+    "label": "GREEN",
+    "text": "Khai ra lẹ lên",
+    "normalized": "khai ra lẹ lên"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đừng có làm ra vẻ cậu không biết",
+    "normalized": "đừng có làm ra vẻ cậu không biết"
+  },
+  {
+    "label": "RED",
+    "text": "Bất ngờ quá dzậy",
+    "normalized": "bất ngờ quá dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Con người chúng ta",
+    "normalized": "con người chúng ta"
+  },
+  {
+    "label": "PINK",
+    "text": "Con người mình",
+    "normalized": "con người mình"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đó giờ tui mới biết luôn ó",
+    "normalized": "đó giờ tui mới biết luôn ó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui rất biết ơn vì đã có cơ hội",
+    "normalized": "tui rất biết ơn vì đã có cơ hội"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có mà coi thường người khác nha",
+    "normalized": "đừng có mà coi thường người khác nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Bà tám",
+    "normalized": "bà tám"
+  },
+  {
+    "label": "PINK",
+    "text": "nhiều chuyện",
+    "normalized": "nhiều chuyện"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không lẽ nó nói gì cậu cũng tin",
+    "normalized": "không lẽ nó nói gì cậu cũng tin"
+  },
+  {
+    "label": "BLUE",
+    "text": "Không có nhiều người ngoài kia có thể",
+    "normalized": "không có nhiều người ngoài kia có thể"
+  },
+  {
+    "label": "RED",
+    "text": "Càng đông càng vui",
+    "normalized": "càng đông càng vui"
+  },
+  {
+    "label": "PINK",
+    "text": "Nền kinh tế lớn thứ hai",
+    "normalized": "nền kinh tế lớn thứ hai"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao cậu không hỏi tui (1) tiếng",
+    "normalized": "sao cậu không hỏi tui 1 tiếng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi nôn quá",
+    "normalized": "tôi nôn quá"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui mong quá",
+    "normalized": "tui mong quá"
+  },
+  {
+    "label": "RED",
+    "text": "Chắc để khi khác đi",
+    "normalized": "chắc để khi khác đi"
+  },
+  {
+    "label": "PINK",
+    "text": "Dọn vô",
+    "normalized": "dọn vô"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu cậu có chuẩn bị (trước)",
+    "normalized": "nếu cậu có chuẩn bị trước"
+  },
+  {
+    "label": "BLUE",
+    "text": "Để chữa cháy",
+    "normalized": "để chữa cháy"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui sẽ",
+    "normalized": "tui sẽ"
+  },
+  {
+    "label": "RED",
+    "text": "Rõ như ban ngày",
+    "normalized": "rõ như ban ngày"
+  },
+  {
+    "label": "PINK",
+    "text": "Sự cố ngoài ý muốn",
+    "normalized": "sự cố ngoài ý muốn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Vừa lòng cậu chưa",
+    "normalized": "vừa lòng cậu chưa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui thích cái cách",
+    "normalized": "tui thích cái cách"
+  },
+  {
+    "label": "RED",
+    "text": "Nói trước bước không qua",
+    "normalized": "nói trước bước không qua"
+  },
+  {
+    "label": "PINK",
+    "text": "Ba phải",
+    "normalized": "ba phải"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bình tĩnh",
+    "normalized": "bình tĩnh"
+  },
+  {
+    "label": "GREEN",
+    "text": "có phải tận thế đâu",
+    "normalized": "có phải tận thế đâu"
+  },
+  {
+    "label": "BLUE",
+    "text": "rất có ý nghĩa với tui",
+    "normalized": "rất có ý nghĩa với tui"
+  },
+  {
+    "label": "RED",
+    "text": "Sếp mà biết chắc ổng cạo đầu tui luôn quá",
+    "normalized": "sếp mà biết chắc ổng cạo đầu tui luôn quá"
+  },
+  {
+    "label": "PINK",
+    "text": "Chiếm 10%",
+    "normalized": "chiếm 10"
+  },
+  {
+    "label": "GREEN",
+    "text": "Từ từ chuyện đâu còn có đó",
+    "normalized": "từ từ chuyện đâu còn có đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nó sẽ được giữ bí mật cho đến khi",
+    "normalized": "nó sẽ được giữ bí mật cho đến khi"
+  },
+  {
+    "label": "RED",
+    "text": "Làm gì còn cách nào khác",
+    "normalized": "làm gì còn cách nào khác"
+  },
+  {
+    "label": "PINK",
+    "text": "Tầm nhìn hạn hẹp",
+    "normalized": "tầm nhìn hạn hẹp"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trong mắt tui",
+    "normalized": "trong mắt tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu làm sao mà hiểu được",
+    "normalized": "cậu làm sao mà hiểu được"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu làm vậy mà coi được à",
+    "normalized": "cậu làm vậy mà coi được à"
+  },
+  {
+    "label": "PINK",
+    "text": "Đứng lên bên vực cho",
+    "normalized": "đứng lên bên vực cho"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu có bao giờ từng nghĩ",
+    "normalized": "cậu có bao giờ từng nghĩ"
+  },
+  {
+    "label": "GREEN",
+    "text": "tự hỏi",
+    "normalized": "tự hỏi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui không thích lắm",
+    "normalized": "tui không thích lắm"
+  },
+  {
+    "label": "RED",
+    "text": "Để coi lần này ai sẽ cứu cậu",
+    "normalized": "để coi lần này ai sẽ cứu cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Đi nhậu",
+    "normalized": "đi nhậu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hết 9 trên 10 lần",
+    "normalized": "hết 9 trên 10 lần"
+  },
+  {
+    "label": "BLUE",
+    "text": "Để tui xem cậu đến cỡ nào",
+    "normalized": "để tui xem cậu đến cỡ nào"
+  },
+  {
+    "label": "RED",
+    "text": "Chưa đến lúc đâu",
+    "normalized": "chưa đến lúc đâu"
+  },
+  {
+    "label": "RED",
+    "text": "Thời cơ chưa chín mùi",
+    "normalized": "thời cơ chưa chín mùi"
+  },
+  {
+    "label": "PINK",
+    "text": "Ba vợ",
+    "normalized": "ba vợ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Không cần phí hơi",
+    "normalized": "không cần phí hơi"
+  },
+  {
+    "label": "GREEN",
+    "text": "lời",
+    "normalized": "lời"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu không có cậu không hiểu đâu",
+    "normalized": "cậu không có cậu không hiểu đâu"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu còn chờ cái gì nữa",
+    "normalized": "cậu còn chờ cái gì nữa"
+  },
+  {
+    "label": "PINK",
+    "text": "Chính trực",
+    "normalized": "chính trực"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ở một mức độ nào đó",
+    "normalized": "ở một mức độ nào đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Uả nãy giờ tui tưởng",
+    "normalized": "uả nãy giờ tui tưởng"
+  },
+  {
+    "label": "RED",
+    "text": "Sao cậu làm được hay dzậy",
+    "normalized": "sao cậu làm được hay dzậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Kẹt xe",
+    "normalized": "kẹt xe"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lại nữaaa",
+    "normalized": "lại nữaaa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nữaaa",
+    "normalized": "nữaaa"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui từng rất là cùi bắp về",
+    "normalized": "tui từng rất là cùi bắp về"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có đùa với lửa",
+    "normalized": "đừng có đùa với lửa"
+  },
+  {
+    "label": "PINK",
+    "text": "Cối xay gió",
+    "normalized": "cối xay gió"
+  },
+  {
+    "label": "GREEN",
+    "text": "Yên chí",
+    "normalized": "yên chí"
+  },
+  {
+    "label": "GREEN",
+    "text": "Yên tâm",
+    "normalized": "yên tâm"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui dị ứng với cái cách",
+    "normalized": "tui dị ứng với cái cách"
+  },
+  {
+    "label": "RED",
+    "text": "Rồi cậu sẽ sớm quen thôi",
+    "normalized": "rồi cậu sẽ sớm quen thôi"
+  },
+  {
+    "label": "PINK",
+    "text": "Ở trên lầu",
+    "normalized": "ở trên lầu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Theo như tui biết",
+    "normalized": "theo như tui biết"
+  },
+  {
+    "label": "BLUE",
+    "text": "cậu là hay gì",
+    "normalized": "cậu là hay gì"
+  },
+  {
+    "label": "RED",
+    "text": "Rồi ai sẽ chống lưng cho cậu",
+    "normalized": "rồi ai sẽ chống lưng cho cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Một tên tuổi lớn",
+    "normalized": "một tên tuổi lớn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nào ngờ",
+    "normalized": "nào ngờ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ai ngờ",
+    "normalized": "ai ngờ"
+  },
+  {
+    "label": "BLUE",
+    "text": "(Nếu) biết vậy",
+    "normalized": "nếu biết vậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "tui đã rồi",
+    "normalized": "tui đã rồi"
+  },
+  {
+    "label": "RED",
+    "text": "Tui thấy hết rồi",
+    "normalized": "tui thấy hết rồi"
+  },
+  {
+    "label": "RED",
+    "text": "cậu đừng có chối nữa",
+    "normalized": "cậu đừng có chối nữa"
+  },
+  {
+    "label": "PINK",
+    "text": "Sâu bên trong",
+    "normalized": "sâu bên trong"
+  },
+  {
+    "label": "GREEN",
+    "text": "Từ tận đáy lòng",
+    "normalized": "từ tận đáy lòng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cái này sẽ ngăn không cho",
+    "normalized": "cái này sẽ ngăn không cho"
+  },
+  {
+    "label": "RED",
+    "text": "Xin lỗi ghế này có ai ngồi chưa",
+    "normalized": "xin lỗi ghế này có ai ngồi chưa"
+  },
+  {
+    "label": "PINK",
+    "text": "Đầu tư vào",
+    "normalized": "đầu tư vào"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lý thuyết mà nói",
+    "normalized": "lý thuyết mà nói"
+  },
+  {
+    "label": "GREEN",
+    "text": "Về lý thuyết",
+    "normalized": "về lý thuyết"
+  },
+  {
+    "label": "BLUE",
+    "text": "sẽ là quá đủ cho dự án này",
+    "normalized": "sẽ là quá đủ cho dự án này"
+  },
+  {
+    "label": "RED",
+    "text": "Chắc cậu nghe nhầm rồi",
+    "normalized": "chắc cậu nghe nhầm rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Nhúng chàm",
+    "normalized": "nhúng chàm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nhân tiện",
+    "normalized": "nhân tiện"
+  },
+  {
+    "label": "BLUE",
+    "text": "đang ngày càng",
+    "normalized": "đang ngày càng"
+  },
+  {
+    "label": "RED",
+    "text": "Trời",
+    "normalized": "trời"
+  },
+  {
+    "label": "RED",
+    "text": "cậu bày vẽ quá làm gì",
+    "normalized": "cậu bày vẽ quá làm gì"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để tui nói luôn",
+    "normalized": "để tui nói luôn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Để tui nói thẳng nha",
+    "normalized": "để tui nói thẳng nha"
+  },
+  {
+    "label": "BLUE",
+    "text": "Vấn đề là tui đã lỡ rồi",
+    "normalized": "vấn đề là tui đã lỡ rồi"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đang giả bộ không hiểu đó hả",
+    "normalized": "cậu đang giả bộ không hiểu đó hả"
+  },
+  {
+    "label": "PINK",
+    "text": "Xe bán tải",
+    "normalized": "xe bán tải"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lạ thiệt",
+    "normalized": "lạ thiệt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Kỳ lạ",
+    "normalized": "kỳ lạ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu chỉ được cái (là giỏi)",
+    "normalized": "cậu chỉ được cái là giỏi"
+  },
+  {
+    "label": "RED",
+    "text": "Cái đó không đúng với tui",
+    "normalized": "cái đó không đúng với tui"
+  },
+  {
+    "label": "RED",
+    "text": "cái đó không áp dụng với tui nha",
+    "normalized": "cái đó không áp dụng với tui nha"
+  },
+  {
+    "label": "PINK",
+    "text": "Khẩn cấp",
+    "normalized": "khẩn cấp"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bằng mọi giá tui sẽ",
+    "normalized": "bằng mọi giá tui sẽ"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cứ cách ngày",
+    "normalized": "cứ cách ngày"
+  },
+  {
+    "label": "BLUE",
+    "text": "tuần",
+    "normalized": "tuần"
+  },
+  {
+    "label": "BLUE",
+    "text": "tháng",
+    "normalized": "tháng"
+  },
+  {
+    "label": "BLUE",
+    "text": "năm",
+    "normalized": "năm"
+  },
+  {
+    "label": "RED",
+    "text": "Ủa, hai người biết nhau trước rồi à",
+    "normalized": "ủa hai người biết nhau trước rồi à"
+  },
+  {
+    "label": "PINK",
+    "text": "Ăn khuya",
+    "normalized": "ăn khuya"
+  },
+  {
+    "label": "GREEN",
+    "text": "dẫu sao thì",
+    "normalized": "dẫu sao thì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có hay",
+    "normalized": "cậu có hay"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cậu có thường",
+    "normalized": "cậu có thường"
+  },
+  {
+    "label": "RED",
+    "text": "Giờ tui phải làm sao đây",
+    "normalized": "giờ tui phải làm sao đây"
+  },
+  {
+    "label": "PINK",
+    "text": "Giữ lịch sự",
+    "normalized": "giữ lịch sự"
+  },
+  {
+    "label": "GREEN",
+    "text": "Phiền thiệt",
+    "normalized": "phiền thiệt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thiệt là phiền toái",
+    "normalized": "thiệt là phiền toái"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cậu biết tui không",
+    "normalized": "sao cậu biết tui không"
+  },
+  {
+    "label": "RED",
+    "text": "Tui chẳng có gì phải hối hận cả",
+    "normalized": "tui chẳng có gì phải hối hận cả"
+  },
+  {
+    "label": "PINK",
+    "text": "Khủng hoảng",
+    "normalized": "khủng hoảng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng có mà mách lẻo ai",
+    "normalized": "đừng có mà mách lẻo ai"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đừng kể ai đấy",
+    "normalized": "đừng kể ai đấy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Ê chính cậu nói tui là nha",
+    "normalized": "ê chính cậu nói tui là nha"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có đồng hồ đó không",
+    "normalized": "cậu có đồng hồ đó không"
+  },
+  {
+    "label": "PINK",
+    "text": "Bình dân",
+    "normalized": "bình dân"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trong số mọi người đang ngồi đây",
+    "normalized": "trong số mọi người đang ngồi đây"
+  },
+  {
+    "label": "BLUE",
+    "text": "Cho đến giờ tui vẫn",
+    "normalized": "cho đến giờ tui vẫn"
+  },
+  {
+    "label": "RED",
+    "text": "Cũng khuya rồi tui về đây",
+    "normalized": "cũng khuya rồi tui về đây"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chắc chắn rồi",
+    "normalized": "chắc chắn rồi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đúng",
+    "normalized": "đúng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Phải",
+    "normalized": "phải"
+  },
+  {
+    "label": "BLUE",
+    "text": "Vấn đề mà tui sắp kể",
+    "normalized": "vấn đề mà tui sắp kể"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu nghĩ vậy à",
+    "normalized": "cậu nghĩ vậy à"
+  },
+  {
+    "label": "PINK",
+    "text": "Bảo hiểm y tế",
+    "normalized": "bảo hiểm y tế"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cái đó là giả bộ thôi",
+    "normalized": "cái đó là giả bộ thôi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui chán ngấy cái cảnh",
+    "normalized": "tui chán ngấy cái cảnh"
+  },
+  {
+    "label": "RED",
+    "text": "Cũng khó nói",
+    "normalized": "cũng khó nói"
+  },
+  {
+    "label": "RED",
+    "text": "đoán lắm",
+    "normalized": "đoán lắm"
+  },
+  {
+    "label": "PINK",
+    "text": "Tống tiền",
+    "normalized": "tống tiền"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trong 20 năm vừa qua",
+    "normalized": "trong 20 năm vừa qua"
+  },
+  {
+    "label": "BLUE",
+    "text": "Bậy giờ cậu có hay là không",
+    "normalized": "bậy giờ cậu có hay là không"
+  },
+  {
+    "label": "RED",
+    "text": "Không phải gu của tui",
+    "normalized": "không phải gu của tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Bắt cóc",
+    "normalized": "bắt cóc"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui từng bị hiểu lầm rất nhiều",
+    "normalized": "tui từng bị hiểu lầm rất nhiều"
+  },
+  {
+    "label": "BLUE",
+    "text": "Bây giờ tui đếm đến ba",
+    "normalized": "bây giờ tui đếm đến ba"
+  },
+  {
+    "label": "RED",
+    "text": "Không đơn giản thế đâu",
+    "normalized": "không đơn giản thế đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Có lời",
+    "normalized": "có lời"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cám ơn đã tin tưởng tui",
+    "normalized": "cám ơn đã tin tưởng tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "đến cỡ nào",
+    "normalized": "đến cỡ nào"
+  },
+  {
+    "label": "RED",
+    "text": "Bữa nào cafe",
+    "normalized": "bữa nào cafe"
+  },
+  {
+    "label": "PINK",
+    "text": "Truyền lửa",
+    "normalized": "truyền lửa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui sẽ không làm cậu thất vọng",
+    "normalized": "tui sẽ không làm cậu thất vọng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Mỗi khi tui lại",
+    "normalized": "mỗi khi tui lại"
+  },
+  {
+    "label": "RED",
+    "text": "Có dịp tui kể cậu nghe sau",
+    "normalized": "có dịp tui kể cậu nghe sau"
+  },
+  {
+    "label": "PINK",
+    "text": "Người đi đường",
+    "normalized": "người đi đường"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu cái đó đúng",
+    "normalized": "nếu cái đó đúng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nếu nó đúng là vậy",
+    "normalized": "nếu nó đúng là vậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "là một ví dụ điển hình cho cái này",
+    "normalized": "là một ví dụ điển hình cho cái này"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu có đang hẹn hò với ai không",
+    "normalized": "cậu có đang hẹn hò với ai không"
+  },
+  {
+    "label": "PINK",
+    "text": "Dân địa phương",
+    "normalized": "dân địa phương"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ít nhất",
+    "normalized": "ít nhất"
+  },
+  {
+    "label": "BLUE",
+    "text": "Sao cậu dám một mình",
+    "normalized": "sao cậu dám một mình"
+  },
+  {
+    "label": "RED",
+    "text": "Tui cũng vậy",
+    "normalized": "tui cũng vậy"
+  },
+  {
+    "label": "PINK",
+    "text": "Cân bằng",
+    "normalized": "cân bằng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ai biểu! (chi)",
+    "normalized": "ai biểu chi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Hãy nhớ rằng",
+    "normalized": "hãy nhớ rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Giờ cậu biết làm rồi đấy",
+    "normalized": "giờ cậu biết làm rồi đấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Đăng nhập",
+    "normalized": "đăng nhập"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu biết điều đó nghĩa là gì không",
+    "normalized": "cậu biết điều đó nghĩa là gì không"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu biết cái đó nghĩa là sao không",
+    "normalized": "cậu biết cái đó nghĩa là sao không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui bị ấn tượng bởi cái cách",
+    "normalized": "tui bị ấn tượng bởi cái cách"
+  },
+  {
+    "label": "RED",
+    "text": "Khoan cám ơn tui vội",
+    "normalized": "khoan cám ơn tui vội"
+  },
+  {
+    "label": "PINK",
+    "text": "Biểu tượng",
+    "normalized": "biểu tượng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chưa kể đến việc",
+    "normalized": "chưa kể đến việc"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tin tốt là cậu sẽ không phải",
+    "normalized": "tin tốt là cậu sẽ không phải"
+  },
+  {
+    "label": "RED",
+    "text": "Còn miếng cafe nào cho tui không",
+    "normalized": "còn miếng cafe nào cho tui không"
+  },
+  {
+    "label": "PINK",
+    "text": "Tiền lẻ",
+    "normalized": "tiền lẻ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tôi e rằng",
+    "normalized": "tôi e rằng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui rất thích",
+    "normalized": "tui rất thích"
+  },
+  {
+    "label": "BLUE",
+    "text": "trong khi đó",
+    "normalized": "trong khi đó"
+  },
+  {
+    "label": "RED",
+    "text": "Đừng có nói thế",
+    "normalized": "đừng có nói thế"
+  },
+  {
+    "label": "PINK",
+    "text": "Câu cửa miệng",
+    "normalized": "câu cửa miệng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tui không có muốn nói xui",
+    "normalized": "tui không có muốn nói xui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Một mặt",
+    "normalized": "một mặt"
+  },
+  {
+    "label": "BLUE",
+    "text": "Mặt khác",
+    "normalized": "mặt khác"
+  },
+  {
+    "label": "RED",
+    "text": "Làm theo tui",
+    "normalized": "làm theo tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Coi chừng",
+    "normalized": "coi chừng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cố lên",
+    "normalized": "cố lên"
+  },
+  {
+    "label": "GREEN",
+    "text": "Kiên trì lên",
+    "normalized": "kiên trì lên"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tất cả chỉ là tại",
+    "normalized": "tất cả chỉ là tại"
+  },
+  {
+    "label": "RED",
+    "text": "(Đi) theo tui",
+    "normalized": "đi theo tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Ngứa ngáy",
+    "normalized": "ngứa ngáy"
+  },
+  {
+    "label": "GREEN",
+    "text": "Có gì thông cảm cho tui nha",
+    "normalized": "có gì thông cảm cho tui nha"
+  },
+  {
+    "label": "BLUE",
+    "text": "Miễn là",
+    "normalized": "miễn là"
+  },
+  {
+    "label": "RED",
+    "text": "Sao cậu nói như dzậy được",
+    "normalized": "sao cậu nói như dzậy được"
+  },
+  {
+    "label": "PINK",
+    "text": "Ngáp",
+    "normalized": "ngáp"
+  },
+  {
+    "label": "GREEN",
+    "text": "WOWWW",
+    "normalized": "wowww"
+  },
+  {
+    "label": "BLUE",
+    "text": "Biết đâu tụi nó (thì) sao",
+    "normalized": "biết đâu tụi nó thì sao"
+  },
+  {
+    "label": "RED",
+    "text": "Họ làm gì cậu",
+    "normalized": "họ làm gì cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Trượt mục tiêu",
+    "normalized": "trượt mục tiêu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tương tự vậy",
+    "normalized": "tương tự vậy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Để tui tìm cách",
+    "normalized": "để tui tìm cách"
+  },
+  {
+    "label": "RED",
+    "text": "Tui chẳng có ý gì cả",
+    "normalized": "tui chẳng có ý gì cả"
+  },
+  {
+    "label": "PINK",
+    "text": "Rượu mạnh",
+    "normalized": "rượu mạnh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thẳng thắn mà nói",
+    "normalized": "thẳng thắn mà nói"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui luôn rất nể trọng",
+    "normalized": "tui luôn rất nể trọng"
+  },
+  {
+    "label": "RED",
+    "text": "Để dụ đó tui lo",
+    "normalized": "để dụ đó tui lo"
+  },
+  {
+    "label": "PINK",
+    "text": "Cafe gói",
+    "normalized": "cafe gói"
+  },
+  {
+    "label": "GREEN",
+    "text": "Dù muốn dù không",
+    "normalized": "dù muốn dù không"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nói về cái này",
+    "normalized": "nói về cái này"
+  },
+  {
+    "label": "BLUE",
+    "text": "không ai qua",
+    "normalized": "không ai qua"
+  },
+  {
+    "label": "BLUE",
+    "text": "thắng được",
+    "normalized": "thắng được"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu còn giận tui à",
+    "normalized": "cậu còn giận tui à"
+  },
+  {
+    "label": "PINK",
+    "text": "Chị Hằng",
+    "normalized": "chị hằng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Ê cậu đi xa quá rồi đấy",
+    "normalized": "ê cậu đi xa quá rồi đấy"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui thà chứ tui không bao giờ",
+    "normalized": "tui thà chứ tui không bao giờ"
+  },
+  {
+    "label": "RED",
+    "text": "Anh vừa nói gì cơ",
+    "normalized": "anh vừa nói gì cơ"
+  },
+  {
+    "label": "PINK",
+    "text": "Trăng tròn",
+    "normalized": "trăng tròn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Chơi thì chơi! sợ gì",
+    "normalized": "chơi thì chơi sợ gì"
+  },
+  {
+    "label": "BLUE",
+    "text": "Chính cậu nhờ tui nha",
+    "normalized": "chính cậu nhờ tui nha"
+  },
+  {
+    "label": "RED",
+    "text": "Vỏ quýt dày có móng tay nhọn",
+    "normalized": "vỏ quýt dày có móng tay nhọn"
+  },
+  {
+    "label": "PINK",
+    "text": "Lý do lý trấu",
+    "normalized": "lý do lý trấu"
+  },
+  {
+    "label": "GREEN",
+    "text": "Dù là vô tình hay cố ý",
+    "normalized": "dù là vô tình hay cố ý"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui hứa tui sẽ không bao giờ",
+    "normalized": "tui hứa tui sẽ không bao giờ"
+  },
+  {
+    "label": "RED",
+    "text": "Bây giờ anh lo cái gì",
+    "normalized": "bây giờ anh lo cái gì"
+  },
+  {
+    "label": "PINK",
+    "text": "Chuyện cổ tích",
+    "normalized": "chuyện cổ tích"
+  },
+  {
+    "label": "GREEN",
+    "text": "Lỗi tui",
+    "normalized": "lỗi tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Rất có thể",
+    "normalized": "rất có thể"
+  },
+  {
+    "label": "RED",
+    "text": "Làm sao tui biết được",
+    "normalized": "làm sao tui biết được"
+  },
+  {
+    "label": "PINK",
+    "text": "Cơm tấm",
+    "normalized": "cơm tấm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Thích thì chiều",
+    "normalized": "thích thì chiều"
+  },
+  {
+    "label": "BLUE",
+    "text": "Uả tui tưởng chớ",
+    "normalized": "uả tui tưởng chớ"
+  },
+  {
+    "label": "RED",
+    "text": "Họ có nói gì tui đâu",
+    "normalized": "họ có nói gì tui đâu"
+  },
+  {
+    "label": "PINK",
+    "text": "Ông kẹ",
+    "normalized": "ông kẹ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cậu tự hiểu đi",
+    "normalized": "cậu tự hiểu đi"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nói vậy chẳng khác nào",
+    "normalized": "nói vậy chẳng khác nào"
+  },
+  {
+    "label": "RED",
+    "text": "Cái này không phải ưu tiên hàng đầu của tui",
+    "normalized": "cái này không phải ưu tiên hàng đầu của tui"
+  },
+  {
+    "label": "PINK",
+    "text": "Điều hành",
+    "normalized": "điều hành"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao cứ phải làm to chuyện ra",
+    "normalized": "sao cứ phải làm to chuyện ra"
+  },
+  {
+    "label": "BLUE",
+    "text": "suốt ấy mà",
+    "normalized": "suốt ấy mà"
+  },
+  {
+    "label": "BLUE",
+    "text": "hoài ấy mà",
+    "normalized": "hoài ấy mà"
+  },
+  {
+    "label": "RED",
+    "text": "Cậu đang nghĩ gì đấy",
+    "normalized": "cậu đang nghĩ gì đấy"
+  },
+  {
+    "label": "PINK",
+    "text": "Hệ điều hành",
+    "normalized": "hệ điều hành"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao phải xoắn",
+    "normalized": "sao phải xoắn"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao phải nghiêm túc thế",
+    "normalized": "sao phải nghiêm túc thế"
+  },
+  {
+    "label": "BLUE",
+    "text": "Đừng quên",
+    "normalized": "đừng quên"
+  },
+  {
+    "label": "BLUE",
+    "text": "Nhớ rằng",
+    "normalized": "nhớ rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Đồ ăn ngụi hết rồi",
+    "normalized": "đồ ăn ngụi hết rồi"
+  },
+  {
+    "label": "PINK",
+    "text": "Lỗi đánh máy",
+    "normalized": "lỗi đánh máy"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao cậu không nói gì nữa đi",
+    "normalized": "sao cậu không nói gì nữa đi"
+  },
+  {
+    "label": "GREEN",
+    "text": "Sao im lặng thế",
+    "normalized": "sao im lặng thế"
+  },
+  {
+    "label": "BLUE",
+    "text": "Lâu chưa",
+    "normalized": "lâu chưa"
+  },
+  {
+    "label": "RED",
+    "text": "Vậy thì đã sao",
+    "normalized": "vậy thì đã sao"
+  },
+  {
+    "label": "PINK",
+    "text": "Bỏ áo vào quần (đóng thùng)",
+    "normalized": "bỏ áo vào quần đóng thùng"
+  },
+  {
+    "label": "GREEN",
+    "text": "Giờ đến lượt tui",
+    "normalized": "giờ đến lượt tui"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi cá chắc",
+    "normalized": "tôi cá chắc"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tôi dám chắc",
+    "normalized": "tôi dám chắc"
+  },
+  {
+    "label": "RED",
+    "text": "Tui đang đi nghỉ mát",
+    "normalized": "tui đang đi nghỉ mát"
+  },
+  {
+    "label": "PINK",
+    "text": "Mắm tôm",
+    "normalized": "mắm tôm"
+  },
+  {
+    "label": "GREEN",
+    "text": "Còn khuya nhaaaa",
+    "normalized": "còn khuya nhaaaa"
+  },
+  {
+    "label": "GREEN",
+    "text": "Bỏ liền cái suy nghĩ đó đi nha",
+    "normalized": "bỏ liền cái suy nghĩ đó đi nha"
+  },
+  {
+    "label": "RED",
+    "text": "Hi vọng cậu đã có một cuối tuần vui vẻ",
+    "normalized": "hi vọng cậu đã có một cuối tuần vui vẻ"
+  },
+  {
+    "label": "PINK",
+    "text": "Mặt nạ",
+    "normalized": "mặt nạ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tưởng gì",
+    "normalized": "tưởng gì"
+  },
+  {
+    "label": "GREEN",
+    "text": "Tường thế nào",
+    "normalized": "tường thế nào"
+  },
+  {
+    "label": "BLUE",
+    "text": "Không lẽ nào",
+    "normalized": "không lẽ nào"
+  },
+  {
+    "label": "BLUE",
+    "text": "Làm gì có chuyện",
+    "normalized": "làm gì có chuyện"
+  },
+  {
+    "label": "BLUE",
+    "text": "không đời nào",
+    "normalized": "không đời nào"
+  },
+  {
+    "label": "RED",
+    "text": "Tùy cậu",
+    "normalized": "tùy cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Cà vạt",
+    "normalized": "cà vạt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Đời là dzậy đó",
+    "normalized": "đời là dzậy đó"
+  },
+  {
+    "label": "BLUE",
+    "text": "Có khi nào",
+    "normalized": "có khi nào"
+  },
+  {
+    "label": "BLUE",
+    "text": "có khả năng nào",
+    "normalized": "có khả năng nào"
+  },
+  {
+    "label": "RED",
+    "text": "Bóp chết từ trong trứng nước",
+    "normalized": "bóp chết từ trong trứng nước"
+  },
+  {
+    "label": "PINK",
+    "text": "Vớ",
+    "normalized": "vớ"
+  },
+  {
+    "label": "GREEN",
+    "text": "Cách đây 3 ngày",
+    "normalized": "cách đây 3 ngày"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui không còn muốn nữa",
+    "normalized": "tui không còn muốn nữa"
+  },
+  {
+    "label": "RED",
+    "text": "Tui cũng không tin vào mắt mình",
+    "normalized": "tui cũng không tin vào mắt mình"
+  },
+  {
+    "label": "PINK",
+    "text": "Cải thiện",
+    "normalized": "cải thiện"
+  },
+  {
+    "label": "GREEN",
+    "text": "3 ngày vừa rồi",
+    "normalized": "3 ngày vừa rồi"
+  },
+  {
+    "label": "BLUE",
+    "text": "thì tui đi bằng đầu",
+    "normalized": "thì tui đi bằng đầu"
+  },
+  {
+    "label": "RED",
+    "text": "(x2) cái đầu cậu",
+    "normalized": "x2 cái đầu cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Cái thớt",
+    "normalized": "cái thớt"
+  },
+  {
+    "label": "GREEN",
+    "text": "Trong 3 ngày tới",
+    "normalized": "trong 3 ngày tới"
+  },
+  {
+    "label": "BLUE",
+    "text": "Tui có linh cảm rằng",
+    "normalized": "tui có linh cảm rằng"
+  },
+  {
+    "label": "BLUE",
+    "text": "Trực giác mách bảo tui rằng",
+    "normalized": "trực giác mách bảo tui rằng"
+  },
+  {
+    "label": "RED",
+    "text": "Tui chẳng còn sự lựa chọn nào khác cả",
+    "normalized": "tui chẳng còn sự lựa chọn nào khác cả"
+  },
+  {
+    "label": "PINK",
+    "text": "Máy lạnh",
+    "normalized": "máy lạnh"
+  },
+  {
+    "label": "GREEN",
+    "text": "Hồi đầu",
+    "normalized": "hồi đầu"
+  },
+  {
+    "label": "BLUE",
+    "text": "Người ta hay bảo",
+    "normalized": "người ta hay bảo"
+  },
+  {
+    "label": "RED",
+    "text": "Tui đã đi quá xa không còn đường quay lại nữa",
+    "normalized": "tui đã đi quá xa không còn đường quay lại nữa"
+  },
+  {
+    "label": "PINK",
+    "text": "Thang máy",
+    "normalized": "thang máy"
+  },
+  {
+    "label": "GREEN",
+    "text": "Nhưng khi tui nhìn lại tất cả",
+    "normalized": "nhưng khi tui nhìn lại tất cả"
+  },
+  {
+    "label": "BLUE",
+    "text": "có thể nói vậy",
+    "normalized": "có thể nói vậy"
+  },
+  {
+    "label": "RED",
+    "text": "Cái đó thì tui đồng ý với cậu",
+    "normalized": "cái đó thì tui đồng ý với cậu"
+  },
+  {
+    "label": "PINK",
+    "text": "Xanh đậm",
+    "normalized": "xanh đậm"
+  }
+]

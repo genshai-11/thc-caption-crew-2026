@@ -378,7 +378,18 @@ export function useCaptionCrewRound() {
       }
 
       const runtimeConfig = loadAdminRuntimeConfig();
-      const ohmCurrent = runtimeConfig.semanticOhmCurrent > 0 ? runtimeConfig.semanticOhmCurrent : 1.0;
+      const resolveLengthCoefficient = (text: string) => {
+        const sentences = String(text || '').split(/[.!?\n\r]+/).map((s) => s.trim()).filter(Boolean).length || 1;
+        const words = String(text || '').trim().split(/\s+/).filter(Boolean).length;
+        const constraints = runtimeConfig.ohmLengthConstraints;
+        const coef = runtimeConfig.ohmLengthCoefficients;
+
+        if (sentences <= constraints.veryShort.maxSentences && words <= constraints.veryShort.maxWords) return coef.veryShort;
+        if (sentences <= constraints.short.maxSentences && words <= constraints.short.maxWords) return coef.short;
+        if (sentences <= constraints.medium.maxSentences && words <= constraints.medium.maxWords) return coef.medium;
+        if (sentences <= constraints.long.maxSentences && words <= constraints.long.maxWords) return coef.long;
+        return coef.overLong;
+      };
 
       let nextOhmResult: OhmResult;
       try {
@@ -387,11 +398,14 @@ export function useCaptionCrewRound() {
           fallbackModel: runtimeConfig.ohmFallbackModel || runtimeConfig.router9FallbackModel,
         });
 
-        const voltage = aiAnalysis.totalOhm * ohmCurrent;
+        const lengthCoefficient = typeof aiAnalysis.lengthCoefficient === 'number' && aiAnalysis.lengthCoefficient > 0
+          ? aiAnalysis.lengthCoefficient
+          : 1;
+        const voltage = aiAnalysis.totalOhm;
         nextOhmResult = {
           totalOhm: aiAnalysis.totalOhm,
           formula: aiAnalysis.formula,
-          current: ohmCurrent,
+          current: lengthCoefficient,
           voltage,
           score: toOhmScore(voltage),
           difficulty: getDifficultyLabel(voltage),
@@ -414,7 +428,8 @@ export function useCaptionCrewRound() {
           captainResult.transcript,
           runtimeConfig.semanticRuleOverrides,
         );
-        const rawOhm = calculateSemanticOhm(semanticChunks, ohmCurrent);
+        const fallbackLengthCoefficient = resolveLengthCoefficient(captainResult.transcript);
+        const rawOhm = calculateSemanticOhm(semanticChunks, fallbackLengthCoefficient);
         nextOhmResult = {
           ...rawOhm,
           difficulty: getDifficultyLabel(rawOhm.voltage),

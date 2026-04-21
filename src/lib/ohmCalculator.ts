@@ -119,29 +119,11 @@ export function calculateSemanticOhm(
     };
   }
 
-  const groups: Record<OhmCategory, number[]> = {
-    [OhmCategory.GREEN]: [],
-    [OhmCategory.BLUE]: [],
-    [OhmCategory.RED]: [],
-    [OhmCategory.PINK]: [],
-  };
+  const values = chunks
+    .map((chunk) => chunk.ohm ?? OHM_VALUES[chunk.label])
+    .filter((value) => Number.isFinite(value) && value > 0);
 
-  chunks.forEach((chunk) => {
-    const value = chunk.ohm ?? OHM_VALUES[chunk.label];
-    if (Number.isFinite(value) && value > 0) {
-      groups[chunk.label].push(value);
-    }
-  });
-
-  const groupSums = (Object.keys(groups) as OhmCategory[])
-    .map((label) => ({
-      label,
-      parts: groups[label],
-      sum: groups[label].reduce((acc, val) => acc + val, 0),
-    }))
-    .filter((group) => group.parts.length > 0);
-
-  if (groupSums.length === 0) {
+  if (values.length === 0) {
     return {
       totalOhm: 0,
       formula: '0',
@@ -151,25 +133,23 @@ export function calculateSemanticOhm(
     };
   }
 
-  const totalOhm = groupSums.reduce((acc, group) => acc * group.sum, 1);
-  const formula = groupSums
-    .map((group) => (group.parts.length > 1 ? `(${group.parts.join(' + ')})` : `${group.parts[0]}`))
-    .join(' x ');
-
-  const voltage = totalOhm * current;
+  const baseOhm = values.reduce((acc, value) => acc + value, 0);
+  const totalOhm = baseOhm * current;
+  const sumFormula = values.length > 1 ? `(${values.join(' + ')})` : `${values[0]}`;
+  const formula = `${sumFormula} x ${current}`;
+  const voltage = totalOhm;
 
   return {
     totalOhm,
     formula,
     current,
     voltage,
-    score: toScore(voltage),
+    score: toScore(totalOhm),
   };
 }
 
 export function getDifficultyLabel(voltage: number): string {
   if (voltage <= 20) return 'Beginner';
   if (voltage <= 50) return 'Intermediate';
-  if (voltage <= 100) return 'Advanced';
-  return 'Master';
+  return 'Advanced';
 }

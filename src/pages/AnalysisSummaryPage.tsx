@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ResultCard } from '@/components/ResultCard';
-import { OhmChunkResult, SummaryLocationState, TranscriptResult } from '@/types';
+import { SummaryLocationState, TranscriptResult } from '@/types';
 
 function formatConfidence(confidence?: number) {
   if (typeof confidence !== 'number' || Number.isNaN(confidence) || confidence <= 0) return '—';
@@ -28,69 +28,30 @@ function getTranscriptPlaceholder(transcript?: TranscriptResult | null) {
 
 
 function SummaryOhmCard({
-  formula,
   totalOhm,
   current,
-  voltage,
-  difficulty,
-  score,
-  chunks,
 }: {
-  formula: string;
   totalOhm: number;
   current: number;
-  voltage: number;
-  difficulty: string;
-  score: number;
-  chunks: OhmChunkResult[];
 }) {
   return (
     <section className="soft-card admin-section-minimal">
       <div className="summary-voice-header">
         <div>
           <p className="page-kicker summary-voice-kicker">Semantic Ohm</p>
-          <h2 className="section-title">Formula & difficulty</h2>
+          <h2 className="section-title">Total Ohm</h2>
         </div>
-        <span className="analysis-pill">{difficulty}</span>
-      </div>
-
-      <div className="analysis-detail-block">
-        <span className="metric-label">formula</span>
-        <p className="analysis-reason">{formula}</p>
       </div>
 
       <div className="analysis-metrics summary-inline-metrics">
         <div>
-          <span className="metric-label">score</span>
-          <span className="metric-value">{score}</span>
-        </div>
-        <div>
-          <span className="metric-label">R (total ohm)</span>
+          <span className="metric-label">total ohm</span>
           <span className="metric-value">{totalOhm} Ω</span>
         </div>
         <div>
-          <span className="metric-label">I (current)</span>
+          <span className="metric-label">I (length coefficient)</span>
           <span className="metric-value">{current.toFixed(2)}</span>
         </div>
-        <div>
-          <span className="metric-label">U (voltage)</span>
-          <span className="metric-value">{voltage.toFixed(1)} V</span>
-        </div>
-      </div>
-
-      <div className="summary-transcript-block">
-        <span className="metric-label">semantic chunks (captain detect)</span>
-        {chunks.length === 0 ? (
-          <p className="admin-message">No semantic chunks detected in this transcript.</p>
-        ) : (
-          <ul className="analysis-detail-list">
-            {chunks.map((chunk, idx) => (
-              <li key={`${chunk.label}-${idx}-${chunk.text.slice(0, 16)}`}>
-                <strong>{chunk.label}</strong> · {chunk.ohm} Ω · {chunk.text}
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </section>
   );
@@ -232,13 +193,8 @@ export default function AnalysisSummaryPage() {
 
       {summary?.ohmResult && (
         <SummaryOhmCard
-          formula={summary.ohmResult.formula}
           totalOhm={summary.ohmResult.totalOhm}
           current={summary.ohmResult.current}
-          voltage={summary.ohmResult.voltage}
-          difficulty={summary.ohmResult.difficulty}
-          score={summary.ohmResult.score}
-          chunks={summary.ohmResult.chunks}
         />
       )}
 
