@@ -850,7 +850,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       model,
       fallbackModel,
       temperature: 0,
-      timeoutMs: 12000,
+      timeoutMs: 20000,
       responseFormat: { type: 'json_object' },
       messages: [
         { role: 'system', content: 'Return strict JSON. Labels allowed: GREEN, BLUE, RED, PINK.' },
@@ -937,7 +937,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
 });
 
 
-async function callRouterChat({ apiKey, baseUrl, model, fallbackModel, messages, temperature = 0.2, responseFormat, timeoutMs = 12000 }) {
+async function callRouterChat({ apiKey, baseUrl, model, fallbackModel, messages, temperature = 0.2, responseFormat, timeoutMs = 20000 }) {
   const cleanApiKey = String(apiKey || '').trim();
   const cleanBaseUrl = String(baseUrl || '').trim();
   if (!cleanApiKey) throw new Error('ROUTER9_API_KEY not configured');
