@@ -739,43 +739,80 @@ function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED
   return chunks;
 }
 
+const PINK_COMMON_PHRASES = new Set(['ngày mai', 'hôm nay', 'bây giờ', 'đi với tôi', 'không tới', 'có đi', 'với tôi']);
+const RED_IDIOM_MARKERS = [
+  'gieo gió', 'gặt bão', 'đứng núi này trông núi nọ', 'vỏ quýt dày có móng tay nhọn', 'đâm sau lưng',
+  'bút sa gà chết', 'xa mặt cách lòng', 'khách hàng là thượng đế', 'chuyện gì tới nó tới', 'đừng đùa với lửa',
+  'bữa tiệc nào rồi cũng có lúc tàn', 'im lặng là đồng ý', 'có cái giá', 'đi guốc trong bụng'
+];
+const BLUE_FRAME_MARKERS = [
+  'cậu có', 'bạn có', 'điều gì làm', 'nếu cậu', 'nếu bạn', 'tui nghĩ', 'tôi nghĩ', 'hãy', 'đừng', 'làm sao', 'sao cậu', 'ai mà', 'một mặt', 'mặt khác'
+];
+
+function isSentenceOpener(phraseNormalized = '', transcript = '') {
+  if (!phraseNormalized) return false;
+  const sentences = String(transcript || '')
+    .split(/[.!?\n\r]+/)
+    .map((segment) => normalizeOhmText(segment))
+    .filter(Boolean);
+  return sentences.some((sentence) => sentence.startsWith(phraseNormalized));
+}
+
+function isLabelChunkAcceptable(label = '', normalized = '', transcript = '') {
+  const words = normalized.split(/\s+/).filter(Boolean);
+  if (words.length < 2) return false;
+  if (OHM_NOISE_TERMS.has(normalized)) return false;
+
+  if (label === 'GREEN') {
+    return isSentenceOpener(normalized, transcript);
+  }
+
+  if (label === 'BLUE') {
+    return words.length >= 3 && BLUE_FRAME_MARKERS.some((marker) => normalized.includes(marker));
+  }
+
+  if (label === 'RED') {
+    return words.length >= 3 && RED_IDIOM_MARKERS.some((marker) => normalized.includes(marker));
+  }
+
+  if (label === 'PINK') {
+    return words.length >= 2 && !PINK_COMMON_PHRASES.has(normalized);
+  }
+
+  return false;
+}
+
 function sanitizeOhmChunks(chunks = [], transcript = '') {
   const source = normalizeOhmText(transcript);
   return chunks.filter((chunk) => {
     const text = String(chunk?.text || '').trim();
     if (!text) return false;
 
-    const lower = normalizeOhmText(text);
-    if (!source.includes(lower)) return false;
-    if (OHM_NOISE_TERMS.has(lower)) return false;
-
-    const words = lower.split(/\s+/).filter(Boolean);
+    const normalized = normalizeOhmText(text);
     const label = String(chunk?.label || '').toUpperCase();
-
-    if (words.length < 2) return false;
-    if ((label === 'GREEN' || label === 'BLUE' || label === 'RED') && text.length < 6) return false;
-
-    return true;
+    if (!source.includes(normalized)) return false;
+    return isLabelChunkAcceptable(label, normalized, transcript);
   });
 }
 
-function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = []) {
+function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = [], transcript = '') {
   const map = new Map();
 
   for (const chunk of lexiconChunks) {
-    const key = `${chunk.label}::${normalizeOhmText(chunk.text)}`;
+    const normalized = normalizeOhmText(chunk.text);
+    const label = String(chunk.label || '').toUpperCase();
+    if (!isLabelChunkAcceptable(label, normalized, transcript)) continue;
+    const key = `${label}::${normalized}`;
     map.set(key, chunk);
   }
 
   for (const chunk of modelChunks) {
     const confidence = Number(chunk?.confidence || 0);
-    const words = normalizeOhmText(chunk?.text || '').split(/\s+/).filter(Boolean).length;
     const label = String(chunk?.label || '').toUpperCase();
     const normalized = normalizeOhmText(chunk.text);
 
-    if (confidence < 0.94) continue;
-    if (words < 2) continue;
-    if (OHM_NOISE_TERMS.has(normalized)) continue;
+    if (confidence < 0.95) continue;
+    if (!isLabelChunkAcceptable(label, normalized, transcript)) continue;
 
     const key = `${label}::${normalized}`;
     if (!map.has(key)) {
@@ -878,7 +915,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
 
     const modelChunks = sanitizeOhmChunks(rawChunks, transcript);
     const lexiconChunks = detectLexiconChunks(transcript, ohmSettings.weights);
-    const chunks = mergeLexiconAndModelChunks(lexiconChunks, modelChunks);
+    const chunks = mergeLexiconAndModelChunks(lexiconChunks, modelChunks, transcript);
 
     const { baseOhm, formula: baseFormula } = computeOhmFromChunks(chunks, ohmSettings.weights);
     const { sentenceCount, wordCount, lengthBucket } = resolveLengthBucket(transcript, ohmSettings.constraints);
