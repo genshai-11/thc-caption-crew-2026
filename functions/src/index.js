@@ -746,10 +746,32 @@ const RED_IDIOM_MARKERS = [
   'gieo gió', 'gặt bão', 'đứng núi này trông núi nọ', 'vỏ quýt dày có móng tay nhọn', 'đâm sau lưng',
   'bút sa gà chết', 'xa mặt cách lòng', 'khách hàng là thượng đế', 'chuyện gì tới nó tới', 'đừng đùa với lửa',
   'bữa tiệc nào rồi cũng có lúc tàn', 'im lặng là đồng ý', 'có cái giá', 'đi guốc trong bụng',
-  'gần mực thì đen gần đèn thì sáng'
+  'gần mực thì đen gần đèn thì sáng', 'nói trước bước không qua', 'thời gian sẽ trả lời',
+  'đứng núi này', 'trông núi nọ', 'bóp chết từ trong trứng nước', 'tiền nào của đó', 'yêu từ cái nhìn đầu tiên'
 ];
+const RED_EXACT_SET = new Set([
+  'gần mực thì đen gần đèn thì sáng',
+  'gieo gió thì gặt bão',
+  'đứng núi này trông núi nọ',
+  'vỏ quýt dày có móng tay nhọn',
+  'đâm sau lưng',
+  'bút sa gà chết',
+  'xa mặt cách lòng',
+  'nói trước bước không qua',
+  'thời gian sẽ trả lời',
+  'bóp chết từ trong trứng nước',
+  'tiền nào của đó',
+  'khách hàng là thượng đế',
+  'im lặng là đồng ý',
+  'chuyện gì tới nó tới',
+  'bữa tiệc nào rồi cũng có lúc tàn'
+]);
 const RED_COMPOSITE_IDIOMS = [
-  'gần mực thì đen gần đèn thì sáng'
+  'gần mực thì đen gần đèn thì sáng',
+  'gieo gió thì gặt bão',
+  'đứng núi này trông núi nọ',
+  'vỏ quýt dày có móng tay nhọn',
+  'bữa tiệc nào rồi cũng có lúc tàn'
 ];
 const BLUE_FRAME_MARKERS = [
   'cậu có', 'bạn có', 'điều gì làm', 'nếu cậu', 'nếu bạn', 'tui nghĩ', 'tôi nghĩ', 'hãy', 'đừng', 'làm sao', 'sao cậu', 'ai mà', 'một mặt', 'mặt khác'
@@ -773,6 +795,16 @@ function isSentenceOpener(phraseNormalized = '', transcript = '') {
   return sentences.some((sentence) => sentence.startsWith(phraseNormalized));
 }
 
+function isRedIdiomCandidate(normalized = '') {
+  if (!normalized) return false;
+  if (RED_EXACT_SET.has(normalized)) return true;
+  if (RED_IDIOM_MARKERS.some((marker) => normalized.includes(marker))) return true;
+
+  const words = normalized.split(/\s+/).filter(Boolean);
+  if (words.length >= 6 && normalized.includes(' thì ') && normalized.split(' thì ').length >= 3) return true;
+  return false;
+}
+
 function isLabelChunkAcceptable(label = '', normalized = '', transcript = '', sourceType = 'model') {
   const words = normalized.split(/\s+/).filter(Boolean);
   if (words.length < 2) return false;
@@ -790,7 +822,7 @@ function isLabelChunkAcceptable(label = '', normalized = '', transcript = '', so
   }
 
   if (label === 'RED') {
-    return words.length >= 3 && RED_IDIOM_MARKERS.some((marker) => normalized.includes(marker));
+    return words.length >= 3 && isRedIdiomCandidate(normalized);
   }
 
   if (label === 'PINK') {
