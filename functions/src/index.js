@@ -723,14 +723,16 @@ function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED
       const end = idx + entry.normalized.length;
       const overlaps = occupied.some((slot) => !(end <= slot.start || start >= slot.end));
       if (!overlaps) {
-        occupied.push({ start, end });
-        chunks.push({
-          text: entry.text,
-          label: entry.label,
-          ohm: Number(weights[entry.label] || 0),
-          confidence: 0.995,
-          reason: 'nuance lexicon exact match',
-        });
+        if (isLabelChunkAcceptable(entry.label, entry.normalized, transcript, 'lexicon')) {
+          occupied.push({ start, end });
+          chunks.push({
+            text: entry.text,
+            label: entry.label,
+            ohm: Number(weights[entry.label] || 0),
+            confidence: 0.995,
+            reason: 'nuance lexicon exact match',
+          });
+        }
       }
       idx = source.indexOf(entry.normalized, idx + entry.normalized.length);
     }
@@ -749,6 +751,15 @@ const BLUE_FRAME_MARKERS = [
   'cậu có', 'bạn có', 'điều gì làm', 'nếu cậu', 'nếu bạn', 'tui nghĩ', 'tôi nghĩ', 'hãy', 'đừng', 'làm sao', 'sao cậu', 'ai mà', 'một mặt', 'mặt khác'
 ];
 
+const BLUE_EXACT_SET = new Set(
+  Array.isArray(nuanceLexicon)
+    ? nuanceLexicon
+        .filter((entry) => String(entry?.label || '').toUpperCase() === 'BLUE')
+        .map((entry) => normalizeOhmText(entry?.normalized || entry?.text || ''))
+        .filter(Boolean)
+    : []
+);
+
 function isSentenceOpener(phraseNormalized = '', transcript = '') {
   if (!phraseNormalized) return false;
   const sentences = String(transcript || '')
@@ -758,7 +769,7 @@ function isSentenceOpener(phraseNormalized = '', transcript = '') {
   return sentences.some((sentence) => sentence.startsWith(phraseNormalized));
 }
 
-function isLabelChunkAcceptable(label = '', normalized = '', transcript = '') {
+function isLabelChunkAcceptable(label = '', normalized = '', transcript = '', sourceType = 'model') {
   const words = normalized.split(/\s+/).filter(Boolean);
   if (words.length < 2) return false;
   if (OHM_NOISE_TERMS.has(normalized)) return false;
@@ -768,6 +779,9 @@ function isLabelChunkAcceptable(label = '', normalized = '', transcript = '') {
   }
 
   if (label === 'BLUE') {
+    if (sourceType === 'lexicon') {
+      return BLUE_EXACT_SET.has(normalized);
+    }
     return words.length >= 3 && BLUE_FRAME_MARKERS.some((marker) => normalized.includes(marker));
   }
 
@@ -791,7 +805,7 @@ function sanitizeOhmChunks(chunks = [], transcript = '') {
     const normalized = normalizeOhmText(text);
     const label = String(chunk?.label || '').toUpperCase();
     if (!source.includes(normalized)) return false;
-    return isLabelChunkAcceptable(label, normalized, transcript);
+    return isLabelChunkAcceptable(label, normalized, transcript, 'model');
   });
 }
 
@@ -801,7 +815,7 @@ function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = [], transc
   for (const chunk of lexiconChunks) {
     const normalized = normalizeOhmText(chunk.text);
     const label = String(chunk.label || '').toUpperCase();
-    if (!isLabelChunkAcceptable(label, normalized, transcript)) continue;
+    if (!isLabelChunkAcceptable(label, normalized, transcript, 'lexicon')) continue;
     const key = `${label}::${normalized}`;
     map.set(key, chunk);
   }
@@ -812,7 +826,7 @@ function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = [], transc
     const normalized = normalizeOhmText(chunk.text);
 
     if (confidence < 0.95) continue;
-    if (!isLabelChunkAcceptable(label, normalized, transcript)) continue;
+    if (!isLabelChunkAcceptable(label, normalized, transcript, 'model')) continue;
 
     const key = `${label}::${normalized}`;
     if (!map.has(key)) {
