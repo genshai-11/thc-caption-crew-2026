@@ -657,7 +657,8 @@ function computeOhmFromChunks(chunks = [], weights = { GREEN: 5, BLUE: 7, RED: 9
   return { baseOhm, formula };
 }
 
-const OHM_NOISE_TERMS = new Set(['liệu', 'à', 'ạ', 'ơi', 'ơ', 'hả', 'nhé', 'nha', 'nhỉ', 'nhỉ?', 'ừ', 'ừm', 'ok', 'okay']);
+const OHM_NOISE_TERMS = new Set(['liệu', 'à', 'ạ', 'ơi', 'ơ', 'hả', 'nhé', 'nha', 'nhỉ', 'nhỉ?', 'ừ', 'ừm', 'ok', 'okay', 'đi', 'vớ']);
+const OHM_LABEL_PRIORITY = { RED: 4, BLUE: 3, GREEN: 2, PINK: 1 };
 
 function normalizeOhmText(value = '') {
   return String(value || '')
@@ -668,20 +669,45 @@ function normalizeOhmText(value = '') {
     .trim();
 }
 
-const nuanceLexiconIndex = Array.isArray(nuanceLexicon)
-  ? nuanceLexicon
-      .map((entry) => {
-        const normalized = normalizeOhmText(entry?.normalized || entry?.text || '');
-        return {
-          label: String(entry?.label || '').toUpperCase(),
-          text: String(entry?.text || '').trim(),
-          normalized,
-          words: normalized.split(/\s+/).filter(Boolean).length,
-        };
-      })
-      .filter((entry) => ['GREEN', 'BLUE', 'RED', 'PINK'].includes(entry.label) && entry.normalized)
-      .sort((a, b) => b.normalized.length - a.normalized.length)
-  : [];
+function isLexiconEntryAcceptable(entry) {
+  if (!entry || !entry.normalized) return false;
+  if (!['GREEN', 'BLUE', 'RED', 'PINK'].includes(entry.label)) return false;
+  if (entry.words < 2) return false;
+  if (entry.normalized.length < 4) return false;
+  if (OHM_NOISE_TERMS.has(entry.normalized)) return false;
+  return true;
+}
+
+const nuanceLexiconIndex = (() => {
+  if (!Array.isArray(nuanceLexicon)) return [];
+
+  const dedup = new Map();
+  for (const entry of nuanceLexicon) {
+    const normalized = normalizeOhmText(entry?.normalized || entry?.text || '');
+    const next = {
+      label: String(entry?.label || '').toUpperCase(),
+      text: String(entry?.text || '').trim(),
+      normalized,
+      words: normalized.split(/\s+/).filter(Boolean).length,
+    };
+
+    if (!isLexiconEntryAcceptable(next)) continue;
+
+    const prev = dedup.get(next.normalized);
+    if (!prev) {
+      dedup.set(next.normalized, next);
+      continue;
+    }
+
+    const prevPriority = OHM_LABEL_PRIORITY[prev.label] || 0;
+    const nextPriority = OHM_LABEL_PRIORITY[next.label] || 0;
+    if (nextPriority > prevPriority) {
+      dedup.set(next.normalized, next);
+    }
+  }
+
+  return Array.from(dedup.values()).sort((a, b) => b.normalized.length - a.normalized.length);
+})();
 
 function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
   const source = normalizeOhmText(transcript);
@@ -691,8 +717,6 @@ function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED
   const chunks = [];
 
   for (const entry of nuanceLexiconIndex) {
-    if ((entry.label === 'GREEN' || entry.label === 'BLUE' || entry.label === 'RED') && entry.words < 2) continue;
-
     let idx = source.indexOf(entry.normalized);
     while (idx >= 0) {
       const start = idx;
@@ -704,8 +728,8 @@ function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED
           text: entry.text,
           label: entry.label,
           ohm: Number(weights[entry.label] || 0),
-          confidence: 0.99,
-          reason: 'nuance lexicon match',
+          confidence: 0.995,
+          reason: 'nuance lexicon exact match',
         });
       }
       idx = source.indexOf(entry.normalized, idx + entry.normalized.length);
@@ -728,7 +752,7 @@ function sanitizeOhmChunks(chunks = [], transcript = '') {
     const words = lower.split(/\s+/).filter(Boolean);
     const label = String(chunk?.label || '').toUpperCase();
 
-    if ((label === 'GREEN' || label === 'BLUE' || label === 'RED') && words.length < 2) return false;
+    if (words.length < 2) return false;
     if ((label === 'GREEN' || label === 'BLUE' || label === 'RED') && text.length < 6) return false;
 
     return true;
@@ -747,17 +771,59 @@ function mergeLexiconAndModelChunks(lexiconChunks = [], modelChunks = []) {
     const confidence = Number(chunk?.confidence || 0);
     const words = normalizeOhmText(chunk?.text || '').split(/\s+/).filter(Boolean).length;
     const label = String(chunk?.label || '').toUpperCase();
+    const normalized = normalizeOhmText(chunk.text);
 
-    if (confidence < 0.9) continue;
-    if ((label === 'GREEN' || label === 'BLUE' || label === 'RED') && words < 3) continue;
+    if (confidence < 0.94) continue;
+    if (words < 2) continue;
+    if (OHM_NOISE_TERMS.has(normalized)) continue;
 
-    const key = `${label}::${normalizeOhmText(chunk.text)}`;
+    const key = `${label}::${normalized}`;
     if (!map.has(key)) {
       map.set(key, chunk);
     }
   }
 
   return Array.from(map.values());
+}
+
+function logOhmTrainingSample(payload) {
+  try {
+    if (!admin?.firestore) return;
+    const enabled = payload?.datasetCaptureEnabled !== false;
+    if (!enabled) return;
+    const sampleRate = Math.max(0, Math.min(1, Number(payload?.datasetSampleRate ?? 1)));
+    if (Math.random() > sampleRate) return;
+
+    const db = admin.firestore();
+    db.collection('ohm_training_samples').add({
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      transcript: payload.transcript,
+      transcriptNormalized: payload.transcriptNormalized,
+      rawModelChunks: payload.rawModelChunks,
+      modelChunks: payload.modelChunks,
+      lexiconChunks: payload.lexiconChunks,
+      mergedChunks: payload.mergedChunks,
+      score: {
+        baseOhm: payload.baseOhm,
+        totalOhm: payload.totalOhm,
+        formula: payload.formula,
+        lengthBucket: payload.lengthBucket,
+        lengthCoefficient: payload.lengthCoefficient,
+      },
+      model: {
+        requested: payload.modelRequested,
+        used: payload.modelUsed,
+      },
+      diagnostics: {
+        elapsedMs: payload.elapsedMs,
+        sentenceCount: payload.sentenceCount,
+        wordCount: payload.wordCount,
+        filteredChunkCount: payload.filteredChunkCount,
+      },
+    }).catch((error) => logger.warn('Could not write ohm training sample', error));
+  } catch (error) {
+    logger.warn('Unexpected ohm dataset logging error', error);
+  }
 }
 
 exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, async (req, res) => {
@@ -819,23 +885,50 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const lengthCoefficient = Number(ohmSettings.coefficients[lengthBucket] || ohmSettings.coefficients.overLong || 2.5);
     const totalOhm = Number((baseOhm * lengthCoefficient).toFixed(4));
     const formula = baseOhm > 0 ? `${baseFormula} x ${lengthCoefficient}` : '0';
+    const elapsedMs = Date.now() - startedAt;
+    const modelUsed = String(completion?.model || model || fallbackModel || '');
+    const transcriptNormalized = String(parsed?.transcriptNormalized || '');
 
-    res.json({
+    const responsePayload = {
       transcriptRaw: String(parsed?.transcriptRaw || transcript),
-      transcriptNormalized: String(parsed?.transcriptNormalized || ''),
+      transcriptNormalized,
       chunks,
       formula,
       totalOhm,
-      modelUsed: String(completion?.model || model || fallbackModel || ''),
+      modelUsed,
       baseOhm,
       lengthBucket,
       lengthCoefficient,
       sentenceCount,
       wordCount,
-      elapsedMs: Date.now() - startedAt,
+      elapsedMs,
       filteredChunkCount: Math.max(0, rawChunks.length - modelChunks.length),
       lexiconChunkCount: lexiconChunks.length,
+    };
+
+    logOhmTrainingSample({
+      transcript,
+      transcriptNormalized,
+      rawModelChunks: rawChunks,
+      modelChunks,
+      lexiconChunks,
+      mergedChunks: chunks,
+      baseOhm,
+      totalOhm,
+      formula,
+      lengthBucket,
+      lengthCoefficient,
+      sentenceCount,
+      wordCount,
+      elapsedMs,
+      filteredChunkCount: responsePayload.filteredChunkCount,
+      modelRequested: model,
+      modelUsed,
+      datasetCaptureEnabled: sharedConfig?.ohmDatasetCaptureEnabled,
+      datasetSampleRate: sharedConfig?.ohmDatasetSampleRate,
     });
+
+    res.json(responsePayload);
   } catch (error) {
     logger.error(error);
     applyCors(res);

@@ -49,7 +49,7 @@ function SummaryOhmCard({
           <span className="metric-value">{totalOhm} Ω</span>
         </div>
         <div>
-          <span className="metric-label">I (length coefficient)</span>
+          <span className="metric-label">(length coefficient)</span>
           <span className="metric-value">{current.toFixed(2)}</span>
         </div>
       </div>
