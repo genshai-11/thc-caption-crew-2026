@@ -709,6 +709,158 @@ const nuanceLexiconIndex = (() => {
   return Array.from(dedup.values()).sort((a, b) => b.normalized.length - a.normalized.length);
 })();
 
+const nuanceLexiconByNormalized = (() => {
+  const map = new Map();
+  for (const entry of nuanceLexiconIndex) {
+    const key = String(entry?.normalized || '');
+    if (!key) continue;
+    const list = map.get(key) || [];
+    list.push(entry);
+    map.set(key, list);
+  }
+  return map;
+})();
+
+const OHM_EVIDENCE_WEIGHTS = {
+  lexiconExact: 0.35,
+  lexiconFuzzy: 0.2,
+  functional: 0.25,
+  context: 0.1,
+  modelConfidence: 0.1,
+};
+
+const OHM_EVIDENCE_THRESHOLDS = {
+  minEvidence: 0.42,
+  verifierAccept: 0.62,
+  uncertainMin: 0.48,
+  uncertainMax: 0.78,
+};
+
+function clamp01(value) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(1, value));
+}
+
+function tokenizeNormalized(value = '') {
+  return String(value || '').split(/\s+/).filter(Boolean);
+}
+
+function hasWordBoundaries(source = '', start = 0, end = 0) {
+  const prev = source[start - 1];
+  const next = source[end];
+  const prevOk = !prev || prev === ' ';
+  const nextOk = !next || next === ' ';
+  return prevOk && nextOk;
+}
+
+function computeTokenOverlapScore(left = '', right = '') {
+  const leftTokens = new Set(tokenizeNormalized(left));
+  const rightTokens = new Set(tokenizeNormalized(right));
+  if (leftTokens.size === 0 || rightTokens.size === 0) return 0;
+
+  let shared = 0;
+  leftTokens.forEach((token) => {
+    if (rightTokens.has(token)) shared += 1;
+  });
+
+  const minSize = Math.min(leftTokens.size, rightTokens.size);
+  if (minSize === 0) return 0;
+  return shared / minSize;
+}
+
+function resolveLexiconExactEvidence(normalized = '', label = '') {
+  const entries = nuanceLexiconByNormalized.get(normalized) || [];
+  return entries.some((entry) => entry.label === label) ? 1 : 0;
+}
+
+function findBestFuzzyLexiconMatch(normalized = '', label = '') {
+  const tokens = tokenizeNormalized(normalized);
+  if (tokens.length < 2) return null;
+
+  let best = null;
+  for (const entry of nuanceLexiconIndex) {
+    if (label && entry.label !== label) continue;
+
+    const overlap = computeTokenOverlapScore(normalized, entry.normalized);
+    if (overlap < 0.66) continue;
+
+    const tokenGap = Math.abs(tokens.length - entry.words);
+    if (tokenGap > 2) continue;
+
+    const score = clamp01(overlap - tokenGap * 0.05);
+    if (!best || score > best.score) {
+      best = {
+        label: entry.label,
+        normalized: entry.normalized,
+        text: entry.text,
+        score,
+      };
+    }
+  }
+
+  return best;
+}
+
+function resolveContextSignal(label = '', normalized = '', transcript = '') {
+  if (label === 'GREEN') return isSentenceOpener(normalized, transcript) ? 1 : 0;
+  if (label === 'BLUE') return BLUE_FRAME_MARKERS.some((marker) => normalized.includes(marker)) ? 1 : 0;
+  if (label === 'RED') return isRedIdiomCandidate(normalized) ? 1 : 0;
+  if (label === 'PINK') return !PINK_COMMON_PHRASES.has(normalized) ? 1 : 0.2;
+  return 0;
+}
+
+function scoreChunkEvidence({ label = '', normalized = '', transcript = '', modelConfidence = 0, sourceType = 'model' }) {
+  const lexiconExact = resolveLexiconExactEvidence(normalized, label);
+  const fuzzy = lexiconExact ? null : findBestFuzzyLexiconMatch(normalized, label);
+  const lexiconFuzzy = fuzzy ? clamp01(fuzzy.score) : 0;
+  const functional = isLabelChunkAcceptable(label, normalized, transcript, sourceType === 'lexicon' ? 'lexicon' : 'model') ? 1 : 0;
+  const context = resolveContextSignal(label, normalized, transcript);
+  const confidence = clamp01(Number(modelConfidence || 0));
+
+  const score = clamp01(
+    lexiconExact * OHM_EVIDENCE_WEIGHTS.lexiconExact
+    + lexiconFuzzy * OHM_EVIDENCE_WEIGHTS.lexiconFuzzy
+    + functional * OHM_EVIDENCE_WEIGHTS.functional
+    + context * OHM_EVIDENCE_WEIGHTS.context
+    + confidence * OHM_EVIDENCE_WEIGHTS.modelConfidence,
+  );
+
+  return {
+    score,
+    evidence: {
+      lexiconExact,
+      lexiconFuzzy: Number(lexiconFuzzy.toFixed(4)),
+      functional,
+      context,
+      modelConfidence: Number(confidence.toFixed(4)),
+      fuzzyLexiconLabel: fuzzy?.label || null,
+      fuzzyLexiconText: fuzzy?.text || null,
+    },
+  };
+}
+
+function withChunkEvidence(chunk, transcript = '', sourceType = 'model') {
+  const label = String(chunk?.label || '').toUpperCase();
+  const normalized = normalizeOhmText(chunk?.text || '');
+  const confidence = Number(chunk?.confidence || 0);
+  const scored = scoreChunkEvidence({
+    label,
+    normalized,
+    transcript,
+    modelConfidence: confidence,
+    sourceType,
+  });
+
+  return {
+    ...chunk,
+    label,
+    normalized,
+    source: sourceType,
+    evidence: scored.evidence,
+    evidenceScore: scored.score,
+  };
+}
+
 function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
   const source = normalizeOhmText(transcript);
   if (!source) return [];
@@ -722,16 +874,19 @@ function detectLexiconChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED
       const start = idx;
       const end = idx + entry.normalized.length;
       const overlaps = occupied.some((slot) => !(end <= slot.start || start >= slot.end));
-      if (!overlaps) {
+      const bounded = hasWordBoundaries(source, start, end);
+
+      if (!overlaps && bounded) {
         if (isLabelChunkAcceptable(entry.label, entry.normalized, transcript, 'lexicon')) {
           occupied.push({ start, end });
-          chunks.push({
+          const baseChunk = {
             text: entry.text,
             label: entry.label,
             ohm: Number(weights[entry.label] || 0),
             confidence: 0.995,
             reason: 'nuance lexicon exact match',
-          });
+          };
+          chunks.push(withChunkEvidence(baseChunk, transcript, 'lexicon'));
         }
       }
       idx = source.indexOf(entry.normalized, idx + entry.normalized.length);
@@ -849,15 +1004,24 @@ function isLabelChunkAcceptable(label = '', normalized = '', transcript = '', so
 
 function sanitizeOhmChunks(chunks = [], transcript = '') {
   const source = normalizeOhmText(transcript);
-  return chunks.filter((chunk) => {
-    const text = String(chunk?.text || '').trim();
-    if (!text) return false;
 
-    const normalized = normalizeOhmText(text);
-    const label = String(chunk?.label || '').toUpperCase();
-    if (!source.includes(normalized)) return false;
-    return isLabelChunkAcceptable(label, normalized, transcript, 'model');
-  });
+  return chunks
+    .map((chunk) => {
+      const text = String(chunk?.text || '').trim();
+      if (!text) return null;
+
+      const normalized = normalizeOhmText(text);
+      const label = String(chunk?.label || '').toUpperCase();
+      const idx = source.indexOf(normalized);
+      if (idx < 0) return null;
+      if (!hasWordBoundaries(source, idx, idx + normalized.length)) return null;
+      if (!isLabelChunkAcceptable(label, normalized, transcript, 'model')) return null;
+
+      const enriched = withChunkEvidence({ ...chunk, text, label }, transcript, 'model');
+      if (enriched.evidenceScore < OHM_EVIDENCE_THRESHOLDS.minEvidence) return null;
+      return enriched;
+    })
+    .filter(Boolean);
 }
 
 function detectCompositeIdiomChunks(transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
@@ -866,59 +1030,209 @@ function detectCompositeIdiomChunks(transcript = '', weights = { GREEN: 5, BLUE:
   for (const idiom of RED_COMPOSITE_IDIOMS) {
     const normalized = normalizeOhmText(idiom);
     if (!normalized || !source.includes(normalized)) continue;
-    chunks.push({
+    const idx = source.indexOf(normalized);
+    if (!hasWordBoundaries(source, idx, idx + normalized.length)) continue;
+
+    const baseChunk = {
       text: idiom,
       label: 'RED',
       ohm: Number(weights.RED || 9),
       confidence: 0.999,
       reason: 'composite idiom exact match',
-    });
+    };
+    chunks.push(withChunkEvidence(baseChunk, transcript, 'composite'));
   }
   return chunks;
+}
+
+function compareChunkStrength(next, prev) {
+  const sourcePriority = { composite: 4, lexicon: 3, model: 2 };
+  const nextSource = sourcePriority[String(next?.source || 'model')] || 1;
+  const prevSource = sourcePriority[String(prev?.source || 'model')] || 1;
+  if (nextSource !== prevSource) return nextSource - prevSource;
+
+  const nextScore = Number(next?.evidenceScore || 0);
+  const prevScore = Number(prev?.evidenceScore || 0);
+  if (nextScore !== prevScore) return nextScore - prevScore;
+
+  const nextLabelPriority = OHM_LABEL_PRIORITY[String(next?.label || '').toUpperCase()] || 0;
+  const prevLabelPriority = OHM_LABEL_PRIORITY[String(prev?.label || '').toUpperCase()] || 0;
+  return nextLabelPriority - prevLabelPriority;
 }
 
 function mergeLexiconAndModelChunks(compositeChunks = [], lexiconChunks = [], modelChunks = [], transcript = '') {
   const map = new Map();
 
-  for (const chunk of compositeChunks) {
-    const normalized = normalizeOhmText(chunk.text);
-    const key = `${chunk.label}::${normalized}`;
-    map.set(key, chunk);
-  }
+  const upsert = (chunk) => {
+    if (!chunk) return;
+    const normalized = String(chunk.normalized || normalizeOhmText(chunk.text || '')).trim();
+    if (!normalized) return;
 
-  for (const chunk of lexiconChunks) {
-    const normalized = normalizeOhmText(chunk.text);
     const label = String(chunk.label || '').toUpperCase();
-    if (!isLabelChunkAcceptable(label, normalized, transcript, 'lexicon')) continue;
-    const key = `${label}::${normalized}`;
-    if (!map.has(key)) map.set(key, chunk);
-  }
-
-  for (const chunk of modelChunks) {
-    const confidence = Number(chunk?.confidence || 0);
-    const label = String(chunk?.label || '').toUpperCase();
-    const normalized = normalizeOhmText(chunk.text);
-
-    if (confidence < 0.9) continue;
-    if (!isLabelChunkAcceptable(label, normalized, transcript, 'model')) continue;
+    const source = String(chunk.source || 'model');
+    const sourceType = source === 'lexicon' ? 'lexicon' : 'model';
+    if (!isLabelChunkAcceptable(label, normalized, transcript, sourceType)) return;
 
     const key = `${label}::${normalized}`;
-    if (!map.has(key)) {
-      map.set(key, chunk);
+    const next = {
+      ...chunk,
+      label,
+      normalized,
+      source,
+      evidenceScore: Number(chunk?.evidenceScore || 0),
+    };
+
+    const prev = map.get(key);
+    if (!prev || compareChunkStrength(next, prev) > 0) {
+      map.set(key, next);
     }
-  }
+  };
+
+  compositeChunks.forEach(upsert);
+  lexiconChunks.forEach(upsert);
+  modelChunks.forEach(upsert);
 
   const items = Array.from(map.values());
-  const compositeNorms = compositeChunks.map((c) => normalizeOhmText(c.text));
+  const compositeNorms = compositeChunks.map((c) => String(c.normalized || normalizeOhmText(c.text || '')));
   if (compositeNorms.length === 0) return items;
 
   return items.filter((chunk) => {
-    const normalized = normalizeOhmText(chunk.text);
+    const normalized = String(chunk.normalized || normalizeOhmText(chunk.text || ''));
     const isComposite = compositeNorms.includes(normalized);
     if (isComposite) return true;
     if (String(chunk.label || '').toUpperCase() !== 'RED') return true;
     return !compositeNorms.some((comp) => comp.includes(normalized));
   });
+}
+
+function verifyChunkCandidate(chunk = {}, transcript = '') {
+  const normalized = String(chunk.normalized || normalizeOhmText(chunk.text || '')).trim();
+  const currentLabel = String(chunk.label || '').toUpperCase();
+  const modelConfidence = clamp01(Number(chunk.confidence || 0));
+
+  const labels = ['RED', 'BLUE', 'GREEN', 'PINK'];
+  const scored = labels
+    .map((label) => {
+      const { score, evidence } = scoreChunkEvidence({
+        label,
+        normalized,
+        transcript,
+        modelConfidence,
+        sourceType: 'model',
+      });
+
+      const boostedScore = label === 'RED' && isRedIdiomCandidate(normalized)
+        ? Math.max(score, 0.92)
+        : score;
+
+      return {
+        label,
+        score: Number(boostedScore.toFixed(4)),
+        evidence,
+      };
+    })
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return (OHM_LABEL_PRIORITY[b.label] || 0) - (OHM_LABEL_PRIORITY[a.label] || 0);
+    });
+
+  const best = scored[0];
+  const current = scored.find((item) => item.label === currentLabel) || { score: 0, evidence: null };
+
+  if (!best || best.score < OHM_EVIDENCE_THRESHOLDS.minEvidence) {
+    return {
+      decision: 'reject',
+      finalLabel: currentLabel,
+      finalScore: Number(current.score || 0),
+      needsReview: true,
+      reason: 'insufficient evidence',
+      topCandidates: scored.slice(0, 2),
+    };
+  }
+
+  const margin = Number((best.score - Number(current.score || 0)).toFixed(4));
+  const uncertainBand = best.score >= OHM_EVIDENCE_THRESHOLDS.uncertainMin && best.score <= OHM_EVIDENCE_THRESHOLDS.uncertainMax;
+  const disagreement = best.label !== currentLabel;
+  const needsReview = uncertainBand || (disagreement && margin < 0.2);
+
+  if (best.label !== currentLabel && best.score >= OHM_EVIDENCE_THRESHOLDS.verifierAccept) {
+    return {
+      decision: 'relabel',
+      finalLabel: best.label,
+      finalScore: best.score,
+      needsReview,
+      reason: `relabel ${currentLabel} → ${best.label}`,
+      topCandidates: scored.slice(0, 2),
+    };
+  }
+
+  return {
+    decision: 'accept',
+    finalLabel: currentLabel,
+    finalScore: Number(current.score || best.score || 0),
+    needsReview,
+    reason: needsReview ? 'accepted with uncertainty' : 'accepted',
+    topCandidates: scored.slice(0, 2),
+  };
+}
+
+function applyChunkVerifier(candidates = [], transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
+  const next = [];
+  const diagnostics = [];
+  let appliedCount = 0;
+
+  for (const chunk of candidates) {
+    const baselineScore = Number(chunk?.evidenceScore || 0);
+    const shouldVerify = baselineScore <= OHM_EVIDENCE_THRESHOLDS.uncertainMax || String(chunk?.source || '') === 'model';
+
+    if (!shouldVerify) {
+      next.push({ ...chunk, needsReview: false, verifierDecision: 'skipped' });
+      continue;
+    }
+
+    appliedCount += 1;
+    const verification = verifyChunkCandidate(chunk, transcript);
+    const normalized = String(chunk.normalized || normalizeOhmText(chunk.text || ''));
+
+    diagnostics.push({
+      text: String(chunk.text || ''),
+      normalized,
+      source: String(chunk.source || 'model'),
+      inputLabel: String(chunk.label || '').toUpperCase(),
+      verifierDecision: verification.decision,
+      verifierReason: verification.reason,
+      finalLabel: verification.finalLabel,
+      evidenceScore: baselineScore,
+      verifierScore: Number(verification.finalScore || 0),
+      needsReview: verification.needsReview === true,
+      topCandidates: verification.topCandidates,
+      evidence: chunk.evidence || null,
+    });
+
+    if (verification.decision === 'reject') continue;
+
+    const finalLabel = String(verification.finalLabel || chunk.label || '').toUpperCase();
+    const finalChunk = {
+      ...chunk,
+      label: finalLabel,
+      ohm: Number(weights[finalLabel] || chunk.ohm || 0),
+      evidenceScore: Number(Math.max(baselineScore, verification.finalScore || 0).toFixed(4)),
+      verifierDecision: verification.decision,
+      needsReview: verification.needsReview === true,
+      reason: verification.decision === 'relabel'
+        ? `${String(chunk.reason || '').trim()} | verifier: ${verification.reason}`.trim()
+        : chunk.reason,
+    };
+
+    next.push(finalChunk);
+  }
+
+  return {
+    chunks: next,
+    diagnostics,
+    verifierAppliedCount: appliedCount,
+    uncertainChunkCount: diagnostics.filter((entry) => entry.needsReview).length,
+  };
 }
 
 function logOhmTrainingSample(payload) {
@@ -954,7 +1268,10 @@ function logOhmTrainingSample(payload) {
         sentenceCount: payload.sentenceCount,
         wordCount: payload.wordCount,
         filteredChunkCount: payload.filteredChunkCount,
+        verifierAppliedCount: payload.verifierAppliedCount,
+        uncertainChunkCount: payload.uncertainChunkCount,
       },
+      chunkDiagnostics: payload.chunkDiagnostics || [],
     }).catch((error) => logger.warn('Could not write ohm training sample', error));
   } catch (error) {
     logger.warn('Unexpected ohm dataset logging error', error);
@@ -1016,7 +1333,9 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const modelChunks = sanitizeOhmChunks(rawChunks, transcript);
     const lexiconChunks = detectLexiconChunks(transcript, ohmSettings.weights);
     const compositeChunks = detectCompositeIdiomChunks(transcript, ohmSettings.weights);
-    const chunks = mergeLexiconAndModelChunks(compositeChunks, lexiconChunks, modelChunks, transcript);
+    const mergedChunks = mergeLexiconAndModelChunks(compositeChunks, lexiconChunks, modelChunks, transcript);
+    const verified = applyChunkVerifier(mergedChunks, transcript, ohmSettings.weights);
+    const chunks = verified.chunks;
 
     const { baseOhm, formula: baseFormula } = computeOhmFromChunks(chunks, ohmSettings.weights);
     const { sentenceCount, wordCount, lengthBucket } = resolveLengthBucket(transcript, ohmSettings.constraints);
@@ -1043,6 +1362,9 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       filteredChunkCount: Math.max(0, rawChunks.length - modelChunks.length),
       lexiconChunkCount: lexiconChunks.length,
       compositeChunkCount: compositeChunks.length,
+      verifierAppliedCount: verified.verifierAppliedCount,
+      uncertainChunkCount: verified.uncertainChunkCount,
+      chunkDiagnostics: verified.diagnostics,
     };
 
     logOhmTrainingSample({
@@ -1062,6 +1384,9 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       wordCount,
       elapsedMs,
       filteredChunkCount: responsePayload.filteredChunkCount,
+      verifierAppliedCount: responsePayload.verifierAppliedCount,
+      uncertainChunkCount: responsePayload.uncertainChunkCount,
+      chunkDiagnostics: responsePayload.chunkDiagnostics,
       modelRequested: model,
       modelUsed,
       datasetCaptureEnabled: sharedConfig?.ohmDatasetCaptureEnabled,

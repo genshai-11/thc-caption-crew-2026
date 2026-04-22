@@ -18,6 +18,20 @@ export interface OhmAnalysisResult {
   baseOhm?: number;
   lengthBucket?: 'veryShort' | 'short' | 'medium' | 'long' | 'overLong';
   lengthCoefficient?: number;
+  verifierAppliedCount?: number;
+  uncertainChunkCount?: number;
+  chunkDiagnostics?: Array<{
+    text: string;
+    normalized: string;
+    source: string;
+    inputLabel: string;
+    finalLabel: string;
+    verifierDecision: string;
+    verifierReason: string;
+    evidenceScore: number;
+    verifierScore: number;
+    needsReview: boolean;
+  }>;
 }
 
 const ANALYZE_OHM_URL = import.meta.env.DEV
@@ -62,5 +76,8 @@ export async function analyzeTranscript(
     baseOhm: typeof data.baseOhm === 'number' ? data.baseOhm : undefined,
     lengthBucket: typeof data.lengthBucket === 'string' ? data.lengthBucket : undefined,
     lengthCoefficient: typeof data.lengthCoefficient === 'number' ? data.lengthCoefficient : undefined,
+    verifierAppliedCount: typeof data.verifierAppliedCount === 'number' ? data.verifierAppliedCount : undefined,
+    uncertainChunkCount: typeof data.uncertainChunkCount === 'number' ? data.uncertainChunkCount : undefined,
+    chunkDiagnostics: Array.isArray(data.chunkDiagnostics) ? data.chunkDiagnostics : undefined,
   };
 }

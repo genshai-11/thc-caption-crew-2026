@@ -13,6 +13,11 @@ function formatDuration(duration?: number) {
   return `${duration.toFixed(1)}s`;
 }
 
+function formatReactionDelay(delayMs: number | null) {
+  if (typeof delayMs !== 'number' || Number.isNaN(delayMs) || delayMs < 0) return '—';
+  return `${Math.round(delayMs)} ms (${(delayMs / 1000).toFixed(2)}s)`;
+}
+
 function formatSource(transcript?: TranscriptResult | null) {
   if (!transcript?.source) return '—';
   if (transcript.source === 'streaming') return 'live streaming';
@@ -27,15 +32,25 @@ function getTranscriptPlaceholder(transcript?: TranscriptResult | null) {
 }
 
 
+function resolveCrewResponseCoefficient(delayMs: number | null) {
+  if (typeof delayMs !== 'number' || Number.isNaN(delayMs) || delayMs <= 2000) return 1;
+  if (delayMs >= 5000) return 1 / 3;
+  const ratio = (delayMs - 2000) / 3000;
+  return 1 - ratio * (2 / 3);
+}
+
 function SummaryOhmCard({
   totalOhm,
   current,
   chunks,
+  reactionDelayMs,
 }: {
   totalOhm: number;
   current: number;
   chunks: OhmChunkResult[];
+  reactionDelayMs: number | null;
 }) {
+  const responseCoefficient = resolveCrewResponseCoefficient(reactionDelayMs);
   return (
     <section className="soft-card admin-section-minimal">
       <div className="summary-voice-header">
@@ -54,7 +69,19 @@ function SummaryOhmCard({
           <span className="metric-label">(length coefficient)</span>
           <span className="metric-value">{current.toFixed(2)}</span>
         </div>
+        <div>
+          <span className="metric-label">(crew response coefficient)</span>
+          <span className="metric-value">{responseCoefficient.toFixed(2)}</span>
+        </div>
+        <div>
+          <span className="metric-label">reaction delay</span>
+          <span className="metric-value">{formatReactionDelay(reactionDelayMs)}</span>
+        </div>
       </div>
+
+      <p className="admin-message" style={{ marginTop: 8 }}>
+        Linear rule: ≤2.0s → 1.00, ≥5.0s → 0.33, and 2.0s–5.0s decreases linearly.
+      </p>
 
       <div className="summary-transcript-block">
         <span className="metric-label">detected chunks</span>
@@ -213,6 +240,7 @@ export default function AnalysisSummaryPage() {
           totalOhm={summary.ohmResult.totalOhm}
           current={summary.ohmResult.current}
           chunks={summary.ohmResult.chunks}
+          reactionDelayMs={summary.reactionDelayMs}
         />
       )}
 
