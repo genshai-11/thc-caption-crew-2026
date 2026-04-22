@@ -1246,6 +1246,110 @@ function applyChunkVerifier(candidates = [], transcript = '', weights = { GREEN:
   };
 }
 
+function resolveChunkConflicts(chunks = [], transcript = '') {
+  const source = normalizeOhmText(transcript);
+  const sourcePriority = { composite: 4, lexicon: 3, model: 2, fallback: 1 };
+
+  const sorted = Array.isArray(chunks)
+    ? [...chunks].sort((a, b) => {
+        const scoreDiff = Number(b?.evidenceScore || 0) - Number(a?.evidenceScore || 0);
+        if (scoreDiff !== 0) return scoreDiff;
+
+        const sourceDiff = (sourcePriority[String(b?.source || 'model')] || 0) - (sourcePriority[String(a?.source || 'model')] || 0);
+        if (sourceDiff !== 0) return sourceDiff;
+
+        return String(b?.normalized || b?.text || '').length - String(a?.normalized || a?.text || '').length;
+      })
+    : [];
+
+  const resolved = [];
+  const dropped = [];
+
+  const shouldPreferFrameOverGreen = (left, right) => {
+    const leftLabel = String(left?.label || '').toUpperCase();
+    const rightLabel = String(right?.label || '').toUpperCase();
+
+    if (leftLabel === 'GREEN' && (rightLabel === 'RED' || rightLabel === 'BLUE')) {
+      return String(right?.normalized || '').includes(String(left?.normalized || ''));
+    }
+    if (rightLabel === 'GREEN' && (leftLabel === 'RED' || leftLabel === 'BLUE')) {
+      return String(left?.normalized || '').includes(String(right?.normalized || ''));
+    }
+    return false;
+  };
+
+  for (const chunk of sorted) {
+    const candidate = {
+      ...chunk,
+      normalized: String(chunk?.normalized || normalizeOhmText(chunk?.text || '')).trim(),
+      label: String(chunk?.label || '').toUpperCase(),
+    };
+
+    if (!candidate.normalized) continue;
+
+    let rejected = false;
+    for (let i = 0; i < resolved.length; i += 1) {
+      const existing = resolved[i];
+      const sameKey = candidate.label === existing.label && candidate.normalized === existing.normalized;
+      if (sameKey) {
+        if (compareChunkStrength(candidate, existing) > 0) {
+          dropped.push({ drop: existing, keep: candidate, reason: 'duplicate-replaced' });
+          resolved[i] = candidate;
+        } else {
+          dropped.push({ drop: candidate, keep: existing, reason: 'duplicate-ignored' });
+        }
+        rejected = true;
+        break;
+      }
+
+      const overlap = computeTokenOverlapScore(candidate.normalized, existing.normalized);
+      const highOverlap = overlap >= 0.72;
+      const containmentConflict = shouldPreferFrameOverGreen(candidate, existing);
+      if (!highOverlap && !containmentConflict) continue;
+
+      let winner = compareChunkStrength(candidate, existing) >= 0 ? candidate : existing;
+      if (containmentConflict) {
+        const existingLabel = String(existing.label || '').toUpperCase();
+        const candidateLabel = String(candidate.label || '').toUpperCase();
+        if ((candidateLabel === 'GREEN' && (existingLabel === 'RED' || existingLabel === 'BLUE'))) {
+          winner = existing;
+        } else if ((existingLabel === 'GREEN' && (candidateLabel === 'RED' || candidateLabel === 'BLUE'))) {
+          winner = candidate;
+        }
+      }
+
+      if (winner === existing) {
+        dropped.push({ drop: candidate, keep: existing, reason: containmentConflict ? 'green-contained-by-frame' : 'overlap-lower-strength' });
+        rejected = true;
+      } else {
+        dropped.push({ drop: existing, keep: candidate, reason: containmentConflict ? 'green-replaced-by-frame' : 'overlap-higher-strength' });
+        resolved[i] = candidate;
+        rejected = true;
+      }
+      break;
+    }
+
+    if (!rejected) {
+      resolved.push(candidate);
+    }
+  }
+
+  const ordered = resolved.sort((a, b) => {
+    const aPos = source ? source.indexOf(String(a.normalized || '')) : -1;
+    const bPos = source ? source.indexOf(String(b.normalized || '')) : -1;
+    if (aPos === -1 && bPos === -1) return 0;
+    if (aPos === -1) return 1;
+    if (bPos === -1) return -1;
+    return aPos - bPos;
+  });
+
+  return {
+    chunks: ordered,
+    conflictResolvedCount: dropped.length,
+    dropped,
+  };
+}
+
 function resolveFallbackLabel(normalized = '') {
   if (!normalized) return 'PINK';
   if (isRedIdiomCandidate(normalized)) return 'RED';
@@ -1354,6 +1458,7 @@ function logOhmTrainingSample(payload) {
         filteredChunkCount: payload.filteredChunkCount,
         verifierAppliedCount: payload.verifierAppliedCount,
         uncertainChunkCount: payload.uncertainChunkCount,
+        conflictResolvedCount: payload.conflictResolvedCount,
         fallbackApplied: payload.fallbackApplied === true,
       },
       chunkDiagnostics: payload.chunkDiagnostics || [],
@@ -1420,7 +1525,8 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const compositeChunks = detectCompositeIdiomChunks(transcript, ohmSettings.weights);
     const mergedChunks = mergeLexiconAndModelChunks(compositeChunks, lexiconChunks, modelChunks, transcript);
     const verified = applyChunkVerifier(mergedChunks, transcript, ohmSettings.weights);
-    const ensured = ensureNonZeroChunks(verified.chunks, transcript, ohmSettings.weights);
+    const resolved = resolveChunkConflicts(verified.chunks, transcript);
+    const ensured = ensureNonZeroChunks(resolved.chunks, transcript, ohmSettings.weights);
     const chunks = ensured.chunks;
 
     const { baseOhm, formula: baseFormula } = computeOhmFromChunks(chunks, ohmSettings.weights);
@@ -1450,9 +1556,23 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       compositeChunkCount: compositeChunks.length,
       verifierAppliedCount: verified.verifierAppliedCount,
       uncertainChunkCount: verified.uncertainChunkCount,
+      conflictResolvedCount: resolved.conflictResolvedCount,
       fallbackApplied: ensured.fallbackApplied,
       chunkDiagnostics: ensured.fallbackApplied
-        ? [...verified.diagnostics, {
+        ? [...verified.diagnostics, ...resolved.dropped.map((entry) => ({
+            text: String(entry?.drop?.text || ''),
+            normalized: String(entry?.drop?.normalized || normalizeOhmText(entry?.drop?.text || '')),
+            source: String(entry?.drop?.source || 'unknown'),
+            inputLabel: String(entry?.drop?.label || 'NONE'),
+            verifierDecision: 'dropped',
+            verifierReason: String(entry?.reason || 'conflict-resolved'),
+            finalLabel: String(entry?.keep?.label || 'NONE'),
+            evidenceScore: Number(entry?.drop?.evidenceScore || 0),
+            verifierScore: Number(entry?.keep?.evidenceScore || 0),
+            needsReview: true,
+            topCandidates: [],
+            evidence: entry?.drop?.evidence || null,
+          })), {
             text: chunks[0]?.text || '',
             normalized: chunks[0]?.normalized || normalizeOhmText(chunks[0]?.text || ''),
             source: 'fallback',
@@ -1466,7 +1586,20 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
             topCandidates: [],
             evidence: chunks[0]?.evidence || null,
           }]
-        : verified.diagnostics,
+        : [...verified.diagnostics, ...resolved.dropped.map((entry) => ({
+            text: String(entry?.drop?.text || ''),
+            normalized: String(entry?.drop?.normalized || normalizeOhmText(entry?.drop?.text || '')),
+            source: String(entry?.drop?.source || 'unknown'),
+            inputLabel: String(entry?.drop?.label || 'NONE'),
+            verifierDecision: 'dropped',
+            verifierReason: String(entry?.reason || 'conflict-resolved'),
+            finalLabel: String(entry?.keep?.label || 'NONE'),
+            evidenceScore: Number(entry?.drop?.evidenceScore || 0),
+            verifierScore: Number(entry?.keep?.evidenceScore || 0),
+            needsReview: true,
+            topCandidates: [],
+            evidence: entry?.drop?.evidence || null,
+          }))],
     };
 
     logOhmTrainingSample({
@@ -1488,6 +1621,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       filteredChunkCount: responsePayload.filteredChunkCount,
       verifierAppliedCount: responsePayload.verifierAppliedCount,
       uncertainChunkCount: responsePayload.uncertainChunkCount,
+      conflictResolvedCount: responsePayload.conflictResolvedCount,
       fallbackApplied: responsePayload.fallbackApplied,
       chunkDiagnostics: responsePayload.chunkDiagnostics,
       modelRequested: model,
