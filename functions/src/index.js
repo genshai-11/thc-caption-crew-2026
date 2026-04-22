@@ -781,6 +781,9 @@ const RED_COMPOSITE_IDIOMS = [
 const BLUE_FRAME_MARKERS = [
   'cậu có', 'bạn có', 'điều gì làm', 'nếu cậu', 'nếu bạn', 'tui nghĩ', 'tôi nghĩ', 'hãy', 'đừng', 'làm sao', 'sao cậu', 'ai mà', 'một mặt', 'mặt khác'
 ];
+const GREEN_OPENER_MARKERS = [
+  'dù sao thì', 'tôi muốn nói là', 'tui muốn nói là', 'nói cách khác', 'từ bây giờ', 'dù gì', 'tóm lại', 'thực sự mà nói'
+];
 
 const BLUE_EXACT_SET = new Set(
   Array.isArray(nuanceLexicon)
@@ -793,11 +796,12 @@ const BLUE_EXACT_SET = new Set(
 
 function isSentenceOpener(phraseNormalized = '', transcript = '') {
   if (!phraseNormalized) return false;
-  const sentences = String(transcript || '')
-    .split(/[.!?\n\r]+/)
+  const clauses = String(transcript || '')
+    .split(/[.!?,;:\n\r]+/)
     .map((segment) => normalizeOhmText(segment))
     .filter(Boolean);
-  return sentences.some((sentence) => sentence.startsWith(phraseNormalized));
+  if (clauses.some((clause) => clause.startsWith(phraseNormalized))) return true;
+  return GREEN_OPENER_MARKERS.some((marker) => phraseNormalized.includes(marker));
 }
 
 function isRedIdiomCandidate(normalized = '') {
