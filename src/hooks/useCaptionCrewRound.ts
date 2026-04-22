@@ -23,6 +23,13 @@ function toOhmScore(voltage: number) {
   return Math.max(0, Math.min(100, Math.round((voltage / 120) * 100)));
 }
 
+function resolveCrewResponseCoefficient(delayMs: number | null) {
+  if (typeof delayMs !== 'number' || Number.isNaN(delayMs) || delayMs <= 2000) return 1;
+  if (delayMs >= 5000) return 1 / 3;
+  const ratio = (delayMs - 2000) / 3000;
+  return 1 - ratio * (2 / 3);
+}
+
 function shouldUseDeepgramLivePartial() {
   const config = loadAdminRuntimeConfig();
   return config.transcriptProvider === 'deepgram' && config.partialTranscriptEnabled === true;
@@ -378,6 +385,7 @@ export function useCaptionCrewRound() {
       }
 
       const runtimeConfig = loadAdminRuntimeConfig();
+      const responseCoefficient = resolveCrewResponseCoefficient(reactionDelayMs);
       const resolveLengthCoefficient = (text: string) => {
         const sentences = String(text || '').split(/[.!?\n\r]+/).map((s) => s.trim()).filter(Boolean).length || 1;
         const words = String(text || '').trim().split(/\s+/).filter(Boolean).length;
@@ -401,10 +409,14 @@ export function useCaptionCrewRound() {
         const lengthCoefficient = typeof aiAnalysis.lengthCoefficient === 'number' && aiAnalysis.lengthCoefficient > 0
           ? aiAnalysis.lengthCoefficient
           : 1;
-        const voltage = aiAnalysis.totalOhm;
+        const adjustedTotalOhm = Number((aiAnalysis.totalOhm * responseCoefficient).toFixed(4));
+        const formula = responseCoefficient < 0.999
+          ? `${aiAnalysis.formula} x ${responseCoefficient.toFixed(2)}`
+          : aiAnalysis.formula;
+        const voltage = adjustedTotalOhm;
         nextOhmResult = {
-          totalOhm: aiAnalysis.totalOhm,
-          formula: aiAnalysis.formula,
+          totalOhm: adjustedTotalOhm,
+          formula,
           current: lengthCoefficient,
           voltage,
           score: toOhmScore(voltage),
@@ -430,9 +442,18 @@ export function useCaptionCrewRound() {
         );
         const fallbackLengthCoefficient = resolveLengthCoefficient(captainResult.transcript);
         const rawOhm = calculateSemanticOhm(semanticChunks, fallbackLengthCoefficient);
+        const adjustedTotalOhm = Number((rawOhm.totalOhm * responseCoefficient).toFixed(4));
+        const adjustedFormula = responseCoefficient < 0.999
+          ? `${rawOhm.formula} x ${responseCoefficient.toFixed(2)}`
+          : rawOhm.formula;
+        const adjustedVoltage = adjustedTotalOhm;
         nextOhmResult = {
           ...rawOhm,
-          difficulty: getDifficultyLabel(rawOhm.voltage),
+          totalOhm: adjustedTotalOhm,
+          formula: adjustedFormula,
+          voltage: adjustedVoltage,
+          score: toOhmScore(adjustedVoltage),
+          difficulty: getDifficultyLabel(adjustedVoltage),
           chunkCount: semanticChunks.length,
           chunks: semanticChunks.map((chunk) => ({
             text: chunk.text,

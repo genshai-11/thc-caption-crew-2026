@@ -766,7 +766,8 @@ const RED_EXACT_SET = new Set([
   'im lặng là đồng ý',
   'chuyện gì tới nó tới',
   'bữa tiệc nào rồi cũng có lúc tàn',
-  'gừng càng già càng cay'
+  'gừng càng già càng cay',
+  'có công mài sắt có ngày nên kim'
 ]);
 const RED_COMPOSITE_IDIOMS = [
   'gần mực thì đen gần đèn thì sáng',
@@ -774,7 +775,8 @@ const RED_COMPOSITE_IDIOMS = [
   'đứng núi này trông núi nọ',
   'vỏ quýt dày có móng tay nhọn',
   'bữa tiệc nào rồi cũng có lúc tàn',
-  'gừng càng già càng cay'
+  'gừng càng già càng cay',
+  'có công mài sắt có ngày nên kim'
 ];
 const BLUE_FRAME_MARKERS = [
   'cậu có', 'bạn có', 'điều gì làm', 'nếu cậu', 'nếu bạn', 'tui nghĩ', 'tôi nghĩ', 'hãy', 'đừng', 'làm sao', 'sao cậu', 'ai mà', 'một mặt', 'mặt khác'
@@ -806,6 +808,12 @@ function isRedIdiomCandidate(normalized = '') {
   const words = normalized.split(/\s+/).filter(Boolean);
   if (words.length >= 6 && normalized.includes(' thì ') && normalized.split(' thì ').length >= 3) return true;
   return false;
+}
+
+function coerceIdiomLabel(label = '', normalized = '') {
+  const next = String(label || '').toUpperCase();
+  if (isRedIdiomCandidate(normalized)) return 'RED';
+  return next;
 }
 
 function isLabelChunkAcceptable(label = '', normalized = '', transcript = '', sourceType = 'model') {
@@ -964,7 +972,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const fallbackModel = String(req.body.fallbackModel || sharedConfig.ohmFallbackModel || sharedConfig.router9FallbackModel || process.env.ROUTER9_FALLBACK_MODEL || model).trim();
     const ohmSettings = normalizeOhmSettings(sharedConfig);
 
-    const prompt = `You are an expert linguistic analyzer. Analyze transcript and extract semantic chunks in labels GREEN, BLUE, RED, PINK only.\n\nRules:\n1) Do not classify everything. Most words are NORMAL and must be ignored.\n2) Extract exact substrings from transcript only.\n3) Do NOT classify single filler words, particles, or isolated question words (examples: liệu, à, ạ, hả, nhé).\n4) GREEN/BLUE/RED should usually be phrase-level (>= 2 words).\n5) Return valid JSON object only.\n6) Keep confidence in 0..1.\n\nTranscript:\n${JSON.stringify(transcript)}\n\nReturn JSON with keys: transcriptRaw, transcriptNormalized, chunks.\nEach chunk item must include text, label, confidence, reason.`;
+    const prompt = `You are an expert linguistic analyzer. Analyze transcript and extract semantic chunks in labels GREEN, BLUE, RED, PINK only.\n\nLabel definitions:\n- GREEN: discourse opener / sentence opener / transition starter.\n- BLUE: reusable sentence frame/pattern with slots.\n- RED: idioms, proverbs, figurative sayings. Proverbs must be RED (never GREEN).\n- PINK: difficult/specific vocabulary terms or collocations (not basic everyday words).\n\nRules:\n1) Do not classify everything. Most words are NORMAL and must be ignored.\n2) Extract exact substrings from transcript only.\n3) Do NOT classify single filler words, particles, or isolated question words (examples: liệu, à, ạ, hả, nhé).\n4) GREEN/BLUE/RED should usually be phrase-level (>= 2 words).\n5) If a phrase is an idiom/proverb, label it RED even if it appears at sentence start.\n6) Return valid JSON object only.\n7) Keep confidence in 0..1.\n\nTranscript:\n${JSON.stringify(transcript)}\n\nReturn JSON with keys: transcriptRaw, transcriptNormalized, chunks.\nEach chunk item must include text, label, confidence, reason.`;
 
     const startedAt = Date.now();
     const completion = await callRouterChat({
@@ -987,9 +995,11 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const rawChunks = Array.isArray(parsed?.chunks)
       ? parsed.chunks
           .map((chunk) => {
-            const label = String(chunk?.label || '').toUpperCase();
+            const text = String(chunk?.text || '');
+            const normalized = normalizeOhmText(text);
+            const label = coerceIdiomLabel(String(chunk?.label || '').toUpperCase(), normalized);
             return {
-              text: String(chunk?.text || ''),
+              text,
               label,
               ohm: Number(ohmSettings.weights[label] || 0),
               confidence: Number(chunk?.confidence || 0),
