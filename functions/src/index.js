@@ -903,7 +903,7 @@ const RED_IDIOM_MARKERS = [
   'bữa tiệc nào rồi cũng có lúc tàn', 'im lặng là đồng ý', 'có cái giá', 'đi guốc trong bụng',
   'gần mực thì đen gần đèn thì sáng', 'nói trước bước không qua', 'thời gian sẽ trả lời',
   'đứng núi này', 'trông núi nọ', 'bóp chết từ trong trứng nước', 'tiền nào của đó', 'yêu từ cái nhìn đầu tiên',
-  'gừng càng già càng cay'
+  'gừng càng già càng cay', 'mài sắt có ngày nên kim'
 ];
 const RED_EXACT_SET = new Set([
   'gần mực thì đen gần đèn thì sáng',
@@ -922,7 +922,8 @@ const RED_EXACT_SET = new Set([
   'chuyện gì tới nó tới',
   'bữa tiệc nào rồi cũng có lúc tàn',
   'gừng càng già càng cay',
-  'có công mài sắt có ngày nên kim'
+  'có công mài sắt có ngày nên kim',
+  'mài sắt có ngày nên kim'
 ]);
 const RED_COMPOSITE_IDIOMS = [
   'gần mực thì đen gần đèn thì sáng',
@@ -988,15 +989,25 @@ function isLabelChunkAcceptable(label = '', normalized = '', transcript = '', so
     if (sourceType === 'lexicon') {
       return BLUE_EXACT_SET.has(normalized);
     }
-    return words.length >= 3 && BLUE_FRAME_MARKERS.some((marker) => normalized.includes(marker));
+
+    const blueByMarker = BLUE_FRAME_MARKERS.some((marker) => normalized.includes(marker));
+    const blueByNegThinkFrame = normalized.startsWith('tôi không nghĩ') || normalized.startsWith('tui không nghĩ');
+    const blueFuzzy = findBestFuzzyLexiconMatch(normalized, 'BLUE');
+
+    return words.length >= 3 && (blueByMarker || blueByNegThinkFrame || Number(blueFuzzy?.score || 0) >= 0.72);
   }
 
   if (label === 'RED') {
-    return words.length >= 3 && isRedIdiomCandidate(normalized);
+    const redFuzzy = findBestFuzzyLexiconMatch(normalized, 'RED');
+    return words.length >= 3 && (isRedIdiomCandidate(normalized) || Number(redFuzzy?.score || 0) >= 0.72);
   }
 
   if (label === 'PINK') {
-    return words.length >= 2 && !PINK_COMMON_PHRASES.has(normalized);
+    if (sourceType === 'lexicon') {
+      return words.length >= 2 && !PINK_COMMON_PHRASES.has(normalized);
+    }
+    const pinkFuzzy = findBestFuzzyLexiconMatch(normalized, 'PINK');
+    return !PINK_COMMON_PHRASES.has(normalized) && (words.length >= 3 || Number(pinkFuzzy?.score || 0) >= 0.72);
   }
 
   return false;
@@ -1235,6 +1246,79 @@ function applyChunkVerifier(candidates = [], transcript = '', weights = { GREEN:
   };
 }
 
+function resolveFallbackLabel(normalized = '') {
+  if (!normalized) return 'PINK';
+  if (isRedIdiomCandidate(normalized)) return 'RED';
+  if (normalized.startsWith('tôi không nghĩ') || normalized.startsWith('tui không nghĩ')) return 'BLUE';
+  if (BLUE_FRAME_MARKERS.some((marker) => normalized.includes(marker))) return 'BLUE';
+  if (isSentenceOpener(normalized, normalized)) return 'GREEN';
+  return 'PINK';
+}
+
+function resolveNonZeroOhmForLabel(label = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
+  const configured = Number(weights[String(label || '').toUpperCase()] || 0);
+  if (configured > 0) return configured;
+  const fallback = Math.max(
+    Number(weights.RED || 0),
+    Number(weights.BLUE || 0),
+    Number(weights.GREEN || 0),
+    Number(weights.PINK || 0),
+  );
+  return fallback > 0 ? fallback : 1;
+}
+
+function buildNonZeroFallbackChunk(transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
+  const normalizedTranscript = normalizeOhmText(transcript);
+  const clauses = String(transcript || '')
+    .split(/[.!?,;:\n\r]+/)
+    .map((segment) => String(segment || '').trim())
+    .filter(Boolean);
+
+  const bestClause = clauses.find((segment) => normalizeOhmText(segment).split(/\s+/).filter(Boolean).length >= 3)
+    || String(transcript || '').trim();
+
+  const normalized = normalizeOhmText(bestClause);
+  const label = resolveFallbackLabel(normalized);
+  const ohm = resolveNonZeroOhmForLabel(label, weights);
+
+  return {
+    text: bestClause,
+    label,
+    ohm,
+    confidence: 0.51,
+    reason: 'non-zero safeguard fallback chunk for non-empty transcript',
+    normalized,
+    source: 'fallback',
+    evidence: {
+      lexiconExact: 0,
+      lexiconFuzzy: 0,
+      functional: isLabelChunkAcceptable(label, normalized, normalizedTranscript, 'model') ? 1 : 0,
+      context: resolveContextSignal(label, normalized, normalizedTranscript),
+      modelConfidence: 0.51,
+      fuzzyLexiconLabel: null,
+      fuzzyLexiconText: null,
+    },
+    evidenceScore: 0.51,
+    verifierDecision: 'fallback',
+    needsReview: true,
+  };
+}
+
+function ensureNonZeroChunks(chunks = [], transcript = '', weights = { GREEN: 5, BLUE: 7, RED: 9, PINK: 3 }) {
+  if (!String(transcript || '').trim()) {
+    return { chunks, fallbackApplied: false };
+  }
+
+  if (Array.isArray(chunks) && chunks.length > 0) {
+    return { chunks, fallbackApplied: false };
+  }
+
+  return {
+    chunks: [buildNonZeroFallbackChunk(transcript, weights)],
+    fallbackApplied: true,
+  };
+}
+
 function logOhmTrainingSample(payload) {
   try {
     if (!admin?.firestore) return;
@@ -1270,6 +1354,7 @@ function logOhmTrainingSample(payload) {
         filteredChunkCount: payload.filteredChunkCount,
         verifierAppliedCount: payload.verifierAppliedCount,
         uncertainChunkCount: payload.uncertainChunkCount,
+        fallbackApplied: payload.fallbackApplied === true,
       },
       chunkDiagnostics: payload.chunkDiagnostics || [],
     }).catch((error) => logger.warn('Could not write ohm training sample', error));
@@ -1335,7 +1420,8 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const compositeChunks = detectCompositeIdiomChunks(transcript, ohmSettings.weights);
     const mergedChunks = mergeLexiconAndModelChunks(compositeChunks, lexiconChunks, modelChunks, transcript);
     const verified = applyChunkVerifier(mergedChunks, transcript, ohmSettings.weights);
-    const chunks = verified.chunks;
+    const ensured = ensureNonZeroChunks(verified.chunks, transcript, ohmSettings.weights);
+    const chunks = ensured.chunks;
 
     const { baseOhm, formula: baseFormula } = computeOhmFromChunks(chunks, ohmSettings.weights);
     const { sentenceCount, wordCount, lengthBucket } = resolveLengthBucket(transcript, ohmSettings.constraints);
@@ -1364,7 +1450,23 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       compositeChunkCount: compositeChunks.length,
       verifierAppliedCount: verified.verifierAppliedCount,
       uncertainChunkCount: verified.uncertainChunkCount,
-      chunkDiagnostics: verified.diagnostics,
+      fallbackApplied: ensured.fallbackApplied,
+      chunkDiagnostics: ensured.fallbackApplied
+        ? [...verified.diagnostics, {
+            text: chunks[0]?.text || '',
+            normalized: chunks[0]?.normalized || normalizeOhmText(chunks[0]?.text || ''),
+            source: 'fallback',
+            inputLabel: 'NONE',
+            verifierDecision: 'fallback',
+            verifierReason: 'non-empty transcript safeguard',
+            finalLabel: chunks[0]?.label || 'PINK',
+            evidenceScore: Number(chunks[0]?.evidenceScore || 0.51),
+            verifierScore: Number(chunks[0]?.evidenceScore || 0.51),
+            needsReview: true,
+            topCandidates: [],
+            evidence: chunks[0]?.evidence || null,
+          }]
+        : verified.diagnostics,
     };
 
     logOhmTrainingSample({
@@ -1386,6 +1488,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       filteredChunkCount: responsePayload.filteredChunkCount,
       verifierAppliedCount: responsePayload.verifierAppliedCount,
       uncertainChunkCount: responsePayload.uncertainChunkCount,
+      fallbackApplied: responsePayload.fallbackApplied,
       chunkDiagnostics: responsePayload.chunkDiagnostics,
       modelRequested: model,
       modelUsed,
