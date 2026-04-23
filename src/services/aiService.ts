@@ -15,6 +15,18 @@ export interface OhmAnalysisResult {
   formula: string;
   totalOhm: number;
   modelUsed?: string;
+  analysisSource?: string;
+  responseCoefficient?: number;
+  responseCoefficientApplied?: boolean;
+  agentDiagnostics?: {
+    enabled?: boolean;
+    shadowMode?: boolean;
+    elapsedMs?: number;
+    memoryHits?: number;
+    rawChunkCount?: number;
+    selfCheckPassed?: boolean;
+    error?: string;
+  };
   baseOhm?: number;
   lengthBucket?: 'veryShort' | 'short' | 'medium' | 'long' | 'overLong';
   lengthCoefficient?: number;
@@ -43,6 +55,12 @@ export async function analyzeTranscript(
   options?: {
     model?: string;
     fallbackModel?: string;
+    reactionDelayMs?: number | null;
+    useMemoryAssist?: boolean;
+    returnDebug?: boolean;
+    sessionId?: string;
+    roundId?: string;
+    userId?: string;
   },
 ): Promise<OhmAnalysisResult> {
   if (!ANALYZE_OHM_URL) {
@@ -60,6 +78,13 @@ export async function analyzeTranscript(
       transcript,
       model: options?.model || config.ohmModel || config.router9Model,
       fallbackModel: options?.fallbackModel || config.ohmFallbackModel || config.router9FallbackModel,
+      reactionDelayMs: typeof options?.reactionDelayMs === 'number' ? options.reactionDelayMs : undefined,
+      useMemoryAssist: options?.useMemoryAssist ?? config.ohmAgentEnabled,
+      returnDebug: options?.returnDebug ?? true,
+      agentShadowMode: config.ohmAgentShadowMode,
+      sessionId: options?.sessionId,
+      roundId: options?.roundId,
+      userId: options?.userId,
     }),
   });
 
@@ -73,6 +98,10 @@ export async function analyzeTranscript(
     formula: String(data.formula || '0'),
     totalOhm: Number(data.totalOhm || 0),
     modelUsed: typeof data.modelUsed === 'string' ? data.modelUsed : undefined,
+    analysisSource: typeof data.analysisSource === 'string' ? data.analysisSource : undefined,
+    responseCoefficient: typeof data.responseCoefficient === 'number' ? data.responseCoefficient : undefined,
+    responseCoefficientApplied: data.responseCoefficientApplied === true,
+    agentDiagnostics: data.agentDiagnostics && typeof data.agentDiagnostics === 'object' ? data.agentDiagnostics : undefined,
     baseOhm: typeof data.baseOhm === 'number' ? data.baseOhm : undefined,
     lengthBucket: typeof data.lengthBucket === 'string' ? data.lengthBucket : undefined,
     lengthCoefficient: typeof data.lengthCoefficient === 'number' ? data.lengthCoefficient : undefined,

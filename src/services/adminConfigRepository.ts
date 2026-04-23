@@ -49,6 +49,17 @@ export interface AdminRuntimeConfig {
     long: number;
     overLong: number;
   };
+  ohmAgentEnabled: boolean;
+  ohmAgentEndpoint: string;
+  ohmAgentApiKey: string;
+  ohmAgentAuthScheme: 'none' | 'bearer' | 'x-api-key';
+  ohmAgentTimeoutMs: number;
+  ohmAgentShadowMode: boolean;
+  ohmResponseTiming: {
+    fullScoreMs: number;
+    minScoreMs: number;
+    minCoefficient: number;
+  };
   meaningStrictness: 'loose' | 'medium' | 'strict';
   meaningWeight: number;
   feedbackEnabled: boolean;
@@ -114,6 +125,17 @@ export const defaultAdminRuntimeConfig: AdminRuntimeConfig = {
     long: 2.5,
     overLong: 2.5,
   },
+  ohmAgentEnabled: false,
+  ohmAgentEndpoint: '',
+  ohmAgentApiKey: '',
+  ohmAgentAuthScheme: 'bearer',
+  ohmAgentTimeoutMs: 9000,
+  ohmAgentShadowMode: true,
+  ohmResponseTiming: {
+    fullScoreMs: 2000,
+    minScoreMs: 5000,
+    minCoefficient: 0.333333,
+  },
   meaningStrictness: 'medium',
   meaningWeight: 100,
   feedbackEnabled: true,
@@ -164,6 +186,21 @@ function normalizeAdminConfig(raw?: Partial<AdminRuntimeConfig> | null): AdminRu
       : raw?.thirdPartyOhmAuthScheme === 'x-api-key'
         ? 'x-api-key'
         : 'bearer',
+    ohmAgentAuthScheme: raw?.ohmAgentAuthScheme === 'none'
+      ? 'none'
+      : raw?.ohmAgentAuthScheme === 'x-api-key'
+        ? 'x-api-key'
+        : 'bearer',
+    ohmAgentEnabled: raw?.ohmAgentEnabled === true,
+    ohmAgentEndpoint: String(raw?.ohmAgentEndpoint || defaultAdminRuntimeConfig.ohmAgentEndpoint),
+    ohmAgentApiKey: String(raw?.ohmAgentApiKey || defaultAdminRuntimeConfig.ohmAgentApiKey),
+    ohmAgentTimeoutMs: Number(raw?.ohmAgentTimeoutMs || defaultAdminRuntimeConfig.ohmAgentTimeoutMs),
+    ohmAgentShadowMode: raw?.ohmAgentShadowMode !== false,
+    ohmResponseTiming: {
+      fullScoreMs: Number(raw?.ohmResponseTiming?.fullScoreMs || defaultAdminRuntimeConfig.ohmResponseTiming.fullScoreMs),
+      minScoreMs: Number(raw?.ohmResponseTiming?.minScoreMs || defaultAdminRuntimeConfig.ohmResponseTiming.minScoreMs),
+      minCoefficient: Number(raw?.ohmResponseTiming?.minCoefficient || defaultAdminRuntimeConfig.ohmResponseTiming.minCoefficient),
+    },
     visualTheme: normalizeVisualTheme(raw?.visualTheme || defaultAdminRuntimeConfig.visualTheme),
     semanticOhmCurrent: Number(raw?.semanticOhmCurrent || defaultAdminRuntimeConfig.semanticOhmCurrent),
     ohmModel: String(raw?.ohmModel || raw?.router9Model || defaultAdminRuntimeConfig.ohmModel),

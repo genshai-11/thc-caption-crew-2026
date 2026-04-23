@@ -92,6 +92,17 @@ const defaultSharedConfig = {
   router9BaseUrl: 'http://34.87.121.108:20128/v1',
   router9Model: '',
   router9FallbackModel: '',
+  ohmAgentEnabled: false,
+  ohmAgentEndpoint: '',
+  ohmAgentApiKey: '',
+  ohmAgentAuthScheme: 'bearer',
+  ohmAgentTimeoutMs: 9000,
+  ohmAgentShadowMode: true,
+  ohmResponseTiming: {
+    fullScoreMs: 2000,
+    minScoreMs: 5000,
+    minCoefficient: 0.333333,
+  },
   meaningStrictness: 'medium',
   meaningWeight: 100,
   feedbackEnabled: true,
@@ -276,6 +287,59 @@ function createThirdPartyAuthHeaders(authScheme, apiKey) {
     return { 'x-api-key': String(apiKey) };
   }
   return { Authorization: 'Bearer ' + String(apiKey) };
+}
+
+function toBoolean(value, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['1', 'true', 'yes', 'on'].includes(normalized)) return true;
+    if (['0', 'false', 'no', 'off'].includes(normalized)) return false;
+  }
+  return fallback;
+}
+
+function toFiniteNumber(value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+async function callOhmAgent({ endpoint, apiKey, authScheme = 'bearer', payload, timeoutMs = 9000 }) {
+  const cleanEndpoint = String(endpoint || '').trim();
+  if (!cleanEndpoint) throw new Error('OHM agent endpoint not configured');
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), Math.max(1500, Number(timeoutMs) || 9000));
+
+  try {
+    const response = await fetch(cleanEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...createThirdPartyAuthHeaders(authScheme, apiKey),
+      },
+      body: JSON.stringify(payload || {}),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`OHM agent error (${response.status}): ${text}`);
+    }
+
+    const data = await response.json();
+    if (!data || typeof data !== 'object') {
+      throw new Error('OHM agent returned invalid JSON');
+    }
+    return data;
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error('OHM agent request timeout');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function callThirdPartyTranscript({ url, apiKey, authScheme, contentType, audioBuffer }) {
@@ -1486,39 +1550,130 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const prompt = `You are an expert linguistic analyzer. Analyze transcript and extract semantic chunks in labels GREEN, BLUE, RED, PINK only.\n\nLabel definitions:\n- GREEN: discourse opener / sentence opener / transition starter.\n- BLUE: reusable sentence frame/pattern with slots.\n- RED: idioms, proverbs, figurative sayings. Proverbs must be RED (never GREEN).\n- PINK: difficult/specific vocabulary terms or collocations (not basic everyday words).\n\nRules:\n1) Do not classify everything. Most words are NORMAL and must be ignored.\n2) Extract exact substrings from transcript only.\n3) Do NOT classify single filler words, particles, or isolated question words (examples: liệu, à, ạ, hả, nhé).\n4) GREEN/BLUE/RED should usually be phrase-level (>= 2 words).\n5) If a phrase is an idiom/proverb, label it RED even if it appears at sentence start.\n6) Return valid JSON object only.\n7) Keep confidence in 0..1.\n\nTranscript:\n${JSON.stringify(transcript)}\n\nReturn JSON with keys: transcriptRaw, transcriptNormalized, chunks.\nEach chunk item must include text, label, confidence, reason.`;
 
     const startedAt = Date.now();
-    const completion = await callRouterChat({
-      apiKey,
-      baseUrl,
-      model,
-      fallbackModel,
-      temperature: 0,
-      timeoutMs: 20000,
-      responseFormat: { type: 'json_object' },
-      messages: [
-        { role: 'system', content: 'Return strict JSON. Labels allowed: GREEN, BLUE, RED, PINK.' },
-        { role: 'user', content: prompt },
-      ],
-    });
+    const agentEnabled = toBoolean(req.body?.useMemoryAssist, toBoolean(sharedConfig?.ohmAgentEnabled, false));
+    const agentShadowMode = toBoolean(req.body?.agentShadowMode, toBoolean(sharedConfig?.ohmAgentShadowMode, true));
+    const agentEndpoint = String(req.body?.agentEndpoint || sharedConfig?.ohmAgentEndpoint || '').trim();
+    const agentApiKey = String(req.body?.agentApiKey || sharedConfig?.ohmAgentApiKey || '').trim();
+    const agentAuthScheme = String(req.body?.agentAuthScheme || sharedConfig?.ohmAgentAuthScheme || 'bearer').trim().toLowerCase();
+    const agentTimeoutMs = toFiniteNumber(req.body?.agentTimeoutMs, toFiniteNumber(sharedConfig?.ohmAgentTimeoutMs, 9000));
 
-    const raw = completion?.choices?.[0]?.message?.content;
-    const parsed = typeof raw === 'string' ? JSON.parse(extractFirstJsonObject(raw)) : (raw || {});
+    const toRawChunksFromPayload = (payload) => {
+      if (!Array.isArray(payload?.chunks)) return [];
+      return payload.chunks
+        .map((chunk) => {
+          const text = String(chunk?.text || '');
+          const normalized = normalizeOhmText(text);
+          const label = coerceIdiomLabel(String(chunk?.label || '').toUpperCase(), normalized);
+          return {
+            text,
+            label,
+            ohm: Number(ohmSettings.weights[label] || 0),
+            confidence: Number(chunk?.confidence || 0),
+            reason: String(chunk?.reason || ''),
+          };
+        })
+        .filter((chunk) => ['GREEN', 'BLUE', 'RED', 'PINK'].includes(chunk.label) && chunk.text);
+    };
 
-    const rawChunks = Array.isArray(parsed?.chunks)
-      ? parsed.chunks
-          .map((chunk) => {
-            const text = String(chunk?.text || '');
-            const normalized = normalizeOhmText(text);
-            const label = coerceIdiomLabel(String(chunk?.label || '').toUpperCase(), normalized);
-            return {
-              text,
-              label,
-              ohm: Number(ohmSettings.weights[label] || 0),
-              confidence: Number(chunk?.confidence || 0),
-              reason: String(chunk?.reason || ''),
-            };
-          })
-          .filter((chunk) => ['GREEN', 'BLUE', 'RED', 'PINK'].includes(chunk.label) && chunk.text)
-      : [];
+    const runLegacyRouterAnalysis = async () => {
+      const completion = await callRouterChat({
+        apiKey,
+        baseUrl,
+        model,
+        fallbackModel,
+        temperature: 0,
+        timeoutMs: 20000,
+        responseFormat: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: 'Return strict JSON. Labels allowed: GREEN, BLUE, RED, PINK.' },
+          { role: 'user', content: prompt },
+        ],
+      });
+
+      const raw = completion?.choices?.[0]?.message?.content;
+      const parsed = typeof raw === 'string' ? JSON.parse(extractFirstJsonObject(raw)) : (raw || {});
+      return {
+        parsed,
+        rawChunks: toRawChunksFromPayload(parsed),
+        modelUsed: String(completion?.model || model || fallbackModel || ''),
+      };
+    };
+
+    let parsed = {};
+    let rawChunks = [];
+    let modelUsed = model || fallbackModel;
+    let analysisSource = 'legacy-router9';
+    let agentDiagnostics = null;
+
+    if (agentEnabled && agentEndpoint) {
+      const agentStartedAt = Date.now();
+      try {
+        const agentResponse = await callOhmAgent({
+          endpoint: agentEndpoint,
+          apiKey: agentApiKey,
+          authScheme: agentAuthScheme,
+          timeoutMs: agentTimeoutMs,
+          payload: {
+            transcript,
+            model,
+            fallbackModel,
+            reactionDelayMs: req.body?.reactionDelayMs,
+            flags: {
+              useMemoryAssist: true,
+              returnDebug: toBoolean(req.body?.returnDebug, true),
+            },
+            context: {
+              sessionId: String(req.body?.sessionId || ''),
+              roundId: String(req.body?.roundId || ''),
+              userId: String(req.body?.userId || ''),
+            },
+          },
+        });
+
+        const agentParsed = typeof agentResponse === 'string'
+          ? JSON.parse(extractFirstJsonObject(agentResponse))
+          : (agentResponse || {});
+
+        agentDiagnostics = {
+          enabled: true,
+          shadowMode: agentShadowMode,
+          elapsedMs: Date.now() - agentStartedAt,
+          memoryHits: toFiniteNumber(agentParsed?.diagnostics?.memoryHits, 0),
+          rawChunkCount: toFiniteNumber(agentParsed?.diagnostics?.rawChunkCount, Array.isArray(agentParsed?.chunks) ? agentParsed.chunks.length : 0),
+          selfCheckPassed: toBoolean(agentParsed?.diagnostics?.selfCheckPassed, false),
+        };
+
+        if (!agentShadowMode) {
+          parsed = agentParsed;
+          rawChunks = toRawChunksFromPayload(agentParsed);
+          modelUsed = String(agentParsed?.modelUsed || 'ohm-memory-agent');
+          analysisSource = 'agent';
+        } else {
+          const legacy = await runLegacyRouterAnalysis();
+          parsed = legacy.parsed;
+          rawChunks = legacy.rawChunks;
+          modelUsed = legacy.modelUsed;
+        }
+      } catch (agentError) {
+        logger.warn('OHM agent integration call failed, falling back to legacy analyzer', agentError);
+        agentDiagnostics = {
+          enabled: true,
+          shadowMode: agentShadowMode,
+          error: String(agentError?.message || agentError),
+          elapsedMs: Date.now() - agentStartedAt,
+        };
+
+        const legacy = await runLegacyRouterAnalysis();
+        parsed = legacy.parsed;
+        rawChunks = legacy.rawChunks;
+        modelUsed = legacy.modelUsed;
+      }
+    } else {
+      const legacy = await runLegacyRouterAnalysis();
+      parsed = legacy.parsed;
+      rawChunks = legacy.rawChunks;
+      modelUsed = legacy.modelUsed;
+    }
 
     const modelChunks = sanitizeOhmChunks(rawChunks, transcript);
     const lexiconChunks = detectLexiconChunks(transcript, ohmSettings.weights);
@@ -1535,7 +1690,6 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
     const totalOhm = Number((baseOhm * lengthCoefficient).toFixed(4));
     const formula = baseOhm > 0 ? `${baseFormula} x ${lengthCoefficient}` : '0';
     const elapsedMs = Date.now() - startedAt;
-    const modelUsed = String(completion?.model || model || fallbackModel || '');
     const transcriptNormalized = String(parsed?.transcriptNormalized || '');
 
     const responsePayload = {
@@ -1551,6 +1705,9 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       sentenceCount,
       wordCount,
       elapsedMs,
+      analysisSource,
+      responseCoefficient: 1,
+      responseCoefficientApplied: false,
       filteredChunkCount: Math.max(0, rawChunks.length - modelChunks.length),
       lexiconChunkCount: lexiconChunks.length,
       compositeChunkCount: compositeChunks.length,
@@ -1558,6 +1715,7 @@ exports.analyzeTranscriptOhm = onRequest({ cors: false, invoker: 'public' }, asy
       uncertainChunkCount: verified.uncertainChunkCount,
       conflictResolvedCount: resolved.conflictResolvedCount,
       fallbackApplied: ensured.fallbackApplied,
+      agentDiagnostics,
       chunkDiagnostics: ensured.fallbackApplied
         ? [...verified.diagnostics, ...resolved.dropped.map((entry) => ({
             text: String(entry?.drop?.text || ''),

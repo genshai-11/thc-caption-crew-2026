@@ -23,11 +23,20 @@ function toOhmScore(voltage: number) {
   return Math.max(0, Math.min(100, Math.round((voltage / 120) * 100)));
 }
 
-function resolveCrewResponseCoefficient(delayMs: number | null) {
-  if (typeof delayMs !== 'number' || Number.isNaN(delayMs) || delayMs <= 2000) return 1;
-  if (delayMs >= 5000) return 1 / 3;
-  const ratio = (delayMs - 2000) / 3000;
-  return 1 - ratio * (2 / 3);
+function resolveCrewResponseCoefficient(
+  delayMs: number | null,
+  timingConfig?: { fullScoreMs?: number; minScoreMs?: number; minCoefficient?: number },
+) {
+  const fullScoreMs = Number(timingConfig?.fullScoreMs || 2000);
+  const minScoreMs = Number(timingConfig?.minScoreMs || 5000);
+  const minCoefficient = Number(timingConfig?.minCoefficient || (1 / 3));
+
+  if (typeof delayMs !== 'number' || Number.isNaN(delayMs) || delayMs <= fullScoreMs) return 1;
+  if (delayMs >= minScoreMs) return minCoefficient;
+
+  const span = Math.max(1, minScoreMs - fullScoreMs);
+  const ratio = (delayMs - fullScoreMs) / span;
+  return 1 - ratio * (1 - minCoefficient);
 }
 
 function shouldUseDeepgramLivePartial() {
@@ -385,7 +394,7 @@ export function useCaptionCrewRound() {
       }
 
       const runtimeConfig = loadAdminRuntimeConfig();
-      const responseCoefficient = resolveCrewResponseCoefficient(reactionDelayMs);
+      const localResponseCoefficient = resolveCrewResponseCoefficient(reactionDelayMs, runtimeConfig.ohmResponseTiming);
       const resolveLengthCoefficient = (text: string) => {
         const sentences = String(text || '').split(/[.!?\n\r]+/).map((s) => s.trim()).filter(Boolean).length || 1;
         const words = String(text || '').trim().split(/\s+/).filter(Boolean).length;
@@ -404,12 +413,24 @@ export function useCaptionCrewRound() {
         const aiAnalysis = await analyzeTranscript(captainResult.transcript, {
           model: runtimeConfig.ohmModel || runtimeConfig.router9Model,
           fallbackModel: runtimeConfig.ohmFallbackModel || runtimeConfig.router9FallbackModel,
+          reactionDelayMs,
+          useMemoryAssist: runtimeConfig.ohmAgentEnabled,
+          returnDebug: true,
+          sessionId: activeRoundTokenRef.current.toString(),
         });
 
         const lengthCoefficient = typeof aiAnalysis.lengthCoefficient === 'number' && aiAnalysis.lengthCoefficient > 0
           ? aiAnalysis.lengthCoefficient
           : 1;
-        const adjustedTotalOhm = Number((aiAnalysis.totalOhm * responseCoefficient).toFixed(4));
+        const serverAppliedResponse = aiAnalysis.responseCoefficientApplied === true;
+        const responseCoefficient = serverAppliedResponse
+          ? (typeof aiAnalysis.responseCoefficient === 'number' && aiAnalysis.responseCoefficient > 0
+              ? aiAnalysis.responseCoefficient
+              : 1)
+          : localResponseCoefficient;
+        const adjustedTotalOhm = serverAppliedResponse
+          ? Number(aiAnalysis.totalOhm.toFixed(4))
+          : Number((aiAnalysis.totalOhm * responseCoefficient).toFixed(4));
         const formula = responseCoefficient < 0.999
           ? `${aiAnalysis.formula} x ${responseCoefficient.toFixed(2)}`
           : aiAnalysis.formula;
@@ -442,6 +463,7 @@ export function useCaptionCrewRound() {
         );
         const fallbackLengthCoefficient = resolveLengthCoefficient(captainResult.transcript);
         const rawOhm = calculateSemanticOhm(semanticChunks, fallbackLengthCoefficient);
+        const responseCoefficient = localResponseCoefficient;
         const adjustedTotalOhm = Number((rawOhm.totalOhm * responseCoefficient).toFixed(4));
         const adjustedFormula = responseCoefficient < 0.999
           ? `${rawOhm.formula} x ${responseCoefficient.toFixed(2)}`
