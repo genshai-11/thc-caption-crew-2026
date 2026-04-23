@@ -32,6 +32,18 @@
 
 ## Next Backlog
 
+### v6.0 (planned) — OHM Agent Orchestration Adapter
+- Spec file: `OHM-INTEGRATION-ADAPTER-SPEC.md`
+- Scope:
+  - Add adapter layer for orchestrated memory agent (detect → retrieve → reason → score → self-check)
+  - Preserve legacy response schema compatibility
+  - Add feature flags (`ohmAgentEnabled`, `ohmAgentShadowMode`) and timeout guardrails
+  - Add response-time coefficient runtime config contract (`ohmResponseTiming`)
+- Release controls:
+  - Shadow mode validation before score-impact enablement
+  - Explicit approval required before production publish
+  - Tag format: `prod-YYYY-MM-DD-ohm-agent-vX-Y-Z`
+
 ### v2.1 (planned)
 - Add OHM confidence guardrails for low-confidence chunk classification
 - Add Admin warning when coefficient set drifts from allowed values
