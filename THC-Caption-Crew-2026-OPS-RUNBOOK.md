@@ -133,6 +133,11 @@ git push origin master
 git push origin <prod-tag>
 ```
 
+3.1 **Human approval gate (mandatory)**
+- Sau khi có commit + tag, **không publish production ngay**.
+- Phải gửi release summary + rủi ro + rollback tag và đợi xác nhận “approved for production”.
+- Chỉ deploy khi có xác nhận explicit.
+
 4. **Deploy functions**
 ```bash
 firebase deploy --only functions:ccfaceoff --project thc-caption-crew-2026
